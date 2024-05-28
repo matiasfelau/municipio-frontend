@@ -1,22 +1,25 @@
-package ar.edu.uade.municipio_frontend.POJOs;
+package ar.edu.uade.municipio_frontend.Models;
 
 import android.content.ContentValues;
 
-import androidx.annotation.NonNull;
-
-import ar.edu.uade.municipio_frontend.Utilities.DataContract;
+import ar.edu.uade.municipio_frontend.Database.DataContract;
 
 public class Vecino {
     private String nombre;
     private String apellido;
     private String documento;
     private String email;
+    private String password;
 
-    public Vecino(String nombre, String apellido, String documento, String email) {
+    public Vecino() {
+    }
+
+    public Vecino(String nombre, String apellido, String documento, String email, String password) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.documento = documento;
         this.email = email;
+        this.password = password;
     }
 
     public String getNombre() {
@@ -50,12 +53,33 @@ public class Vecino {
     public void setEmail(String email) {
         this.email = email;
     }
-    public ContentValues toConentValues(){
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "Vecino{" +
+                "nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", documento='" + documento + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    public ContentValues toContentValues(){
         ContentValues cv = new ContentValues();
         cv.put(DataContract.VecinosEntry.NOMBRE,nombre);
         cv.put(DataContract.VecinosEntry.APELLIDO,apellido);
         cv.put(DataContract.VecinosEntry.DOCUMENTO,documento);
         cv.put(DataContract.VecinosEntry.EMAIL,email);
+        cv.put(DataContract.VecinosEntry.PASSWORD,password);
         return cv;
     }
 

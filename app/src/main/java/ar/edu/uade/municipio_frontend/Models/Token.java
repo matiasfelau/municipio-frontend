@@ -1,4 +1,4 @@
-package ar.edu.uade.municipio_frontend.POJOs;
+package ar.edu.uade.municipio_frontend.Models;
 
 public class Token {
     String token;

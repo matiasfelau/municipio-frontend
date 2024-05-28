@@ -1,7 +1,6 @@
-package ar.edu.uade.municipio_frontend.Activities.Start.Vecino;
+package ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,19 +9,20 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import ar.edu.uade.municipio_frontend.Activities.Application.PrimerIngreso;
-import ar.edu.uade.municipio_frontend.Activities.Start.Empleado.EmpleadoIngreso;
-import ar.edu.uade.municipio_frontend.Activities.VerReclamos;
-import ar.edu.uade.municipio_frontend.POJOs.CredencialVecino;
-import ar.edu.uade.municipio_frontend.POJOs.Email;
-import ar.edu.uade.municipio_frontend.POJOs.Token;
-import ar.edu.uade.municipio_frontend.POJOs.Vecino;
+import ar.edu.uade.municipio_frontend.Activities.Usuario.PrimerIngreso;
+import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
+import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
+import ar.edu.uade.municipio_frontend.Models.CredencialVecino;
+import ar.edu.uade.municipio_frontend.Models.Token;
+import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.CredencialVecinoService;
 import ar.edu.uade.municipio_frontend.Services.VecinoService;
@@ -31,11 +31,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ar.edu.uade.municipio_frontend.Utilities.*;
 
 public class VecinoIngreso extends AppCompatActivity {
     private VecinoHelper helper;
-    String email;
     EditText inputDocumento;
     EditText inputPassword;
     Button botonOlvidoPassword;
@@ -59,6 +57,7 @@ public class VecinoIngreso extends AppCompatActivity {
         });
 
         inputDocumento = findViewById(R.id.inputDocumento);
+
         helper = new VecinoHelper(this);
 
         inputPassword = findViewById(R.id.inputPassword);
@@ -72,6 +71,32 @@ public class VecinoIngreso extends AppCompatActivity {
         botonRegistro = findViewById(R.id.botonRegistro);
 
         botonCambiarUsuarioDerecha = findViewById(R.id.botonCambiarUsuarioDerecha);
+
+        boolean ingresado = getIntent().getBooleanExtra("ingresado", false);
+
+        if (ingresado) {
+            Vecino vecino = helper.getVecinoByDocumento(getIntent().getStringExtra("documento"));
+
+            ingresar(new CredencialVecino(
+                    vecino.getDocumento(),
+                    vecino.getPassword(),
+                    ""
+            ));
+
+        }
+
+        String from = getIntent().getStringExtra("from");
+
+        if (from != null) {
+            if (from.equals("VerReclamos")) {
+                getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                    }
+                });
+
+            }
+        }
 
         botonOlvidoPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +148,7 @@ public class VecinoIngreso extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Token> call, @NonNull Response<Token> response) {
                 if (response.body() != null) {
+                    buscar(credencialVecino.getDocumento());
                     verificar(credencialVecino.getDocumento(), response.body().getToken());
                 } else {
                     avisoDatosIncorrectos.setVisibility(View.VISIBLE);
@@ -139,32 +165,17 @@ public class VecinoIngreso extends AppCompatActivity {
 
     private void buscar(String documento) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
-        CredencialVecinoService credencialVecinoService = retrofit.create(CredencialVecinoService.class);
+
         VecinoService vecinoService = retrofit.create(VecinoService.class);
 
-        Call<Email> call0 =  credencialVecinoService.getEmail(documento);
-        call0.enqueue(new Callback<Email>() {
-            @Override
-            public void onResponse(Call<Email> call, Response<Email> response) {
-                if (response.body() != null){
-                    email = response.body().getEmail();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Email> call, Throwable t) {
-                System.out.println(t);
-            }
-        });
         Call<Vecino> call = vecinoService.getPerfil(documento);
 
         call.enqueue(new Callback<Vecino>() {
             @Override
             public void onResponse(@NonNull Call<Vecino> call, @NonNull Response<Vecino> response) {
                 if (response.body() != null) {
-                    Vecino body = response.body();
-                    Vecino vecino = new Vecino(body.getNombre(),body.getApellido(),body.getDocumento(),email);
-                    helper.saveVecino(body);
+                    helper.saveVecino(response.body());
+
                 }
             }
             @Override
@@ -189,13 +200,15 @@ public class VecinoIngreso extends AppCompatActivity {
                 if (Boolean.TRUE.equals(response.body())) {
                     nuevaActividad = new Intent(VecinoIngreso.this, PrimerIngreso.class);
 
-                    nuevaActividad.putExtra("documento", documento);
-
                 } else {
                     nuevaActividad = new Intent(VecinoIngreso.this, VerReclamos.class);
 
                 }
+                nuevaActividad.putExtra("documento", documento);
+
                 nuevaActividad.putExtra("token", token);
+
+                nuevaActividad.putExtra("from", "VecinoIngreso");
 
                 startActivity(nuevaActividad);
 

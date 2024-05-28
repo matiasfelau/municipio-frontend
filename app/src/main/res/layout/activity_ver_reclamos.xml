@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_palmera"
-    tools:context=".Activities.VerReclamos">
+    tools:context=".Activities.Reclamo.VerReclamos">
 
     <TextView
         android:id="@+id/filterBackground"
@@ -97,6 +97,19 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="125dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="592dp"
+        android:layout_marginEnd="132dp"
+        android:background="#FF0000"
+        android:text="SALIR"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

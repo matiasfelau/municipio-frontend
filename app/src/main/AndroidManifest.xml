@@ -16,37 +16,36 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.Application.PrimerIngreso"
+            android:name=".Activities.Usuario.PrimerIngreso"
             android:exported="false" />
         <activity
-            android:name=".Utilities.Template"
+            android:name=".Activities.Usuario.Vecino.VecinoIngreso"
             android:exported="false" />
         <activity
-            android:name=".Activities.Start.Vecino.VecinoIngreso"
-            android:exported="true" />
+            android:name=".Activities.Arranque.Template"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
         <activity
-            android:name=".Activities.Start.Empleado.EmpleadoRecupero"
+            android:name=".Activities.Usuario.Empleado.EmpleadoIngreso"
             android:exported="false" />
         <activity
-            android:name=".Activities.Start.Empleado.EmpleadoIngreso"
+            android:name=".Activities.Usuario.Invitado.InvitadoIngreso"
             android:exported="false" />
         <activity
-            android:name=".Activities.Start.Invitado.InvitadoIngreso"
+            android:name=".Activities.Usuario.Vecino.VecinoRecupero"
             android:exported="false" />
         <activity
-            android:name=".Activities.Start.Vecino.VecinoRecupero"
+            android:name=".Activities.Usuario.Vecino.VecinoRegistro"
             android:exported="false" />
         <activity
-            android:name=".Activities.Start.Vecino.VecinoRegistro"
+            android:name=".Activities.Publicacion.VerPublicacionesInvitado"
             android:exported="false" />
         <activity
-            android:name=".Activities.VerPublicacionesInvitado"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.VerReclamos"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.Inicio"
+            android:name=".Activities.Reclamo.VerReclamos"
             android:exported="false" />
     </application>
 

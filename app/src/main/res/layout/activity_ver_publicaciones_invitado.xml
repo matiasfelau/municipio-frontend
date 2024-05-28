@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_palmera"
-    tools:context=".Activities.VerPublicacionesInvitado">
+    tools:context=".Activities.Publicacion.VerPublicacionesInvitado">
 
     <TextView
         android:id="@+id/filterBackground"

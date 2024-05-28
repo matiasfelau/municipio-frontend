@@ -1,4 +1,4 @@
-package ar.edu.uade.municipio_frontend.Activities.Start.Empleado;
+package ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,11 +15,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import ar.edu.uade.municipio_frontend.Activities.Start.Invitado.InvitadoIngreso;
-import ar.edu.uade.municipio_frontend.Activities.Start.Vecino.VecinoIngreso;
-import ar.edu.uade.municipio_frontend.Activities.VerReclamos;
-import ar.edu.uade.municipio_frontend.POJOs.Empleado;
-import ar.edu.uade.municipio_frontend.POJOs.Token;
+import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
+import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
+import ar.edu.uade.municipio_frontend.Database.Helpers.EmpleadoHelper;
+import ar.edu.uade.municipio_frontend.Models.Empleado;
+import ar.edu.uade.municipio_frontend.Models.Token;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.EmpleadoService;
 import retrofit2.Call;
@@ -30,11 +31,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EmpleadoIngreso extends AppCompatActivity {
     EditText inputLegajo;
+
     EditText inputPassword;
+
     TextView avisoDatosIncorrectos;
+
     Button botonIngresar;
+
     ImageButton botonCambiarUsuarioIzquierda;
+
     ImageButton botonCambiarUsuarioDerecha;
+
+    private EmpleadoHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +71,32 @@ public class EmpleadoIngreso extends AppCompatActivity {
 
         botonCambiarUsuarioDerecha = findViewById(R.id.botonCambiarUsuarioDerecha);
 
+        helper = new EmpleadoHelper(this);
+
+        boolean ingresado = getIntent().getBooleanExtra("ingresado", false);
+
+        if (ingresado) {
+            Empleado empleado = helper.getEmpleadoByLegajo(getIntent().getIntExtra("legajo", 0));
+
+            ingresar(new Empleado(
+                    empleado.getLegajo(),
+                    null,
+                    null,
+                    empleado.getPassword(),
+                    null
+            ));
+
+        }
+
         botonIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ingresar(new Empleado(Integer.parseInt(inputLegajo.getText().toString()), inputPassword.getText().toString()));
+                ingresar(new Empleado(Integer.parseInt(inputLegajo.getText().toString()),
+                        null,
+                        null,
+                        inputPassword.getText().toString(),
+                        null
+                ));
 
             }
         });
@@ -103,9 +133,15 @@ public class EmpleadoIngreso extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Token> call, @NonNull Response<Token> response) {
                 if (response.body() != null) {
+                    buscar(empleado.getLegajo());
+
                     Intent nuevaActividad = new Intent(EmpleadoIngreso.this, VerReclamos.class);
 
+                    nuevaActividad.putExtra("legajo", empleado.getLegajo());
+
                     nuevaActividad.putExtra("token", response.body().getToken());
+
+                    nuevaActividad.putExtra("from", "EmpleadoIngreso");
 
                     startActivity(nuevaActividad);
 
@@ -121,5 +157,28 @@ public class EmpleadoIngreso extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void buscar(int legajo) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        EmpleadoService empleadoService = retrofit.create(EmpleadoService.class);
+
+        Call<Empleado> call = empleadoService.getPerfil(legajo);
+
+        call.enqueue(new Callback<Empleado>() {
+            @Override
+            public void onResponse(@NonNull Call<Empleado> call, @NonNull Response<Empleado> response) {
+                if (response.body() != null) {
+                    helper.saveEmpleado(response.body());
+
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Empleado> call, @NonNull Throwable t) {
+                System.out.println(t);
+
+            }
+        });
     }
 }

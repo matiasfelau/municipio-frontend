@@ -1,6 +1,4 @@
-package ar.edu.uade.municipio_frontend.POJOs;
-
-import androidx.annotation.NonNull;
+package ar.edu.uade.municipio_frontend.Models;
 
 public class CredencialVecino {
     private String documento;
