@@ -1,6 +1,7 @@
 package ar.edu.uade.municipio_frontend.Activities.Start.Vecino;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,16 +20,22 @@ import ar.edu.uade.municipio_frontend.Activities.Application.PrimerIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Start.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.VerReclamos;
 import ar.edu.uade.municipio_frontend.POJOs.CredencialVecino;
+import ar.edu.uade.municipio_frontend.POJOs.Email;
 import ar.edu.uade.municipio_frontend.POJOs.Token;
+import ar.edu.uade.municipio_frontend.POJOs.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.CredencialVecinoService;
+import ar.edu.uade.municipio_frontend.Services.VecinoService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ar.edu.uade.municipio_frontend.Utilities.*;
 
 public class VecinoIngreso extends AppCompatActivity {
+    private VecinoHelper helper;
+    String email;
     EditText inputDocumento;
     EditText inputPassword;
     Button botonOlvidoPassword;
@@ -52,6 +59,7 @@ public class VecinoIngreso extends AppCompatActivity {
         });
 
         inputDocumento = findViewById(R.id.inputDocumento);
+        helper = new VecinoHelper(this);
 
         inputPassword = findViewById(R.id.inputPassword);
 
@@ -116,10 +124,8 @@ public class VecinoIngreso extends AppCompatActivity {
             public void onResponse(@NonNull Call<Token> call, @NonNull Response<Token> response) {
                 if (response.body() != null) {
                     verificar(credencialVecino.getDocumento(), response.body().getToken());
-
                 } else {
                     avisoDatosIncorrectos.setVisibility(View.VISIBLE);
-
                 }
             }
             @Override
@@ -132,8 +138,40 @@ public class VecinoIngreso extends AppCompatActivity {
     }
 
     private void buscar(String documento) {
-        //TODO terminar
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+        CredencialVecinoService credencialVecinoService = retrofit.create(CredencialVecinoService.class);
+        VecinoService vecinoService = retrofit.create(VecinoService.class);
 
+        Call<Email> call0 =  credencialVecinoService.getEmail(documento);
+        call0.enqueue(new Callback<Email>() {
+            @Override
+            public void onResponse(Call<Email> call, Response<Email> response) {
+                if (response.body() != null){
+                    email = response.body().getEmail();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Email> call, Throwable t) {
+                System.out.println(t);
+            }
+        });
+        Call<Vecino> call = vecinoService.getPerfil(documento);
+
+        call.enqueue(new Callback<Vecino>() {
+            @Override
+            public void onResponse(@NonNull Call<Vecino> call, @NonNull Response<Vecino> response) {
+                if (response.body() != null) {
+                    Vecino body = response.body();
+                    Vecino vecino = new Vecino(body.getNombre(),body.getApellido(),body.getDocumento(),email);
+                    helper.saveVecino(body);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Vecino> call, @NonNull Throwable t) {
+                System.out.println(t);
+            }
+        });
     }
 
     private void verificar(String documento, String token) {

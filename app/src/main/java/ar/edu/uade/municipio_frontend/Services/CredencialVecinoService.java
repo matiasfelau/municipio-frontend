@@ -1,6 +1,7 @@
 package ar.edu.uade.municipio_frontend.Services;
 
 import ar.edu.uade.municipio_frontend.POJOs.CredencialVecino;
+import ar.edu.uade.municipio_frontend.POJOs.Email;
 import ar.edu.uade.municipio_frontend.POJOs.Token;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -23,4 +24,7 @@ public interface CredencialVecinoService {
 
     @PUT(API_ROUTE+"/primer-ingreso")
     Call<Boolean> modificarPassword(@Body CredencialVecino credencialVecino);
+
+    @GET(API_ROUTE+"/email"+"/{documento}")
+    Call<Email> getEmail(@Path("documento")String documento);
 }
