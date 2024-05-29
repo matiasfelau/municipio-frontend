@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
@@ -39,6 +40,7 @@ public class Template extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        
 
         vecinoHelper = new VecinoHelper(this);
 
