@@ -106,19 +106,56 @@
         android:id="@+id/logout"
         android:layout_width="175dp"
         android:layout_height="38dp"
+        android:layout_marginStart="109dp"
+        android:layout_marginTop="125dp"
         android:background="#FF0000"
         android:text="SALIR"
         android:textColor="@color/white"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="109dp"
-        tools:layout_editor_absoluteY="125dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:queryHint="Busque aqui:..."
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="248dp" />
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="255dp" />
+
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/selfCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pertenece a mí mismo"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="418dp" />
+
+    <Spinner
+        android:id="@+id/rubroSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/rubro_options"
+        android:prompt="@string/rubro_prompt"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="399dp" />
+
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Buscar"
+        android:inputType="text"
+        android:maxLines="1"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="354dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
