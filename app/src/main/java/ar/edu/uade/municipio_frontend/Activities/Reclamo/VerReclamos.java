@@ -15,13 +15,24 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.List;
+
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.EmpleadoHelper;
 import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
+import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
 import ar.edu.uade.municipio_frontend.Models.Empleado;
+import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
+import ar.edu.uade.municipio_frontend.Services.ReclamoService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VerReclamos extends AppCompatActivity {
     Button boton;
@@ -121,5 +132,72 @@ public class VerReclamos extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void getReclamos(String pagina, AutenticacionFiltro filtro){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        ReclamoService reclamosService = retrofit.create(ReclamoService.class);
+        Call<List<Reclamo>> call = reclamosService.getReclamos(pagina,filtro);
+
+        call.enqueue(new Callback<List<Reclamo>>(){
+
+            @Override
+            public void onResponse(Call<List<Reclamo>> call, Response<List<Reclamo>> response) {
+                Intent nuevaActivdad;
+                if (response.code()==200){//TODO COMPLETAR CUANDO ESTE LA VISTA
+
+                }else if(response.code()==400){
+
+                }else if(response.code()==401){
+
+                }else if(response.code()==403){
+
+                }else if(response.code()==500){
+
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Reclamo>> call, Throwable t) {
+
+            }
+        });
+
+    }
+    private void getReclamo(int id, Autenticacion autenticacion){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+        ReclamoService reclamoService = retrofit.create(ReclamoService.class);
+        Call<Reclamo> call =reclamoService.getReclamo(id,autenticacion);
+
+        call.enqueue(new Callback<Reclamo>() {
+            @Override
+            public void onResponse(Call<Reclamo> call, Response<Reclamo> response) {
+                Intent nuevaActividad;
+                if (response.code()==200){//TODO COMPLETAR CUANDO ESTE LA VISTA
+
+                }else if(response.code()==400){
+
+                }else if(response.code()==401){
+
+                }else if(response.code()==403){
+
+                }else if(response.code()==404){
+
+                }else if(response.code()==500){
+
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Reclamo> call, Throwable t) {
+
+            }
+        });
+
     }
 }
