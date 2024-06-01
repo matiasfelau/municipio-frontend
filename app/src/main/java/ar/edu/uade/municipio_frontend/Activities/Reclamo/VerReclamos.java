@@ -1,11 +1,18 @@
 package ar.edu.uade.municipio_frontend.Activities.Reclamo;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -15,6 +22,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
@@ -35,10 +43,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VerReclamos extends AppCompatActivity {
-    Button boton;
+    ImageButton boton;
     EmpleadoHelper empleadoHelper;
     InvitadoHelper invitadoHelper;
     VecinoHelper vecinoHelper;
+    Spinner dropdownFiltro;
+    ListView listReclamos;
+    ArrayList<String> p;
+    ArrayAdapter<String> prueba;
+    Integer c;
+    ImageButton botonAgregar;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -57,6 +71,35 @@ public class VerReclamos extends AppCompatActivity {
 
         String from = getIntent().getStringExtra("from");
 
+        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this, R.array.rubro_options, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
+        dropdownFiltro = findViewById(R.id.dropdownTipoFiltro);
+
+        dropdownFiltro.setAdapter(adapter);
+
+        p = new ArrayList<>();
+
+        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
+
+        listReclamos = findViewById(R.id.listReclamos);
+
+        listReclamos.setAdapter(prueba);
+
+        setUpListViewListener();
+
+        c = 0;
+
+        botonAgregar = findViewById(R.id.botonAgregar);
+
+        botonAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItem();
+            }
+        });
+
         if (from != null) {
             if (from.equals("VecinoIngreso") || from.equals("EmpleadoIngreso") || from.equals("PrimerIngreso")) {
                 getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -68,7 +111,7 @@ public class VerReclamos extends AppCompatActivity {
             }
         }
 
-        boton = findViewById(R.id.logout);
+        boton = findViewById(R.id.botonLogout);
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +124,24 @@ public class VerReclamos extends AppCompatActivity {
         invitadoHelper = new InvitadoHelper(this);
 
         vecinoHelper = new VecinoHelper(this);
+    }
+
+    private void setUpListViewListener(){
+        listReclamos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Context context = getApplicationContext();
+                Toast.makeText(context, "Item removed", Toast.LENGTH_LONG).show();
+                p.remove(position);
+                prueba.notifyDataSetChanged();
+                return true;
+            }
+        });
+    }
+
+    private void addItem(){
+        prueba.add(c.toString());
+        c++;
     }
 
     private void mostrarPopupSalir() {

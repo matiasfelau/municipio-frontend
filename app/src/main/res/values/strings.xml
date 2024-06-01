@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">municipio-frontend</string>
+    <string name="ID">ID</string>
+    <string name="Sector">Sector</string>
+    <string name="Pertenencia">Pertenencia</string>
+    <string name="Propio">Propio</string>
+    <string name="General">General</string>
+    <string-array name="rubro_options">
+        <item>@string/ID</item>
+        <item>@string/Sector</item>
+        <item>@string/Pertenencia</item>
+    </string-array>
+    <string-array name="pertenencia_options">
+        <item>@string/Propio</item>
+        <item>@string/General</item>
+    </string-array>
 </resources>

@@ -22,11 +22,202 @@
         tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
 
     <ImageView
+        android:id="@+id/bannerArriba"
+        android:layout_width="411dp"
+        android:layout_height="37dp"
+        android:contentDescription="bannerAbajo"
+        android:scaleX="2"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/banner_abajo" />
+
+    <ImageButton
+        android:id="@+id/botonVolver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="341dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="#FFFDFD"
+        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/textNombreAplicacion"
+        android:layout_width="255dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="8dp"
+        android:text="Palmas de Mallorca"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonLogout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="4dp"
+        android:background="#00FFFFFF"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <Spinner
+        android:id="@+id/dropdownTipoFiltro"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="200dp"
+        android:background="@color/white"
+        android:entries="@array/rubro_options"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/dropdownDatoFiltro"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/white"
+        android:entries="@array/rubro_options"
+        android:spinnerMode="dropdown"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/inputId"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/white"
+        android:hint="Buscar"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textAlignment="textStart"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="380dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="4dp"
+        android:background="#C92E6FC1"
+        android:text="Filtrar"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/listReclamos"
+        android:layout_width="383dp"
+        android:layout_height="323dp"
+        android:layout_marginTop="168dp"
+        android:layout_marginEnd="4dp"
+        android:background="#BE656774"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="297dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="580dp"
+        android:layout_marginEnd="48dp"
+        android:text="¿Te gustaría crear un nuevo reclamo? \n Apretá acá:"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonCambiarPaginaIzquierda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="228dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="#FFFDFD"
+        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/textPaginaActual"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="172dp"
+        android:background="#C92E6FC1"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonCambiarPaginaDerecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="116dp"
+        android:backgroundTint="#00FFFFFF"
+        android:rotationY="180"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="@color/white"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/botonAgregar"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="636dp"
+        android:layout_marginEnd="172dp"
+        android:background="#C92E6FC1"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/white" />
+
+    <ImageView
         android:id="@+id/bannerAbajo"
         android:layout_width="411dp"
         android:layout_height="37dp"
         android:layout_marginEnd="2dp"
-        android:contentDescription="bannerAbajo"
         android:scaleX="2"
         android:scaleY="1.5"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,128 +225,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/banner_abajo" />
 
-    <ImageView
-        android:id="@+id/bannerArriba"
-        android:layout_width="410dp"
-        android:layout_height="105dp"
-        android:layout_marginEnd="3dp"
-        android:contentDescription="bannerArriba"
-        android:scaleX="2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/banner_arriba" />
-
     <ImageButton
-        android:id="@+id/botonCambiarUsuarioIzquierda"
+        android:id="@+id/botonCambiarPantallaIzquierda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="742dp"
+        android:layout_marginEnd="345dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleX="1.5"
         android:scaleY="1.5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="?attr/actionModeCloseDrawable"
         app:tint="#FFFDFD"
         tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
-
-    <ImageButton
-        android:id="@+id/botonCambiarUsuarioDerecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:rotationY="180"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="@color/white"
-        tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/textPantalla"
         android:layout_width="178dp"
         android:layout_height="39dp"
+        android:layout_marginTop="747dp"
+        android:layout_marginEnd="108dp"
         android:text="Reclamos"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/botonCambiarUsuarioDerecha"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toEndOf="@+id/botonCambiarUsuarioIzquierda" />
-
-    <TextView
-        android:id="@+id/textNombreAplicacion"
-        android:layout_width="409dp"
-        android:layout_height="77dp"
-        android:layout_marginTop="20dp"
-        android:text="Palmas de Mallorca"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="34sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="175dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="109dp"
-        android:layout_marginTop="125dp"
-        android:background="#FF0000"
-        android:text="SALIR"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <SearchView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:queryHint="Busque aqui:..."
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="255dp" />
-
-    <LinearLayout
-        android:id="@+id/searchLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/selfCheckBox"
+    <ImageButton
+        android:id="@+id/botonCambiarPantallaDerecha"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pertenece a mí mismo"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="418dp" />
-
-    <Spinner
-        android:id="@+id/rubroSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/rubro_options"
-        android:prompt="@string/rubro_prompt"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="399dp" />
-
-    <EditText
-        android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Buscar"
-        android:inputType="text"
-        android:maxLines="1"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="354dp" />
+        android:layout_marginTop="742dp"
+        android:backgroundTint="#00FFFFFF"
+        android:rotationY="180"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="@color/white"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
