@@ -87,7 +87,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/dropdownDatoFiltro"
+        android:id="@+id/dropdownDatoSector"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/white"
+        android:entries="@array/rubro_options"
+        android:spinnerMode="dropdown"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/dropdownDatoPertenencia"
         android:layout_width="190dp"
         android:layout_height="50dp"
         android:layout_marginTop="52dp"
@@ -115,7 +128,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/botonfiltrar"
         android:layout_width="380dp"
         android:layout_height="50dp"
         android:layout_marginTop="112dp"

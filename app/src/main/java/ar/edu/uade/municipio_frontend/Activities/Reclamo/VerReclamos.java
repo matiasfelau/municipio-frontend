@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -31,7 +33,9 @@ import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
 import ar.edu.uade.municipio_frontend.Models.Empleado;
+import ar.edu.uade.municipio_frontend.Models.Filtro;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
+import ar.edu.uade.municipio_frontend.Models.Sectores;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
@@ -48,11 +52,25 @@ public class VerReclamos extends AppCompatActivity {
     InvitadoHelper invitadoHelper;
     VecinoHelper vecinoHelper;
     Spinner dropdownFiltro;
+    Spinner dropdownDatoSector;
+    Spinner dropdownDatoPertenencia;
     ListView listReclamos;
     ArrayList<String> p;
     ArrayAdapter<String> prueba;
     Integer c;
     ImageButton botonAgregar;
+    Button botonFiltrar;
+    Filtro filtro;
+    EditText inputId;
+    Autenticacion autenticacion;
+    AutenticacionFiltro autenticacionFiltro;
+    String dato;
+    Integer pagina;
+    Button botonCambiarPaginaIzquierda;
+    Button botonCambiarPaginaDerecha;
+    TextView textPaginaActual;
+    List<Sectores> listaSectores;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -75,9 +93,67 @@ public class VerReclamos extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
+        textPaginaActual.findViewById(R.id.textPaginaActual);
+
+        botonCambiarPaginaDerecha.findViewById(R.id.botonCambiarPaginaDerecha);
+
+        botonCambiarPaginaDerecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pagina+=1; //??
+                textPaginaActual.setText(pagina.toString());
+                getReclamos(Integer.parseInt(textPaginaActual.getText().toString()),autenticacionFiltro);
+            }
+        });
+
+        botonCambiarPaginaIzquierda.findViewById(R.id.botonCambiarPaginaIzquierda);
+
+        botonCambiarPaginaIzquierda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pagina!=0){
+                    pagina-=1;
+                    textPaginaActual.setText(pagina.toString());
+                    getReclamos(Integer.parseInt(textPaginaActual.getText().toString()),autenticacionFiltro);
+                }
+            }
+        });
+
         dropdownFiltro = findViewById(R.id.dropdownTipoFiltro);
 
+        inputId =findViewById(R.id.inputId);
+
+        dropdownDatoSector = findViewById(R.id.dropdownDatoSector);
+
+        dropdownDatoPertenencia =  findViewById(R.id.dropdownDatoPertenencia);
+
         dropdownFiltro.setAdapter(adapter);
+        dropdownFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position==0){
+                    filtro = new Filtro("id","");
+                    inputId.setVisibility(View.VISIBLE);
+                    dropdownDatoSector.setVisibility(View.INVISIBLE);
+                    dropdownDatoPertenencia.setVisibility(View.INVISIBLE);
+                }else if (position==1){
+                    filtro = new Filtro("sector","");
+                    inputId.setVisibility(View.INVISIBLE);
+                    dropdownDatoSector.setVisibility(View.VISIBLE);
+                    dropdownDatoPertenencia.setVisibility(View.INVISIBLE);
+                }else if(position==2){
+                    filtro = new Filtro("pertenencia","");
+                    inputId.setVisibility(View.INVISIBLE);
+                    dropdownDatoSector.setVisibility(View.INVISIBLE);
+                    dropdownDatoPertenencia.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         p = new ArrayList<>();
 
@@ -93,10 +169,63 @@ public class VerReclamos extends AppCompatActivity {
 
         botonAgregar = findViewById(R.id.botonAgregar);
 
+        botonFiltrar = findViewById(R.id.botonfiltrar);
+
+        autenticacion = new Autenticacion();
+        autenticacion.setTipoUsuario("");//Todo arreglar
+        autenticacion.setToken(getIntent().getStringExtra("token"));
+
+        autenticacionFiltro = new AutenticacionFiltro();
+        autenticacionFiltro.setAutenticacion(autenticacion);
+        botonFiltrar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (filtro.getTipoFiltro().equals("id")){
+                    getReclamo(Integer.parseInt(inputId.getText().toString()),autenticacion);
+                }else if(filtro.getTipoFiltro().equals("sector")){
+
+                    dropdownDatoSector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            dato = listaSectores.get(position).getDescripcion();
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    filtro.setDato(dato);
+                    autenticacionFiltro.setFiltro(filtro);
+                    getReclamos(Integer.parseInt(textPaginaActual.getText().toString()),autenticacionFiltro);
+                }else if(filtro.getTipoFiltro().equals("pertenencia")){
+                    dropdownDatoPertenencia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (position==0) {
+                                filtro.setTipoFiltro("documento");
+                                filtro.setDato(vecinoHelper.getVecinos().get(0).getDocumento());
+                            }else if(position==1){
+                                filtro.setTipoFiltro("");
+                                filtro.setDato("");
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                }
+
+            }
+        });
+
         botonAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addItem();
+
             }
         });
 
@@ -139,9 +268,8 @@ public class VerReclamos extends AppCompatActivity {
         });
     }
 
-    private void addItem(){
-        prueba.add(c.toString());
-        c++;
+    private void addItem(Reclamo reclamo){
+        prueba.add(reclamo.toString());
     }
 
     private void mostrarPopupSalir() {
@@ -195,7 +323,7 @@ public class VerReclamos extends AppCompatActivity {
         }
     }
 
-    private void getReclamos(String pagina, AutenticacionFiltro filtro){
+    private void getReclamos(int pagina, AutenticacionFiltro filtro){
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
         ReclamoService reclamosService = retrofit.create(ReclamoService.class);
@@ -205,16 +333,18 @@ public class VerReclamos extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<List<Reclamo>> call, Response<List<Reclamo>> response) {
-                Intent nuevaActivdad;
-                if (response.code()==200){//TODO COMPLETAR CUANDO ESTE LA VISTA
+                //TODO COMPLETAR CUANDO ESTE LA VISTA
+                if (response.code()==200){
+                    for (Reclamo reclamo: response.body()) {
+                        addItem(reclamo);
+                    }
+                }else if(response.code()==400){//este? badrequest?
 
-                }else if(response.code()==400){
+                }else if(response.code()==401){//este? unauthorized?
 
-                }else if(response.code()==401){
+                }else if(response.code()==403){//este forbbiden
 
-                }else if(response.code()==403){
-
-                }else if(response.code()==500){
+                }else if(response.code()==500){//este internal error server
 
                 }else{
 
@@ -228,6 +358,7 @@ public class VerReclamos extends AppCompatActivity {
         });
 
     }
+
     private void getReclamo(int id, Autenticacion autenticacion){
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
         ReclamoService reclamoService = retrofit.create(ReclamoService.class);
@@ -236,18 +367,18 @@ public class VerReclamos extends AppCompatActivity {
         call.enqueue(new Callback<Reclamo>() {
             @Override
             public void onResponse(Call<Reclamo> call, Response<Reclamo> response) {
-                Intent nuevaActividad;
-                if (response.code()==200){//TODO COMPLETAR CUANDO ESTE LA VISTA
+                //TODO COMPLETAR CUANDO ESTE LA VISTA
+                if (response.code()==200){//este ok
+                    addItem(response.body());
+                }else if(response.code()==400){//este? badrequest?
 
-                }else if(response.code()==400){
+                }else if(response.code()==401){//este? unauthorized?
 
-                }else if(response.code()==401){
+                }else if(response.code()==403){//este forbbiden
 
-                }else if(response.code()==403){
+                }else if(response.code()==404){//not found?
 
-                }else if(response.code()==404){
-
-                }else if(response.code()==500){
+                }else if(response.code()==500){//este internal error server
 
                 }else{
 

@@ -14,7 +14,7 @@ public interface ReclamoService {
     public final String API_ROUTE = "/reclamo";
 
     @PUT(API_ROUTE+"/todos"+"/{pagina}")
-    Call<List<Reclamo>> getReclamos(@Path("pagina") String pagina, @Body AutenticacionFiltro autenticacionFiltro);
+    Call<List<Reclamo>> getReclamos(@Path("pagina") int pagina, @Body AutenticacionFiltro autenticacionFiltro);
 
     @PUT(API_ROUTE+"/particular"+"/{id}")
     Call<Reclamo> getReclamo(@Path("id") int id, @Body Autenticacion autenticacion);
