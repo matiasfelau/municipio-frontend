@@ -4,57 +4,56 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 public class NuevoReclamo extends AppCompatActivity {
 
     private Spinner spinnerSitio;
     private Spinner spinnerDesperfecto;
     private EditText editTextDescripcion;
-    private ImageButton buttonAdjuntarArchivos;
     private Button buttonGenerar;
+    private Button buttonAdjuntarArchivos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_reclamo);
 
-        // elementos de la vista
+        // Inicializar vistas
         spinnerSitio = findViewById(R.id.spinnerSitio);
         spinnerDesperfecto = findViewById(R.id.spinnerDesperfecto);
         editTextDescripcion = findViewById(R.id.editTextDescripcion);
-        buttonAdjuntarArchivos = findViewById(R.id.buttonAdjuntarArchivos);
         buttonGenerar = findViewById(R.id.buttonGenerar);
+        buttonAdjuntarArchivos = findViewById(R.id.buttonAdjuntarArchivos);
 
-        // spinner para sitio
+        // Configurar adaptadores para los Spinners
         ArrayAdapter<CharSequence> adapterSitio = ArrayAdapter.createFromResource(this,
-                R.array.sitio_options, android.R.layout.simple_spinner_item);
+                R.array.sitios_array, android.R.layout.simple_spinner_item);
         adapterSitio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSitio.setAdapter(adapterSitio);
 
-        // spinner para desperfecto
         ArrayAdapter<CharSequence> adapterDesperfecto = ArrayAdapter.createFromResource(this,
-                R.array.desperfecto_options, android.R.layout.simple_spinner_item);
+                R.array.desperfectos_array, android.R.layout.simple_spinner_item);
         adapterDesperfecto.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDesperfecto.setAdapter(adapterDesperfecto);
 
-        // botón de generar reclamo
+        // Configurar el botón de generar reclamo
         buttonGenerar.setOnClickListener(view -> {
-            // Obtener los valores seleccionados
             String sitioSeleccionado = spinnerSitio.getSelectedItem().toString();
             String desperfectoSeleccionado = spinnerDesperfecto.getSelectedItem().toString();
             String descripcion = editTextDescripcion.getText().toString();
 
-            // Aquí puedes añadir la lógica para manejar el reclamo
-            Toast.makeText(NuevoReclamo.this, "Reclamo generado:\n" +
-                    "Sitio: " + sitioSeleccionado + "\nDesperfecto: " + desperfectoSeleccionado +
-                    "\nDescripción: " + descripcion, Toast.LENGTH_LONG).show();
+            // Mostrar el popup de éxito
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            ReclamoExitosoDialog dialog = new ReclamoExitosoDialog();
+            dialog.show(fragmentManager, "ReclamoExitosoDialog");
         });
 
-        // botón de adjuntar archivos
+        // Configurar el botón de adjuntar archivos
         buttonAdjuntarArchivos.setOnClickListener(view -> {
             // Aquí puedes añadir la lógica para adjuntar archivos
             Toast.makeText(NuevoReclamo.this, "Adjuntar archivos no implementado", Toast.LENGTH_SHORT).show();
