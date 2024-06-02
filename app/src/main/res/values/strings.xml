@@ -14,4 +14,17 @@
         <item>@string/Propio</item>
         <item>@string/General</item>
     </string-array>
+    <string-array name="sitio_options">
+        <item>Sitio 1</item>
+        <item>Sitio 2</item>
+        <item>Sitio 3</item>
+    </string-array>
+
+
+    <string-array name="desperfecto_options">
+        <item>Desperfecto 1</item>
+        <item>Desperfecto 2</item>
+        <item>Desperfecto 3</item>
+
+    </string-array>
 </resources>
