@@ -41,11 +41,6 @@ public class Template extends AppCompatActivity {
             return insets;
         });
 
-        Intent nuevaActividad = new Intent(Template.this, VerReclamos.class);
-
-        startActivity(nuevaActividad);
-
-/*
         vecinoHelper = new VecinoHelper(this);
 
         empleadoHelper = new EmpleadoHelper(this);
@@ -98,6 +93,6 @@ public class Template extends AppCompatActivity {
             }
         }
 
- */
+
     }
 }

@@ -1,23 +1,23 @@
 package ar.edu.uade.municipio_frontend.Models;
 
 public class Filtro {
-    private String tipoFiltro;
+    private String tipo;
     private String dato;
 
     public Filtro() {
     }
 
-    public Filtro(String tipoFiltro, String dato) {
-        this.tipoFiltro = tipoFiltro;
+    public Filtro(String tipo, String dato) {
+        this.tipo = tipo;
         this.dato = dato;
     }
 
-    public String getTipoFiltro() {
-        return tipoFiltro;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setTipoFiltro(String tipoFiltro) {
-        this.tipoFiltro = tipoFiltro;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getDato() {
@@ -31,7 +31,7 @@ public class Filtro {
     @Override
     public String toString() {
         return "Filtro{" +
-                "tipoFiltro='" + tipoFiltro + '\'' +
+                "tipoFiltro='" + tipo + '\'' +
                 ", dato='" + dato + '\'' +
                 '}';
     }

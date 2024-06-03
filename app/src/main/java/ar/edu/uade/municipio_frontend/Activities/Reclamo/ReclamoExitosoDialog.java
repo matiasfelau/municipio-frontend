@@ -1,4 +1,4 @@
-package com.example.tuapp;
+package ar.edu.uade.municipio_frontend.Activities.Reclamo;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,6 +9,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import ar.edu.uade.municipio_frontend.R;
 
 public class ReclamoExitosoDialog extends DialogFragment {
 

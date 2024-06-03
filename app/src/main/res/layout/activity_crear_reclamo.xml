@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_palmera"
-    tools:context=".NuevoReclamo">
+    tools:context=".Activities.Reclamo.CrearReclamo">
 
     <ImageView
         android:id="@+id/bannerArriba"
@@ -31,14 +31,14 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bannerArriba" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textGenerarReclamo"
+        android:id="@+id/generarReclamo"
         android:layout_width="395dp"
         android:layout_height="89dp"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="125dp"
         android:baselineAligned="false"
         android:text="Generar Reclamo"
         android:textAlignment="center"
@@ -48,58 +48,67 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="125dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinnerSitio"
-        android:layout_width="324dp"
-        android:layout_height="39dp"
+        android:layout_width="341dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="232dp"
+        android:layout_marginEnd="52dp"
         android:background="@android:drawable/spinner_dropdown_background"
         android:spinnerMode="dropdown"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="288dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinnerDesperfecto"
-        android:layout_width="340dp"
-        android:layout_height="40dp"
+        android:layout_width="348dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="304dp"
+        android:layout_marginEnd="44dp"
         android:background="@android:drawable/spinner_dropdown_background"
         android:spinnerMode="dropdown"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="367dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <EditText
         android:id="@+id/editTextDescripcion"
         android:layout_width="358dp"
         android:layout_height="167dp"
+        android:layout_marginTop="396dp"
+        android:layout_marginEnd="16dp"
         android:background="@color/white"
         android:hint="Descripción"
         android:padding="8dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="473dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/buttonAdjuntarArchivos"
-        android:layout_width="334dp"
-        android:layout_height="41dp"
+        android:layout_width="335dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="588dp"
+        android:layout_marginEnd="32dp"
         android:background="?android:attr/galleryItemBackground"
+        android:padding="8dp"
         android:text="Adjuntar archivos"
         android:textColor="@color/white"
-        android:drawableLeft="@drawable/ic_attach_file"
-        android:padding="8dp"
-        tools:layout_editor_absoluteX="27dp"
-        tools:layout_editor_absoluteY="656dp" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonGenerar"
-        android:layout_width="290dp"
-        android:layout_height="40dp"
-        android:backgroundTint="@android:color/system_primary_fixed_dim"
+        android:layout_width="304dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="668dp"
+        android:layout_marginEnd="44dp"
         android:text="Generar"
         android:textColor="@android:color/white"
-        tools:layout_editor_absoluteX="52dp"
-        tools:layout_editor_absoluteY="713dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/bannerAbajo"
@@ -120,9 +129,9 @@
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:src="?attr/actionModeCloseDrawable"
-        android:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/white" />
 
     <ImageButton
         android:id="@+id/botonCambiarUsuarioDerecha"
@@ -134,9 +143,9 @@
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:src="?attr/actionModeCloseDrawable"
-        android:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/textTipoUsuario"
@@ -151,4 +160,18 @@
         app:layout_constraintEnd_toStartOf="@id/botonCambiarUsuarioDerecha"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@id/botonCambiarUsuarioIzquierda" />
+
+    <ImageButton
+        android:id="@+id/botonAgregar"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="308dp"
+        android:layout_marginEnd="8dp"
+        android:background="#C92E6FC1"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>
