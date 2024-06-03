@@ -89,7 +89,7 @@ public class VerReclamos extends AppCompatActivity {
 
         pagina = 1;
 
-
+        //inicializacion
 
         String from = getIntent().getStringExtra("from");
 
@@ -101,8 +101,86 @@ public class VerReclamos extends AppCompatActivity {
 
         botonCambiarPaginaDerecha = findViewById(R.id.botonCambiarPaginaDerecha);
 
+        botonCambiarPaginaIzquierda = findViewById(R.id.botonCambiarPaginaIzquierda);
+
+        dropdownFiltro = findViewById(R.id.dropdownTipoFiltro);
+
+        inputId =findViewById(R.id.inputId);
+
+        dropdownDatoSector = findViewById(R.id.dropdownDatoSector);
+
+        listReclamos = findViewById(R.id.listReclamos);
+
+        dropdownDatoPertenencia =  findViewById(R.id.dropdownDatoPertenencia);
+
+        botonAgregar = findViewById(R.id.botonAgregar);
+
+        botonFiltrar = findViewById(R.id.botonfiltrar);
+
+        boton = findViewById(R.id.botonLogout);
+
+        dropdownFiltro.setAdapter(adapter);
+
+        filtro = new Filtro();
+
+        p = new ArrayList<>();
+
+        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
+
+        autenticacion = new Autenticacion();
+
+        empleadoHelper = new EmpleadoHelper(this);
+
+        invitadoHelper = new InvitadoHelper(this);
+
+        vecinoHelper = new VecinoHelper(this);
+
+        autenticacionFiltro = new AutenticacionFiltro();
+
+        filtro = new Filtro();
+
+        listReclamos.setAdapter(prueba);
+
+        setUpListViewListener();
+
+        c = 0;
+
+        autenticacion.setTipo("Vecino");//Todo arreglar
+
+        autenticacion.setToken(getIntent().getStringExtra("token"));
+
+        autenticacionFiltro.setAutenticacion(autenticacion);
+
+        filtro.setTipo("");
+
+        filtro.setDato("");
+
+        autenticacionFiltro.setFiltro(filtro);
 
 
+        //verificacion
+        if (from != null) {
+            if (from.equals("VecinoIngreso") || from.equals("EmpleadoIngreso") || from.equals("PrimerIngreso")) {
+                getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                    }
+                });
+
+            }
+        }
+
+        if (pagina==1) {
+            botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+        }
+
+        getReclamos(1,autenticacionFiltro);
+
+        if (p.isEmpty()) {
+            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+        }
+
+        //Listener
         botonCambiarPaginaDerecha.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -125,7 +203,6 @@ public class VerReclamos extends AppCompatActivity {
             }
         });
 
-        botonCambiarPaginaIzquierda = findViewById(R.id.botonCambiarPaginaIzquierda);
 
         botonCambiarPaginaIzquierda.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
@@ -145,17 +222,6 @@ public class VerReclamos extends AppCompatActivity {
             }
         });
 
-        dropdownFiltro = findViewById(R.id.dropdownTipoFiltro);
-
-        inputId =findViewById(R.id.inputId);
-
-        dropdownDatoSector = findViewById(R.id.dropdownDatoSector);
-
-        dropdownDatoPertenencia =  findViewById(R.id.dropdownDatoPertenencia);
-
-        dropdownFiltro.setAdapter(adapter);
-
-        filtro = new Filtro();
 
         dropdownFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -184,39 +250,6 @@ public class VerReclamos extends AppCompatActivity {
             }
         });
 
-        p = new ArrayList<>();
-
-        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
-
-        listReclamos = findViewById(R.id.listReclamos);
-
-        listReclamos.setAdapter(prueba);
-
-        setUpListViewListener();
-
-
-
-
-
-        c = 0;
-
-        botonAgregar = findViewById(R.id.botonAgregar);
-
-        botonFiltrar = findViewById(R.id.botonfiltrar);
-
-        autenticacion = new Autenticacion();
-        autenticacion.setTipo("Vecino");//Todo arreglar
-        autenticacion.setToken(getIntent().getStringExtra("token"));
-
-        autenticacionFiltro = new AutenticacionFiltro();
-        autenticacionFiltro.setAutenticacion(autenticacion);
-
-        filtro = new Filtro();
-
-        filtro.setTipo("");
-        filtro.setDato("");
-
-        autenticacionFiltro.setFiltro(filtro);
 
         dropdownDatoPertenencia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -288,28 +321,6 @@ public class VerReclamos extends AppCompatActivity {
             }
         });
 
-        if (from != null) {
-            if (from.equals("VecinoIngreso") || from.equals("EmpleadoIngreso") || from.equals("PrimerIngreso")) {
-                getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                    }
-                });
-
-            }
-        }
-
-        if (pagina==1) {
-            botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
-        }
-
-        getReclamos(1,autenticacionFiltro);
-
-        if (p.isEmpty()) {
-            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-        }
-
-        boton = findViewById(R.id.botonLogout);
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -317,14 +328,9 @@ public class VerReclamos extends AppCompatActivity {
             }
         });
 
-        empleadoHelper = new EmpleadoHelper(this);
-
-        invitadoHelper = new InvitadoHelper(this);
-
-        vecinoHelper = new VecinoHelper(this);
     }
 
-
+    //endpoints y funciones
 
     private void setUpListViewListener(){
         listReclamos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
