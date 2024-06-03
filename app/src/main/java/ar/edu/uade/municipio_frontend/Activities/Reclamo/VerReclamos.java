@@ -71,6 +71,7 @@ public class VerReclamos extends AppCompatActivity {
     ImageButton botonCambiarPaginaDerecha;
     TextView textPaginaActual;
     List<Sectores> listaSectores;
+    Integer cantidadPaginas;
 
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
@@ -156,11 +157,14 @@ public class VerReclamos extends AppCompatActivity {
 
         autenticacionFiltro.setFiltro(filtro);
 
+        cantidadPaginas = 0;
+
         //segunda inicializacion y alguna automatizacion
 
         botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
 
         getReclamos(2, autenticacionFiltro);
+        getPaginas();
 
         if (p.isEmpty()) {
             System.out.println("esta vacio");
@@ -285,6 +289,7 @@ public class VerReclamos extends AppCompatActivity {
                         p.clear();
                         prueba.notifyDataSetChanged();
                         getReclamo(1, autenticacion);
+                        getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
                         break;
                     case "sector":
                         p.clear();
@@ -303,6 +308,7 @@ public class VerReclamos extends AppCompatActivity {
                         filtro.setDato(dato);
                         autenticacionFiltro.setFiltro(filtro);
                         getReclamos(1, autenticacionFiltro);
+                        getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
                         break;
                     case "":
                     case "documento":
@@ -313,6 +319,7 @@ public class VerReclamos extends AppCompatActivity {
                         getReclamos(1, autenticacionFiltro);
                         p.clear();
                         prueba.notifyDataSetChanged();
+                        getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
                         break;
                 }
 
@@ -404,6 +411,41 @@ public class VerReclamos extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void getPaginas(AutenticacionFiltro filtro){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+        ReclamoService reclamosService = retrofit.create(ReclamoService.class);
+
+        Call<Integer> call = reclamosService.getPaginas(filtro);
+
+        call.enqueue(new Callback<Integer>(){
+
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.code()==200){
+
+                    cantidadPaginas = response.body();
+
+                }else if(response.code()==400){//este? badrequest?
+                    System.out.println(response.code());
+                }else if(response.code()==401){//este? unauthorized?
+                    System.out.println(response.code());
+                }else if(response.code()==403){//este forbbiden
+                    System.out.println(response.code());
+                }else if(response.code()==500){//este internal error server
+                    System.out.println(response.code());
+                }else{
+                    System.out.println(response.code());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                System.out.println("FALLO GETPAGINAS");
+            }
+        });
     }
 
     private void getReclamos(int pagina, AutenticacionFiltro filtro){
