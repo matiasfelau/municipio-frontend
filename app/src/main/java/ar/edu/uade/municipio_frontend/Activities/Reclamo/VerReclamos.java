@@ -176,6 +176,12 @@ public class VerReclamos extends AppCompatActivity {
             prueba.notifyDataSetChanged();
         }
 
+        if (cantidadPaginas>1){
+            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
+        }else{
+            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+        }
+
         getReclamos(1, autenticacionFiltro);
 
         //verificacion
@@ -194,21 +200,16 @@ public class VerReclamos extends AppCompatActivity {
         botonCambiarPaginaDerecha.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onClick(View v) {
+            public void onClick(View v){
+
                 p.clear();
                 prueba.notifyDataSetChanged();
-                pagina+=2;
-                getReclamos(Integer.parseInt(textPaginaActual.getText().toString()),autenticacionFiltro);
-                if (p.isEmpty()) {
-                    botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-                }
-                p.clear();
-                prueba.notifyDataSetChanged();
-                pagina--;
+                pagina++;
                 getReclamos(Integer.parseInt(textPaginaActual.getText().toString()),autenticacionFiltro);
                 textPaginaActual.setText(pagina.toString());
-                if (pagina>1) {
-                    botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
+
+                if (cantidadPaginas == Integer.parseInt(textPaginaActual.getText().toString())){
+                    botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -228,6 +229,7 @@ public class VerReclamos extends AppCompatActivity {
                     if (pagina==1) {
                         botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
                     }
+                    botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -289,7 +291,15 @@ public class VerReclamos extends AppCompatActivity {
                         p.clear();
                         prueba.notifyDataSetChanged();
                         getReclamo(1, autenticacion);
-                        getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
+                        getPaginas(autenticacionFiltro);
+                        if (cantidadPaginas>1) {
+                            botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
+                        }
+                        if (cantidadPaginas>1){
+                            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
+                        }else{
+                            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+                        }//conseguir paginas del filtro seleccionado
                         break;
                     case "sector":
                         p.clear();
@@ -309,6 +319,11 @@ public class VerReclamos extends AppCompatActivity {
                         autenticacionFiltro.setFiltro(filtro);
                         getReclamos(1, autenticacionFiltro);
                         getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
+                        if (cantidadPaginas>1){
+                            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
+                        }else{
+                            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+                        }
                         break;
                     case "":
                     case "documento":
@@ -320,6 +335,11 @@ public class VerReclamos extends AppCompatActivity {
                         p.clear();
                         prueba.notifyDataSetChanged();
                         getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
+                        if (cantidadPaginas>1){
+                            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
+                        }else{
+                            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+                        }
                         break;
                 }
 
