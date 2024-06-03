@@ -18,4 +18,7 @@ public interface ReclamoService {
 
     @PUT(API_ROUTE+"/particular"+"/{id}")
     Call<Reclamo> getReclamo(@Path("id") int id, @Body Autenticacion autenticacion);
+
+    @PUT(API_ROUTE+"/cantidadPaginas")
+    Call<Integer> getPaginas(@Body AutenticacionFiltro autenticacionFiltro);
 }
