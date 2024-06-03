@@ -164,7 +164,7 @@ public class VerReclamos extends AppCompatActivity {
         botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
 
         getReclamos(2, autenticacionFiltro);
-        getPaginas();
+        getPaginas(autenticacionFiltro);//consigue la cantidad de paginas segun el filtro actual
 
         if (p.isEmpty()) {
             System.out.println("esta vacio");
