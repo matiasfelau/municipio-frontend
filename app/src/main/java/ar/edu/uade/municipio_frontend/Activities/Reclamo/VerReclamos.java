@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -143,8 +144,6 @@ public class VerReclamos extends AppCompatActivity {
 
         setUpListViewListener();
 
-        c = 0;
-
         autenticacion.setTipo("Vecino");//Todo arreglar
 
         autenticacion.setToken(getIntent().getStringExtra("token"));
@@ -157,6 +156,23 @@ public class VerReclamos extends AppCompatActivity {
 
         autenticacionFiltro.setFiltro(filtro);
 
+        //segunda inicializacion y alguna automatizacion
+
+        botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+
+        getReclamos(2, autenticacionFiltro);
+
+        if (p.isEmpty()) {
+            System.out.println("esta vacio");
+            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+        }
+
+        for (String s : p) {
+            p.remove(s);
+            prueba.notifyDataSetChanged();
+        }
+
+        getReclamos(1, autenticacionFiltro);
 
         //verificacion
         if (from != null) {
@@ -168,16 +184,6 @@ public class VerReclamos extends AppCompatActivity {
                 });
 
             }
-        }
-
-        if (pagina==1) {
-            botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
-        }
-
-        getReclamos(1,autenticacionFiltro);
-
-        if (p.isEmpty()) {
-            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
         }
 
         //Listener
@@ -237,7 +243,7 @@ public class VerReclamos extends AppCompatActivity {
                     dropdownDatoSector.setVisibility(View.VISIBLE);
                     dropdownDatoPertenencia.setVisibility(View.INVISIBLE);
                 }else if(position==2){
-                    filtro.setTipo("");
+                    filtro.setTipo("documento");
                     inputId.setVisibility(View.INVISIBLE);
                     dropdownDatoSector.setVisibility(View.INVISIBLE);
                     dropdownDatoPertenencia.setVisibility(View.VISIBLE);
@@ -346,7 +352,7 @@ public class VerReclamos extends AppCompatActivity {
     }
 
     private void addItem(Reclamo reclamo){
-        prueba.add(reclamo.getDescripcion()+"\n"+reclamo.getEstado());
+        prueba.add(reclamo.getDocumento());
     }
 
     private void mostrarPopupSalir() {
@@ -409,12 +415,12 @@ public class VerReclamos extends AppCompatActivity {
         call.enqueue(new Callback<List<Reclamo>>(){
 
             @Override
-            public void onResponse(Call<List<Reclamo>> call, Response<List<Reclamo>> response) {
+            public void onResponse(@NonNull Call<List<Reclamo>> call, Response<List<Reclamo>> response) {
                 //TODO COMPLETAR CUANDO ESTE LA VISTA
                 if (response.code()==200){
+                    assert response.body() != null;
                     for (Reclamo reclamo: response.body()) {
                         addItem(reclamo);
-                        System.out.println(reclamo.getDocumento());
                     }
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());
@@ -430,7 +436,7 @@ public class VerReclamos extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Reclamo>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Reclamo>> call, Throwable t) {
 
             }
         });
@@ -444,9 +450,10 @@ public class VerReclamos extends AppCompatActivity {
 
         call.enqueue(new Callback<Reclamo>() {
             @Override
-            public void onResponse(Call<Reclamo> call, Response<Reclamo> response) {
+            public void onResponse(@NonNull Call<Reclamo> call, @NonNull Response<Reclamo> response) {
                 //TODO COMPLETAR CUANDO ESTE LA VISTA
                 if (response.code()==200){//este ok
+                    assert response.body() != null;
                     addItem(response.body());
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());
@@ -464,7 +471,7 @@ public class VerReclamos extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Reclamo> call, Throwable t) {
+            public void onFailure(@NonNull Call<Reclamo> call, @NonNull Throwable t) {
                 System.out.println(t);
             }
         });
