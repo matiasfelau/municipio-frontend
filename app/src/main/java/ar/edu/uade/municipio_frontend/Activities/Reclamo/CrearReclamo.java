@@ -2,10 +2,13 @@ package ar.edu.uade.municipio_frontend.Activities.Reclamo;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -27,6 +31,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.gson.Gson;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -41,6 +47,8 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionReclamo;
@@ -54,6 +62,7 @@ import ar.edu.uade.municipio_frontend.Services.DesperfectoService;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import ar.edu.uade.municipio_frontend.Services.SectorService;
 import ar.edu.uade.municipio_frontend.Services.SitioService;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,17 +96,24 @@ public class CrearReclamo extends AppCompatActivity {
     Desperfecto desperfecto;
     String desperfectoSeleccionado;
     FragmentManager fragmentManager;
+    ConnectivityManager connectivityManager;
+    NetworkInfo networkInfo;
 
     @SuppressLint({"MissingInflatedId", "NewApi", "CutPasteId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_crear_reclamo);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //recalculo()
 
         // Inicializar vistas
 
@@ -219,28 +235,25 @@ public class CrearReclamo extends AppCompatActivity {
                             break;
                         }
                     }
-                }
-                for (Desperfecto r : desperfectoObjeto) {
-                    String c = r.getDescripcion().substring(0, 1).toUpperCase();
-                    if ((c + r.getDescripcion().substring(1)).equals(desperfectoSeleccionado)) {
-                        desperfecto = r;
-                        break;
+                    for (Desperfecto r : desperfectoObjeto) {
+                        String c = r.getDescripcion().substring(0, 1).toUpperCase();
+                        if ((c + r.getDescripcion().substring(1)).equals(desperfectoSeleccionado)) {
+                            desperfecto = r;
+                            break;
+                        }
                     }
+                    Reclamo reclamo = new Reclamo(
+                            descripcionReclamo.getText().toString(),
+                            "Nuevo",
+                            getIntent().getStringExtra("documento"),
+                            sitio.getIdSitio(),
+                            desperfecto.getIdDesperfecto()
+                    );
+
+                    autenticacionReclamo.setReclamo(reclamo);
+
+                    nuevoReclamo(autenticacionReclamo);
                 }
-
-
-                Reclamo reclamo = new Reclamo(
-                        descripcionReclamo.getText().toString(),
-                        "Nuevo",
-                        getIntent().getStringExtra("documento"),
-                        sitio.getIdSitio(),
-                        desperfecto.getIdDesperfecto()
-                );
-
-                autenticacionReclamo.setReclamo(reclamo);
-
-                nuevoReclamo(autenticacionReclamo);
-
             }
         });
 
@@ -286,6 +299,15 @@ public class CrearReclamo extends AppCompatActivity {
 
         MapEventsOverlay eventsOverlay = new MapEventsOverlay(mReceive);
         map.getOverlays().add(eventsOverlay);
+    }
+
+    private void recalculo() {
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null) {
+            if (networkInfo.getState().toString().equals("CONNECTED") && Objects.equals(networkInfo.getTypeName(), "WIFI")) {
+                nuevoReclamo(autenticacionReclamo);
+            }
+        }
     }
 
     private void getDesperfectos(Autenticacion autenticacion) {
@@ -336,15 +358,13 @@ public class CrearReclamo extends AppCompatActivity {
         Location location = getLastKnownLocation();
 
         // Si se encontró la ubicación, marcarla en el mapa
-        if (location != null) {
-            map.getController().setZoom(15.0);
-            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-            marker.setPosition(startPoint);
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            map.getOverlays().add(marker);
-            map.getController().setCenter(startPoint);
-            map.invalidate();
-        }
+        map.getController().setZoom(20.0);
+        GeoPoint startPoint = new GeoPoint(39.56968069719455, 2.6505419523701215);
+        marker.setPosition(startPoint);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(marker);
+        map.getController().setCenter(startPoint);
+        map.invalidate();
     }
     private Location getLastKnownLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -461,6 +481,19 @@ public class CrearReclamo extends AppCompatActivity {
                     System.out.println(reclamo.getIdReclamo());
                     Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
 
+
+                    if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                        nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                    } else if (Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")) {
+                        nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+
+                    }
+
+                    nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                    nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
                     startActivity(nuevaActividad);
                 } else if (response.code() == 400) {//este? badrequest?
                     System.out.println(response.code());
@@ -489,40 +522,39 @@ public class CrearReclamo extends AppCompatActivity {
 
         SitioService sitioService = retrofit.create(SitioService.class);
 
-        System.out.println(autenticacionSitio.toString());
-
-        System.out.println(autenticacionSitio.getAutenticacion().toString());
-
-        System.out.println(autenticacionSitio.getSitio().toString());
-
         Call<Integer> call = sitioService.nuevoSitio(autenticacionSitio);
 
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
-                System.out.println("resposne buena");
-                if (response.code() == 201) {//este ok
-                    System.out.println("AGREGAR SITIO DA:"+response.code());
-                    System.out.println(response.body());
-                } else if (response.code() == 400) {//este? badrequest?
-                    System.out.println(response.code());
-                } else if (response.code() == 401) {//este? unauthorized?
-                    System.out.println(response.code());
-                } else if (response.code() == 403) {//este forbbiden
-                    System.out.println(response.code());
-                } else if (response.code() == 404) {//not found?
-                    System.out.println(response.code());
-                } else if (response.code() == 500) {//este internal error server
-                    System.out.println(response.code());
-                } else {
-                    System.out.println(response.code());
+                if (response.body()!= null) {
+                    sitio.setIdSitio(response.body());
+                    for (Desperfecto r : desperfectoObjeto) {
+                        String c = r.getDescripcion().substring(0, 1).toUpperCase();
+                        if ((c + r.getDescripcion().substring(1)).equals(desperfectoSeleccionado)) {
+                            desperfecto = r;
+                            break;
+                        }
+                    }
+
+
+                    Reclamo reclamo = new Reclamo(
+                            descripcionReclamo.getText().toString(),
+                            "Nuevo",
+                            getIntent().getStringExtra("documento"),
+                            sitio.getIdSitio(),
+                            desperfecto.getIdDesperfecto()
+                    );
+
+                    autenticacionReclamo.setReclamo(reclamo);
+
+                    nuevoReclamo(autenticacionReclamo);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Integer> call, @NonNull Throwable t) {
-                System.out.print("sdas");
-                t.printStackTrace();
+                System.out.println("no funciona");
             }
         });
     }

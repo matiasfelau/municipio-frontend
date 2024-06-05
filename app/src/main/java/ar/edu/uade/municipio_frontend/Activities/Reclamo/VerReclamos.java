@@ -372,7 +372,7 @@ public class VerReclamos extends AppCompatActivity {
                     nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
                 } else if (Objects.equals(autenticacion.getTipo(), "Empleado")) {
-                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("legajo"));
+                    nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
 
                 }
 

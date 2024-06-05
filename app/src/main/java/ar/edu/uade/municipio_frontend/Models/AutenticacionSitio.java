@@ -4,6 +4,14 @@ public class AutenticacionSitio {
     Autenticacion autenticacion;
     Sitio sitio;
 
+    @Override
+    public String toString() {
+        return "AutenticacionSitio{" +
+                "autenticacion=" + autenticacion +
+                ", sitio=" + sitio +
+                '}';
+    }
+
     public AutenticacionSitio() {
     }
 

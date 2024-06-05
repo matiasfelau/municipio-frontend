@@ -45,7 +45,7 @@ public class Sitio {
         this.comentarios = comentarios;
     }
 
-    public Sitio(int idSitio, BigDecimal latitud, BigDecimal longitud, String calle, int numero, String entreCalleA, String entreCalleB, String descripcion, String aCargoDe, LocalTime apertura, LocalTime cierre, String comentarios) {
+    public Sitio(Integer idSitio, BigDecimal latitud, BigDecimal longitud, String calle, int numero, String entreCalleA, String entreCalleB, String descripcion, String aCargoDe, LocalTime apertura, LocalTime cierre, String comentarios) {
         this.idSitio = idSitio;
         this.latitud = latitud;
         this.longitud = longitud;
@@ -60,10 +60,10 @@ public class Sitio {
         this.comentarios = comentarios;
     }
 
-    public int getIdSitio() {
+    public Integer getIdSitio() {
         return idSitio;
     }
-    public void setIdSitio(int idSitio) {
+    public void setIdSitio(Integer idSitio) {
         this.idSitio = idSitio;
     }
 
