@@ -1,19 +1,31 @@
 package ar.edu.uade.municipio_frontend.Models;
 
 public class Reclamo {
-    private int idReclamo;
+    private Integer idReclamo;
     private String descripcion;
     private String estado;
     private String documento;
+    private int idSitio;
+    private int idDesperfecto;
 
     public Reclamo() {
     }
 
-    public Reclamo(int idReclamo, String descripcion, String estado, String documento) {
+    public Reclamo(String descripcion, String estado, String documento, int idSitio, int idDesperfecto) {
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.documento = documento;
+        this.idSitio = idSitio;
+        this.idDesperfecto = idDesperfecto;
+    }
+
+    public Reclamo(int idReclamo, String descripcion, String estado, String documento, int idSitio, int idDesperfecto) {
         this.idReclamo = idReclamo;
         this.descripcion = descripcion;
         this.estado = estado;
         this.documento = documento;
+        this.idSitio = idSitio;
+        this.idDesperfecto = idDesperfecto;
     }
 
     public int getIdReclamo() {
@@ -48,6 +60,22 @@ public class Reclamo {
         this.documento = documento;
     }
 
+    public int getIdSitio() {
+        return idSitio;
+    }
+
+    public void setIdSitio(int idSitio) {
+        this.idSitio = idSitio;
+    }
+
+    public int getIdDesperfecto() {
+        return idDesperfecto;
+    }
+
+    public void setIdDesperfecto(int idDesperfecto) {
+        this.idDesperfecto = idDesperfecto;
+    }
+
     @Override
     public String toString() {
         return "Reclamo{" +
@@ -55,6 +83,8 @@ public class Reclamo {
                 ", descripcion='" + descripcion + '\'' +
                 ", estado='" + estado + '\'' +
                 ", documento='" + documento + '\'' +
+                ", idSitio=" + idSitio +
+                ", idDesperfecto=" + idDesperfecto +
                 '}';
     }
 }

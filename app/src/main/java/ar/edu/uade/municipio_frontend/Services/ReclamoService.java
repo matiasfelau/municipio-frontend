@@ -4,9 +4,11 @@ import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionReclamo;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
@@ -21,4 +23,7 @@ public interface ReclamoService {
 
     @PUT(API_ROUTE+"/cantidadPaginas")
     Call<Integer> getPaginas(@Body AutenticacionFiltro autenticacionFiltro);
+
+    @POST(API_ROUTE+"/nuevo")
+    Call<Reclamo> nuevoReclamo(@Body AutenticacionReclamo autenticacionReclamo);
 }

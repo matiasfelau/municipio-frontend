@@ -1,21 +1,23 @@
 package ar.edu.uade.municipio_frontend.Activities.Reclamo;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -34,14 +36,21 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
-import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionReclamo;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionSitio;
+import ar.edu.uade.municipio_frontend.Models.Desperfecto;
+import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.Models.Sector;
 import ar.edu.uade.municipio_frontend.Models.Sitio;
 import ar.edu.uade.municipio_frontend.R;
+import ar.edu.uade.municipio_frontend.Services.DesperfectoService;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import ar.edu.uade.municipio_frontend.Services.SectorService;
 import ar.edu.uade.municipio_frontend.Services.SitioService;
@@ -56,20 +65,30 @@ public class CrearReclamo extends AppCompatActivity {
     EditText editTextDescripcion;
     Button buttonGenerar;
     Button buttonAdjuntarArchivos;
-    List<String> sectores;
+    List<String> desperfectos;
     ArrayAdapter<String> adapterSector;
     List<String> sitios;
     ArrayAdapter<String> adapterSitio;
-    Spinner dropdownSector;
+    Spinner dropdownDesperfecto;
     Autenticacion autenticacion;
     ImageButton botonAgregarSitio;
     MapView map;
     LocationManager locationManager;
     boolean permisos;
     Marker marker;
+    CheckBox checkBoxMapa;
+    AutenticacionSitio autenticacionSitio;
+    AutenticacionReclamo autenticacionReclamo;
+    List<Sitio> sitiosObjeto;
+    String sitioSeleccionado;
+    List<Desperfecto> desperfectoObjeto;
+    EditText descripcionReclamo;
+    Sitio sitio;
+    Desperfecto desperfecto;
+    String desperfectoSeleccionado;
     FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
 
+    @SuppressLint({"MissingInflatedId", "NewApi", "CutPasteId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,25 +107,39 @@ public class CrearReclamo extends AppCompatActivity {
 
         buttonAdjuntarArchivos = findViewById(R.id.buttonAdjuntarArchivos);
 
+        autenticacionSitio = new AutenticacionSitio();
+
         autenticacion = new Autenticacion();
 
         autenticacion.setTipo(getIntent().getStringExtra("USUARIO"));
 
         autenticacion.setToken(getIntent().getStringExtra("token"));
 
-        sectores = new ArrayList<>();
+        autenticacionSitio.setAutenticacion(autenticacion);
 
-        dropdownSector = findViewById(R.id.spinnerDesperfecto);
+        autenticacionReclamo = new AutenticacionReclamo();
 
-        adapterSector = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sectores);
+        autenticacionReclamo.setAutenticacion(autenticacion);
+
+        sitioSeleccionado = "";
+
+        sitiosObjeto = new ArrayList<>();
+
+        desperfectos = new ArrayList<>();
+
+        dropdownDesperfecto = findViewById(R.id.spinnerDesperfecto);
+
+        adapterSector = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, desperfectos);
 
         adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        dropdownSector.setAdapter(adapterSector);
+        dropdownDesperfecto.setAdapter(adapterSector);
 
-        getSectores(autenticacion);
+        getDesperfectos(autenticacion);
 
         sitios = new ArrayList<>();
+
+        desperfectoObjeto = new ArrayList<>();
 
         dropdownSitio = findViewById(R.id.spinnerSitio);
 
@@ -122,6 +155,38 @@ public class CrearReclamo extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        checkBoxMapa = findViewById(R.id.checkBoxMapa);
+
+        descripcionReclamo = findViewById(R.id.editTextDescripcion);
+
+        fragmentManager = getSupportFragmentManager();
+
+        System.out.println(autenticacion.getToken());
+
+        dropdownDesperfecto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                desperfectoSeleccionado = desperfectos.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        dropdownSitio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sitioSeleccionado = sitios.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         botonAgregarSitio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,21 +196,54 @@ public class CrearReclamo extends AppCompatActivity {
         });
 
         // Configurar el botón de generar reclamo
-        buttonGenerar.setOnClickListener(view -> {
+        buttonGenerar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sitio = new Sitio();
+                if (checkBoxMapa.isChecked()) {
+                    sitio = new Sitio(
+                            BigDecimal.valueOf(marker.getPosition().getLatitude()),
+                            BigDecimal.valueOf(marker.getPosition().getLongitude()),
+                            "Sitio creado por el usuario" + getIntent().getStringExtra("documento")
+                    );
 
-            // Mostrar el popup de éxito
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            ReclamoExitosoDialog dialog = new ReclamoExitosoDialog();
-            dialog.show(fragmentManager, "ReclamoExitosoDialog");
-        });
-        /*
-        // Configurar el botón de adjuntar archivos
-        buttonAdjuntarArchivos.setOnClickListener(view -> {
-            // Aquí puedes añadir la lógica para adjuntar archivos
-            Toast.makeText(NuevoReclamo.this, "Adjuntar archivos no implementado", Toast.LENGTH_SHORT).show();
+                    autenticacionSitio.setSitio(sitio);
+
+                    nuevoSitio(autenticacionSitio);
+
+                } else if (!checkBoxMapa.isChecked()) {
+                    for (Sitio s : sitiosObjeto) {
+                        String c = s.getDescripcion().substring(0, 1).toUpperCase();
+                        if ((c + s.getDescripcion().substring(1)).equals(sitioSeleccionado)) {
+                            sitio = s;
+                            break;
+                        }
+                    }
+                }
+                for (Desperfecto r : desperfectoObjeto) {
+                    String c = r.getDescripcion().substring(0, 1).toUpperCase();
+                    if ((c + r.getDescripcion().substring(1)).equals(desperfectoSeleccionado)) {
+                        desperfecto = r;
+                        break;
+                    }
+                }
+
+
+                Reclamo reclamo = new Reclamo(
+                        descripcionReclamo.getText().toString(),
+                        "Nuevo",
+                        getIntent().getStringExtra("documento"),
+                        sitio.getIdSitio(),
+                        desperfecto.getIdDesperfecto()
+                );
+
+                autenticacionReclamo.setReclamo(reclamo);
+
+                nuevoReclamo(autenticacionReclamo);
+
+            }
         });
 
-         */
         Configuration.getInstance().load(this, androidx.preference.PreferenceManager.getDefaultSharedPreferences(this));
 
         Configuration.getInstance().setOsmdroidBasePath(new File(getCacheDir(), "osmdroid"));
@@ -156,27 +254,11 @@ public class CrearReclamo extends AppCompatActivity {
         map = findViewById(R.id.map);
         map.setMultiTouchControls(true);
 
-        /*
-        // Configurar el controlador del mapa
-        map.getController().setZoom(15.0);
-        GeoPoint startPoint = new GeoPoint(-34.60330398993216, -58.38173460895764); // Coordenadas de la Torre Eiffel
-        map.getController().setCenter(startPoint);
-        // Añadir un marcador en el mapa
-        Marker startMarker = new Marker(map);
-        startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setTitle("Torre Eiffel");
-        map.getOverlays().add(startMarker);
-
-         */
         marker = new Marker(map);
         System.out.println(marker);
         if (marker!=null) {
             checkPermissions();
         }
-
-        //borrar marcador si se hace uno nuevo
-        //ubicacion del celular
 
 
         MapEventsReceiver mReceive = new MapEventsReceiver() {
@@ -206,23 +288,24 @@ public class CrearReclamo extends AppCompatActivity {
         map.getOverlays().add(eventsOverlay);
     }
 
-    private void getSectores(Autenticacion autenticacion) {
+    private void getDesperfectos(Autenticacion autenticacion) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
-        SectorService sectorService = retrofit.create(SectorService.class);
+        DesperfectoService desperfectoService = retrofit.create(DesperfectoService.class);
 
-        Call<List<Sector>> call = sectorService.getSectores(autenticacion);
+        Call<List<Desperfecto>> call = desperfectoService.getDesperfectos(autenticacion);
 
-        call.enqueue(new Callback<List<Sector>>() {
+        call.enqueue(new Callback<List<Desperfecto>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Sector>> call, @NonNull Response<List<Sector>> response) {
+            public void onResponse(@NonNull Call<List<Desperfecto>> call, @NonNull Response<List<Desperfecto>> response) {
                 if (response.code() == 200) {//este ok
                     System.out.println(response.code());
                     assert response.body() != null;
-                    List<Sector> ss = response.body();
-                    for (Sector s : ss) {
+                    List<Desperfecto> ss = response.body();
+                    for (Desperfecto s : ss) {
                         String c = s.getDescripcion().substring(0, 1).toUpperCase();
-                        sectores.add(c + s.getDescripcion().substring(1));
+                        desperfectoObjeto.add(s);
+                        desperfectos.add(c + s.getDescripcion().substring(1));
                     }
                     adapterSector.notifyDataSetChanged();
                 } else if (response.code() == 400) {//este? badrequest?
@@ -241,40 +324,13 @@ public class CrearReclamo extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Sector>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Desperfecto>> call, @NonNull Throwable t) {
 
             }
         });
 
     }
-    /*
 
-    private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                System.out.println("LATITUD Y LONGITUD");
-                System.out.println(location.getLatitude());
-                System.out.println(location.getLongitude());
-                map.getController().setZoom(15.0);
-                GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                map.getController().setCenter(startPoint);
-
-                marker.setPosition(startPoint);
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                map.getOverlays().add(marker);
-
-
-                map.invalidate();
-            }
-        });
-    }
-
-     */
     private void showCurrentLocation() {
         // Obtener la ubicación actual del dispositivo
         Location location = getLastKnownLocation();
@@ -362,6 +418,7 @@ public class CrearReclamo extends AppCompatActivity {
                     List<Sitio> ss = response.body();
                     for (Sitio s : ss) {
                         String c = s.getDescripcion().substring(0, 1).toUpperCase();
+                        sitiosObjeto.add(s);
                         sitios.add(c + s.getDescripcion().substring(1));
                     }
                     adapterSitio.notifyDataSetChanged();
@@ -383,6 +440,89 @@ public class CrearReclamo extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<List<Sitio>> call, @NonNull Throwable t) {
 
+            }
+        });
+    }
+
+    private void nuevoReclamo(AutenticacionReclamo autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        ReclamoService reclamoService = retrofit.create(ReclamoService.class);
+
+        Call<Reclamo> call = reclamoService.nuevoReclamo(autenticacion);
+
+        call.enqueue(new Callback<Reclamo>() {
+            @Override
+            public void onResponse(@NonNull Call<Reclamo> call, @NonNull Response<Reclamo> response) {
+                if (response.code() == 201) {//este created
+                    System.out.println(response.code());
+                    Reclamo reclamo = response.body();
+                    assert reclamo != null;
+                    System.out.println(reclamo.getIdReclamo());
+                    Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
+
+                    startActivity(nuevaActividad);
+                } else if (response.code() == 400) {//este? badrequest?
+                    System.out.println(response.code());
+                } else if (response.code() == 401) {//este? unauthorized?
+                    System.out.println(response.code());
+                } else if (response.code() == 403) {//este forbbiden
+                    System.out.println(response.code());
+                } else if (response.code() == 404) {//not found?
+                    System.out.println(response.code());
+                } else if (response.code() == 500) {//este internal error server
+                    System.out.println(response.code());
+                } else {
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Reclamo> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+    private void nuevoSitio(AutenticacionSitio autenticacionSitio) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        SitioService sitioService = retrofit.create(SitioService.class);
+
+        System.out.println(autenticacionSitio.toString());
+
+        System.out.println(autenticacionSitio.getAutenticacion().toString());
+
+        System.out.println(autenticacionSitio.getSitio().toString());
+
+        Call<Integer> call = sitioService.nuevoSitio(autenticacionSitio);
+
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
+                System.out.println("resposne buena");
+                if (response.code() == 201) {//este ok
+                    System.out.println("AGREGAR SITIO DA:"+response.code());
+                    System.out.println(response.body());
+                } else if (response.code() == 400) {//este? badrequest?
+                    System.out.println(response.code());
+                } else if (response.code() == 401) {//este? unauthorized?
+                    System.out.println(response.code());
+                } else if (response.code() == 403) {//este forbbiden
+                    System.out.println(response.code());
+                } else if (response.code() == 404) {//not found?
+                    System.out.println(response.code());
+                } else if (response.code() == 500) {//este internal error server
+                    System.out.println(response.code());
+                } else {
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Integer> call, @NonNull Throwable t) {
+                System.out.print("sdas");
+                t.printStackTrace();
             }
         });
     }

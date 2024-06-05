@@ -134,10 +134,24 @@
 
     <org.osmdroid.views.MapView
         android:id="@+id/map"
-        android:layout_width="301dp"
-        android:layout_height="173dp"
+        android:layout_width="312dp"
+        android:layout_height="93dp"
         android:layout_marginTop="288dp"
         android:layout_marginEnd="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBoxMapa"
+        android:layout_width="241dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginEnd="112dp"
+        android:buttonTint="@color/white"
+        android:text="Usar la ubicación en el mapa"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -184,8 +198,8 @@
         android:id="@+id/botonAgregar"
         android:layout_width="50dp"
         android:layout_height="45dp"
-        android:layout_marginTop="216dp"
-        android:layout_marginEnd="56dp"
+        android:layout_marginTop="196dp"
+        android:layout_marginEnd="32dp"
         android:background="#C92E6FC1"
         android:scaleX="1.5"
         android:scaleY="1.5"

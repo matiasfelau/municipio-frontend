@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 
 public class Sitio {
-    int idSitio;
+    Integer idSitio;
     BigDecimal latitud;
     BigDecimal longitud;
     String calle;
-    int numero;
+    Integer numero;
     String entreCalleA;
     String entreCalleB;
     String descripcion;
@@ -18,6 +18,31 @@ public class Sitio {
     String comentarios;
 
     public Sitio() {
+    }
+
+    public Sitio(Integer idSitio, String descripcion) {
+        this.idSitio = idSitio;
+        this.descripcion = descripcion;
+    }
+
+    public Sitio(BigDecimal latitud, BigDecimal longitud, String descripcion) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.descripcion = descripcion;
+    }
+
+    public Sitio(BigDecimal latitud, BigDecimal longitud, String calle, int numero, String entreCalleA, String entreCalleB, String descripcion, String aCargoDe, LocalTime apertura, LocalTime cierre, String comentarios) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.calle = calle;
+        this.numero = numero;
+        this.entreCalleA = entreCalleA;
+        this.entreCalleB = entreCalleB;
+        this.descripcion = descripcion;
+        this.aCargoDe = aCargoDe;
+        this.apertura = apertura;
+        this.cierre = cierre;
+        this.comentarios = comentarios;
     }
 
     public Sitio(int idSitio, BigDecimal latitud, BigDecimal longitud, String calle, int numero, String entreCalleA, String entreCalleB, String descripcion, String aCargoDe, LocalTime apertura, LocalTime cierre, String comentarios) {
@@ -38,7 +63,6 @@ public class Sitio {
     public int getIdSitio() {
         return idSitio;
     }
-
     public void setIdSitio(int idSitio) {
         this.idSitio = idSitio;
     }
