@@ -1,10 +1,13 @@
 package ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -31,6 +34,10 @@ public class VecinoRegistro extends AppCompatActivity {
     Button botonEnviar;
     String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
+    Spinner spinnerTipoDocumentacion;
+    String tipoDocumentacion;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,15 +61,36 @@ public class VecinoRegistro extends AppCompatActivity {
 
         botonEnviar = findViewById(R.id.botonEnviar);
 
+        spinnerTipoDocumentacion = findViewById(R.id.tipoDocumentacion);
+
+        tipoDocumentacion = "DNI";
+
+        spinnerTipoDocumentacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position==1) {
+                    tipoDocumentacion = "DNI";
+                } else if (position==2) {
+                    tipoDocumentacion = "PAS";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         botonEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = inputEmail.getText().toString();
 
                 if (EmailValidation.patternMatches(email, regexPattern)) {
-                    registrar(new CredencialVecino(inputDocumento.getText().toString(), "", email));
+                    registrar(new CredencialVecino(tipoDocumentacion+inputDocumento.getText().toString(), "", email));
 
                 } else {
+                    System.out.println("El email está mal.");
                     avisoDatosIncorrectos.setVisibility(View.VISIBLE);
 
                 }
@@ -87,6 +115,7 @@ public class VecinoRegistro extends AppCompatActivity {
                         startActivity(nuevaActividad);
 
                     } else {
+                        System.out.println("El DNI está mal.");
                         avisoDatosIncorrectos.setVisibility(View.VISIBLE);
 
                     }

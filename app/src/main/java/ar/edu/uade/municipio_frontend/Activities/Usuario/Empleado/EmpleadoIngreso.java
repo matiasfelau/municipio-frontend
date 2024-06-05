@@ -143,6 +143,8 @@ public class EmpleadoIngreso extends AppCompatActivity {
 
                     nuevaActividad.putExtra("from", "EmpleadoIngreso");
 
+                    nuevaActividad.putExtra("USUARIO", "EMPLEADO");
+
                     startActivity(nuevaActividad);
 
                 } else {

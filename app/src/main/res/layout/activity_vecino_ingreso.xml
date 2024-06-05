@@ -63,12 +63,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/tipoDocumentacion"
+        android:layout_width="253dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="68dp"
+        android:background="@color/white"
+        android:entries="@array/tipoDocumentacion_options"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/tipoDocumentacion"
+        android:layout_width="253dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="68dp"
+        android:background="@color/white"
+        android:entries="@array/tipoDocumentacion_options"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/inputDocumento"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginStart="113dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="68dp"
         android:layout_marginEnd="114dp"
         android:background="@color/white"
         android:backgroundTint="@color/white"
@@ -77,32 +99,16 @@
         android:inputType="text"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textBienvenida" />
-
-    <EditText
-        android:id="@+id/inputPassword"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="113dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="114dp"
-        android:background="@color/white"
-        android:ems="10"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputDocumento" />
 
     <Button
         android:id="@+id/botonOlvidoPassword"
         android:layout_width="206dp"
         android:layout_height="52dp"
         android:layout_marginStart="113dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="163dp"
         android:background="#00FFFFFF"
         android:text="Recuperar contraseña"
@@ -112,6 +118,23 @@
         app:layout_constraintHorizontal_bias="0.662"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
+
+    <EditText
+        android:id="@+id/inputPassword"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="113dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="114dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputDocumento" />
 
     <TextView
         android:id="@+id/textAvisoDatosIncorrectos"

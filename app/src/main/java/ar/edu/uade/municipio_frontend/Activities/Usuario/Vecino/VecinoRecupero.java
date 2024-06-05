@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -32,6 +34,9 @@ public class VecinoRecupero extends AppCompatActivity {
     Button botonEnviar;
     String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
+    Spinner spinnerTipoDocumentacion;
+    String tipoDocumentacion;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +61,33 @@ public class VecinoRecupero extends AppCompatActivity {
 
         botonEnviar = findViewById(R.id.botonEnviarOlvido);
 
+        spinnerTipoDocumentacion = findViewById(R.id.tipoDocumentacion);
+
+        tipoDocumentacion = "DNI";
+
+        spinnerTipoDocumentacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position==1) {
+                    tipoDocumentacion = "DNI";
+                } else if (position==2) {
+                    tipoDocumentacion = "PAS";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         botonEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = inputEmail.getText().toString();
 
                 if (EmailValidation.patternMatches(email, regexPattern)) {
-                    recuperar(new CredencialVecino(inputDocumento.getText().toString(), "", email));
+                    recuperar(new CredencialVecino(tipoDocumentacion+inputDocumento.getText().toString(), "", email));
 
                     Intent nuevaActividad = new Intent(VecinoRecupero.this, VecinoIngreso.class);
 

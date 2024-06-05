@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_palmera"
+    android:background="@drawable/palmeras2"
     tools:context=".Activities.Reclamo.VerReclamos">
 
     <TextView
@@ -121,6 +121,21 @@
         android:hint="Buscar"
         android:inputType="text"
         android:maxLines="1"
+        android:textAlignment="textStart"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/util"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="5dp"
+        android:background="#BE656774"
+        android:inputType="text"
+        android:maxLines="1"
+        android:text="Seleccioná un filtro"
         android:textAlignment="textStart"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"

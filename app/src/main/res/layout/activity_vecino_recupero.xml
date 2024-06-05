@@ -62,6 +62,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/tipoDocumentacion"
+        android:layout_width="253dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="268dp"
+        android:layout_marginEnd="68dp"
+        android:background="@color/white"
+        android:entries="@array/tipoDocumentacion_options"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/inputDocumentoRecupero"
         android:layout_width="250dp"

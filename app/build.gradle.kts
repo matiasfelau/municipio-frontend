@@ -48,9 +48,11 @@ dependencies {
     //Dependencia JWT
 
     implementation(libs.java.jwt)
+    implementation(libs.play.services.maps)
 
     //Dependencia database
-
+    implementation(libs.osmdroid.android)
+    implementation(libs.androidx.preference)
 
 
     testImplementation(libs.junit)

@@ -1,11 +1,14 @@
 package ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -41,7 +44,10 @@ public class VecinoIngreso extends AppCompatActivity {
     Button botonIngresar;
     Button botonRegistro;
     ImageButton botonCambiarUsuarioDerecha;
+    Spinner spinnerTipoDocumentacion;
+    String tipoDocumentacion;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +78,15 @@ public class VecinoIngreso extends AppCompatActivity {
 
         botonCambiarUsuarioDerecha = findViewById(R.id.botonCambiarUsuarioDerecha);
 
+        spinnerTipoDocumentacion = findViewById(R.id.tipoDocumentacion);
+
+        tipoDocumentacion = "DNI";
+
         boolean ingresado = getIntent().getBooleanExtra("ingresado", false);
 
         if (ingresado) {
             Vecino vecino = helper.getVecinoByDocumento(getIntent().getStringExtra("documento"));
-
+            System.out.println(vecino.toString());
             ingresar(new CredencialVecino(
                     vecino.getDocumento(),
                     vecino.getPassword(),
@@ -98,6 +108,22 @@ public class VecinoIngreso extends AppCompatActivity {
             }
         }
 
+        spinnerTipoDocumentacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position==1) {
+                    tipoDocumentacion = "DNI";
+                } else if (position==2) {
+                    tipoDocumentacion = "PAS";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         botonOlvidoPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +137,7 @@ public class VecinoIngreso extends AppCompatActivity {
         botonIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ingresar(new CredencialVecino(inputDocumento.getText().toString(), inputPassword.getText().toString(), ""));
+                ingresar(new CredencialVecino(tipoDocumentacion+inputDocumento.getText().toString(), inputPassword.getText().toString(), ""));
 
             }
         });
@@ -209,6 +235,8 @@ public class VecinoIngreso extends AppCompatActivity {
                 nuevaActividad.putExtra("token", token);
 
                 nuevaActividad.putExtra("from", "VecinoIngreso");
+
+                nuevaActividad.putExtra("USUARIO", "VECINO");
 
                 startActivity(nuevaActividad);
 

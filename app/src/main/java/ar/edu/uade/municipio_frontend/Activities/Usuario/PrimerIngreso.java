@@ -107,6 +107,8 @@ public class PrimerIngreso extends AppCompatActivity {
 
                         nuevaActividad.putExtra("from", "PrimerIngreso");
 
+                        nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
                         startActivity(nuevaActividad);
 
                     } else {

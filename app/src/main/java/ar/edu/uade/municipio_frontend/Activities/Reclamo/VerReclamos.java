@@ -27,6 +27,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.EmpleadoHelper;
@@ -36,11 +37,12 @@ import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
 import ar.edu.uade.municipio_frontend.Models.Empleado;
 import ar.edu.uade.municipio_frontend.Models.Filtro;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
-import ar.edu.uade.municipio_frontend.Models.Sectores;
+import ar.edu.uade.municipio_frontend.Models.Sector;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
+import ar.edu.uade.municipio_frontend.Services.SectorService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,9 +72,11 @@ public class VerReclamos extends AppCompatActivity {
     ImageButton botonCambiarPaginaIzquierda;
     ImageButton botonCambiarPaginaDerecha;
     TextView textPaginaActual;
-    List<Sectores> listaSectores;
+    List<Sector> listaSectores;
     Integer cantidadPaginas;
-
+    EditText util;
+    List<String> sectores;
+    ArrayAdapter<String> adapterSector;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -99,17 +103,21 @@ public class VerReclamos extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
+        ArrayAdapter<CharSequence> adapterPertenencia=ArrayAdapter.createFromResource(this, R.array.pertenencia_options, android.R.layout.simple_spinner_item);
+
+        adapterPertenencia.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
         textPaginaActual = findViewById(R.id.textPaginaActual);
 
         botonCambiarPaginaDerecha = findViewById(R.id.botonCambiarPaginaDerecha);
 
         botonCambiarPaginaIzquierda = findViewById(R.id.botonCambiarPaginaIzquierda);
 
+        util = findViewById(R.id.util);
+
         dropdownFiltro = findViewById(R.id.dropdownTipoFiltro);
 
         inputId =findViewById(R.id.inputId);
-
-        dropdownDatoSector = findViewById(R.id.dropdownDatoSector);
 
         listReclamos = findViewById(R.id.listReclamos);
 
@@ -145,42 +153,52 @@ public class VerReclamos extends AppCompatActivity {
 
         setUpListViewListener();
 
-        autenticacion.setTipo("Vecino");//Todo arreglar
+        String tipoUsuario = getIntent().getStringExtra("USUARIO");
+
+        if (Objects.equals(tipoUsuario, "VECINO")) {
+            autenticacion.setTipo("Vecino");
+        } else if (Objects.equals(tipoUsuario, "EMPLEADO")) {
+            autenticacion.setTipo("Empleado");
+            dropdownFiltro.setVisibility(View.INVISIBLE);
+            util.setVisibility(View.INVISIBLE);
+            botonFiltrar.setVisibility(View.INVISIBLE);
+        }
 
         autenticacion.setToken(getIntent().getStringExtra("token"));
 
         autenticacionFiltro.setAutenticacion(autenticacion);
 
-        filtro.setTipo("");
-
-        filtro.setDato("");
-
-        autenticacionFiltro.setFiltro(filtro);
-
         cantidadPaginas = 0;
+
+        sectores = new ArrayList<>();
+
+        dropdownDatoSector = findViewById(R.id.dropdownDatoSector);
+
+        adapterSector = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sectores);
+
+        adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        dropdownDatoSector.setAdapter(adapterSector);
+
+        getSectores(autenticacion);
 
         //segunda inicializacion y alguna automatizacion
 
         botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
 
-        getReclamos(2, autenticacionFiltro);
-        getPaginas(autenticacionFiltro);//consigue la cantidad de paginas segun el filtro actual
+        if (autenticacion.getTipo().equals("Vecino")) {
+            filtro.setTipo("");
 
-        if (p.isEmpty()) {
-            System.out.println("esta vacio");
-            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+            filtro.setDato("");
+        } else if (autenticacion.getTipo().equals("Empleado")) {
+            filtro.setTipo("sector");
+
+            filtro.setDato(empleadoHelper.getEmpleadoByLegajo(getIntent().getIntExtra("legajo", -1)).getSector());
         }
 
-        for (String s : p) {
-            p.remove(s);
-            prueba.notifyDataSetChanged();
-        }
+        autenticacionFiltro.setFiltro(filtro);
 
-        if (cantidadPaginas>1){
-            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
-        }else{
-            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-        }
+        getPaginas(autenticacionFiltro);
 
         getReclamos(1, autenticacionFiltro);
 
@@ -205,10 +223,13 @@ public class VerReclamos extends AppCompatActivity {
                 p.clear();
                 prueba.notifyDataSetChanged();
                 pagina++;
-                getReclamos(Integer.parseInt(textPaginaActual.getText().toString()),autenticacionFiltro);
+                getReclamos(pagina,autenticacionFiltro);
                 textPaginaActual.setText(pagina.toString());
 
-                if (cantidadPaginas == Integer.parseInt(textPaginaActual.getText().toString())){
+                botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
+
+                if (Objects.equals(cantidadPaginas, pagina)){
+
                     botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
                 }
             }
@@ -224,11 +245,12 @@ public class VerReclamos extends AppCompatActivity {
                     prueba.notifyDataSetChanged();
                     pagina-=1;
                     textPaginaActual.setText(pagina.toString());
-                    getReclamos(Integer.parseInt(textPaginaActual.getText().toString()),autenticacionFiltro);
+                    getReclamos(pagina, autenticacionFiltro);
 
                     if (pagina==1) {
                         botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
                     }
+
                     botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
                 }
             }
@@ -238,17 +260,27 @@ public class VerReclamos extends AppCompatActivity {
         dropdownFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position==0){
+                if (position==0) {
+                    if (!Objects.equals(autenticacion.getTipo(), "Empleado")) {
+                        util.setVisibility(View.VISIBLE);
+                        inputId.setVisibility(View.INVISIBLE);
+                        dropdownDatoSector.setVisibility(View.INVISIBLE);
+                        dropdownDatoPertenencia.setVisibility(View.INVISIBLE);
+                    }
+                } else if(position==1){
+                    util.setVisibility(View.INVISIBLE);
                     filtro.setTipo("id");
                     inputId.setVisibility(View.VISIBLE);
                     dropdownDatoSector.setVisibility(View.INVISIBLE);
                     dropdownDatoPertenencia.setVisibility(View.INVISIBLE);
-                }else if (position==1){
+                }else if (position==2){
+                    util.setVisibility(View.INVISIBLE);
                     filtro.setTipo("sector");
                     inputId.setVisibility(View.INVISIBLE);
                     dropdownDatoSector.setVisibility(View.VISIBLE);
                     dropdownDatoPertenencia.setVisibility(View.INVISIBLE);
-                }else if(position==2){
+                }else if(position==3){
+                    util.setVisibility(View.INVISIBLE);
                     filtro.setTipo("documento");
                     inputId.setVisibility(View.INVISIBLE);
                     dropdownDatoSector.setVisibility(View.INVISIBLE);
@@ -262,15 +294,27 @@ public class VerReclamos extends AppCompatActivity {
             }
         });
 
+        dropdownDatoSector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                filtro.setDato(sectores.get(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         dropdownDatoPertenencia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
+                if (position == 1) {
                     filtro.setTipo("documento");
                     filtro.setDato(vecinoHelper.getVecinos().get(0).getDocumento());
                     System.out.println(filtro.toString());
-                } else if (position == 1) {
+                } else if (position == 2) {
                     filtro.setTipo("");
                     filtro.setDato("");
                     System.out.println(filtro.toString());
@@ -286,44 +330,21 @@ public class VerReclamos extends AppCompatActivity {
         botonFiltrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+                botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
                 switch (filtro.getTipo()) {
                     case "id":
                         p.clear();
                         prueba.notifyDataSetChanged();
                         getReclamo(1, autenticacion);
-                        getPaginas(autenticacionFiltro);
-                        if (cantidadPaginas>1) {
-                            botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
-                        }
-                        if (cantidadPaginas>1){
-                            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
-                        }else{
-                            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-                        }//conseguir paginas del filtro seleccionado
+                        cantidadPaginas=1;
                         break;
                     case "sector":
                         p.clear();
                         prueba.notifyDataSetChanged();
-                        dropdownDatoSector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                dato = listaSectores.get(position).getDescripcion();
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-                        filtro.setDato(dato);
                         autenticacionFiltro.setFiltro(filtro);
                         getReclamos(1, autenticacionFiltro);
-                        getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
-                        if (cantidadPaginas>1){
-                            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
-                        }else{
-                            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-                        }
+                        getPaginas(autenticacionFiltro);
                         break;
                     case "":
                     case "documento":
@@ -334,12 +355,7 @@ public class VerReclamos extends AppCompatActivity {
                         getReclamos(1, autenticacionFiltro);
                         p.clear();
                         prueba.notifyDataSetChanged();
-                        getPaginas(autenticacionFiltro);//conseguir paginas del filtro seleccionado
-                        if (cantidadPaginas>1){
-                            botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
-                        }else{
-                            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-                        }
+                        getPaginas(autenticacionFiltro);
                         break;
                 }
 
@@ -350,7 +366,21 @@ public class VerReclamos extends AppCompatActivity {
         botonAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VerReclamos.this, CrearReclamo.class);
 
+                if (Objects.equals(autenticacion.getTipo(), "Vecino")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                } else if (Objects.equals(autenticacion.getTipo(), "Empleado")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("legajo"));
+
+                }
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
             }
         });
 
@@ -442,10 +472,16 @@ public class VerReclamos extends AppCompatActivity {
         call.enqueue(new Callback<Integer>(){
 
             @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
+            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
                 if (response.code()==200){
 
                     cantidadPaginas = response.body();
+
+                    if (cantidadPaginas>1){
+                        botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
+                    }else{
+                        botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+                    }
 
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());
@@ -462,7 +498,7 @@ public class VerReclamos extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
+            public void onFailure(@NonNull Call<Integer> call, @NonNull Throwable t) {
                 System.out.println("FALLO GETPAGINAS");
             }
         });
@@ -477,13 +513,13 @@ public class VerReclamos extends AppCompatActivity {
         call.enqueue(new Callback<List<Reclamo>>(){
 
             @Override
-            public void onResponse(@NonNull Call<List<Reclamo>> call, Response<List<Reclamo>> response) {
-                //TODO COMPLETAR CUANDO ESTE LA VISTA
+            public void onResponse(@NonNull Call<List<Reclamo>> call, @NonNull Response<List<Reclamo>> response) {
                 if (response.code()==200){
                     assert response.body() != null;
                     for (Reclamo reclamo: response.body()) {
                         addItem(reclamo);
                     }
+                    prueba.notifyDataSetChanged();
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());
                 }else if(response.code()==401){//este? unauthorized?
@@ -498,7 +534,7 @@ public class VerReclamos extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Reclamo>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Reclamo>> call, @NonNull Throwable t) {
 
             }
         });
@@ -517,6 +553,7 @@ public class VerReclamos extends AppCompatActivity {
                 if (response.code()==200){//este ok
                     assert response.body() != null;
                     addItem(response.body());
+                    prueba.notifyDataSetChanged();
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());
                 }else if(response.code()==401){//este? unauthorized?
@@ -538,5 +575,46 @@ public class VerReclamos extends AppCompatActivity {
             }
         });
 
+
+    }
+    private void getSectores(Autenticacion autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        SectorService sectorService = retrofit.create(SectorService.class);
+
+        Call<List<Sector>> call = sectorService.getSectores(autenticacion);
+
+        call.enqueue(new Callback<List<Sector>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Sector>> call, @NonNull Response<List<Sector>> response) {
+                if (response.code()==200){//este ok
+                    System.out.println(response.code());
+                    assert response.body() != null;
+                    List<Sector> ss = response.body();
+                    for (Sector s: ss) {
+                        String c = s.getDescripcion().substring(0,1).toUpperCase();
+                        sectores.add(c+s.getDescripcion().substring(1));
+                    }
+                    adapterSector.notifyDataSetChanged();
+                } else if(response.code()==400){//este? badrequest?
+                    System.out.println(response.code());
+                } else if(response.code()==401){//este? unauthorized?
+                    System.out.println(response.code());
+                } else if(response.code()==403){//este forbbiden
+                    System.out.println(response.code());
+                } else if(response.code()==404){//not found?
+                    System.out.println(response.code());
+                } else if(response.code()==500){//este internal error server
+                    System.out.println(response.code());
+                } else{
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Sector>> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 }

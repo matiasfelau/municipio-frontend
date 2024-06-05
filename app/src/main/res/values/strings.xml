@@ -5,19 +5,22 @@
     <string name="Pertenencia">Pertenencia</string>
     <string name="Propio">Propio</string>
     <string name="General">General</string>
+    <string name="DNI">DNI</string>
+    <string name="PASAPORTE">PAS</string>
     <string-array name="rubro_options">
+        <item>"Filtro"</item>
         <item>@string/ID</item>
         <item>@string/Sector</item>
         <item>@string/Pertenencia</item>
     </string-array>
     <string-array name="pertenencia_options">
+        <item>"Filtro"</item>
         <item>@string/Propio</item>
         <item>@string/General</item>
     </string-array>
-    <string-array name="sitio_options">
-        <item>Sitio 1</item>
-        <item>Sitio 2</item>
-        <item>Sitio 3</item>
+    <string-array name="tipoDocumentacion_options">
+        <item>@string/DNI</item>
+        <item>@string/PASAPORTE</item>
     </string-array>
 
 

@@ -1,13 +1,13 @@
 package ar.edu.uade.municipio_frontend.Models;
 
-public class Sectores {
+public class Sector {
     int idRubro;
     String descripcion;
 
-    public Sectores() {
+    public Sector() {
     }
 
-    public Sectores(int idRubro, String descripcion) {
+    public Sector(int idRubro, String descripcion) {
         this.idRubro = idRubro;
         this.descripcion = descripcion;
     }
