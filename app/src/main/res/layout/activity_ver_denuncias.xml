@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_palmera"
+    tools:context=".Activities.Arranque.Template">
+
+    <TextView
+        android:id="@+id/filterBackground"
+        android:layout_width="409dp"
+        android:layout_height="694dp"
+        android:background="#80656774"
+        android:backgroundTint="#656774"
+        android:text=" "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
+
+    <ImageView
+        android:id="@+id/bannerAbajo"
+        android:layout_width="411dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="2dp"
+        android:scaleX="2"
+        android:scaleY="1.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/banner_abajo" />
+
+    <ImageView
+        android:id="@+id/bannerArriba"
+        android:layout_width="410dp"
+        android:layout_height="105dp"
+        android:layout_marginEnd="3dp"
+        android:scaleX="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/banner_arriba" />
+
+    <EditText
+        android:id="@+id/inputId"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="184dp"
+        android:background="@color/white"
+        android:hint="Buscar por ID"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textAlignment="textStart"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/botonfiltrar"
+        android:layout_width="173dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="16dp"
+        android:background="#C92E6FC1"
+        android:text="Filtrar"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/listDenuncias"
+        android:layout_width="383dp"
+        android:layout_height="323dp"
+        android:layout_marginTop="232dp"
+        android:layout_marginEnd="4dp"
+        android:background="#BE656774"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="312dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="580dp"
+        android:layout_marginEnd="48dp"
+        android:text="¿Te gustaría realizar una nueva denuncia? \n Apretá acá:"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonAgregar"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="640dp"
+        android:layout_marginEnd="172dp"
+        android:background="#C92E6FC1"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/white" />
+
+    <ImageButton
+        android:id="@+id/botonCambiarUsuarioIzquierda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="#FFFDFD"
+        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/botonCambiarUsuarioDerecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:rotationY="180"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="@color/white"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/textTipoUsuario"
+        android:layout_width="178dp"
+        android:layout_height="39dp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/botonCambiarUsuarioDerecha"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toEndOf="@+id/botonCambiarUsuarioIzquierda" />
+
+    <TextView
+        android:id="@+id/textNombreAplicacion"
+        android:layout_width="409dp"
+        android:layout_height="77dp"
+        android:layout_marginTop="20dp"
+        android:text="Palmas de Mallorca"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
