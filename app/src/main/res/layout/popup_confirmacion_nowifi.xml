@@ -44,13 +44,13 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:backgroundTint="@android:color/holo_green_light"
-            android:text="Aceptar" />
+            android:text="SI" />
 
         <Button
             android:id="@+id/btnCancelar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#FF1100"
-            android:text="Cancelar" />
+            android:text="NO" />
     </LinearLayout>
 </LinearLayout>
