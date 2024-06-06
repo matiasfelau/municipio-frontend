@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.osmdroid.android)
     implementation(libs.androidx.preference)
 
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
