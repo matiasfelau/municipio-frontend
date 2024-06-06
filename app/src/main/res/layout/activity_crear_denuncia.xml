@@ -101,14 +101,14 @@
         android:id="@+id/textCrearDenuncia"
         android:layout_width="395dp"
         android:layout_height="89dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="124dp"
         android:baselineAligned="false"
         android:text="Crear Denuncia"
+        android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -116,11 +116,13 @@
         android:id="@+id/spinnerTipoDenuncia"
         android:layout_width="346dp"
         android:layout_height="57dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="182dp"
         android:layout_marginEnd="40dp"
         android:background="@android:drawable/spinner_dropdown_background"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
@@ -129,9 +131,11 @@
         android:layout_height="164dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="480dp"
+        android:layout_marginEnd="25dp"
         android:background="@color/white"
         android:hint="Descripción del incidente"
         android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -142,10 +146,26 @@
         android:layout_height="82dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="659dp"
+        android:layout_marginEnd="25dp"
         android:background="?android:attr/galleryItemBackground"
         android:padding="8dp"
         android:text="Adjuntar archivos"
         android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBoxAcceptResponsibility"
+        android:layout_width="336dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="750dp"
+        android:layout_marginEnd="25dp"
+        android:text="Aceptar Responsabilidad"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -154,9 +174,11 @@
         android:layout_width="347dp"
         android:layout_height="68dp"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="754dp"
+        android:layout_marginTop="792dp"
+        android:layout_marginEnd="25dp"
         android:text="Crear Denuncia"
         android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
