@@ -164,7 +164,8 @@
         android:layout_marginEnd="4dp"
         android:background="#BE656774"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <TextView
         android:id="@+id/textView4"
