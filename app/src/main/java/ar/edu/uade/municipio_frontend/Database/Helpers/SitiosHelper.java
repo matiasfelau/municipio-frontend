@@ -48,7 +48,7 @@ public class SitiosHelper extends SQLiteOpenHelper {
                 null);
         if(cursor != null && cursor.getCount() > 0){
             cursor.moveToFirst();
-            aux.setIdPrevisorio(cursor.getString(0));
+            aux.setIdPreliminar(cursor.getString(0));
             aux.setLatitud(new BigDecimal(cursor.getString(1)));
             aux.setLongitud(new BigDecimal(cursor.getString(2)));
             aux.setDescripcion(cursor.getString(3));
@@ -69,7 +69,7 @@ public class SitiosHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
             do {
                 Sitio aux = new Sitio();
-                aux.setIdPrevisorio(cursor.getString(0));
+                aux.setIdPreliminar(cursor.getString(0));
                 aux.setLatitud(new BigDecimal(cursor.getString(1)));
                 aux.setLongitud(new BigDecimal(cursor.getString(2)));
                 aux.setDescripcion(cursor.getString(3));

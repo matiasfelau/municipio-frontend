@@ -171,8 +171,8 @@
         android:id="@+id/buttonAdjuntarArchivos"
         android:layout_width="255dp"
         android:layout_height="61dp"
-        android:layout_marginTop="596dp"
-        android:layout_marginEnd="128dp"
+        android:layout_marginTop="600dp"
+        android:layout_marginEnd="76dp"
         android:background="?android:attr/galleryItemBackground"
         android:padding="8dp"
         android:text="Adjuntar archivos"
@@ -269,16 +269,5 @@
         app:srcCompat="?attr/actionModeCloseDrawable"
         app:tint="@color/white"
         tools:ignore="SpeakableTextPresentCheck" />
-
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="44dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="597dp"
-        android:layout_marginEnd="58dp"
-        android:background="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_upload" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,6 +32,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -51,6 +53,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import ar.edu.uade.municipio_frontend.Database.Helpers.ReclamosHelper;
 import ar.edu.uade.municipio_frontend.Database.Helpers.SitiosHelper;
@@ -107,6 +110,8 @@ public class CrearReclamo extends AppCompatActivity {
     ConnectivityManager connectivityManager;
     NetworkInfo networkInfo;
     List<Uri> imageUris = new ArrayList<>();
+    int c;
+    ImageButton botonVolver;
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -115,14 +120,40 @@ public class CrearReclamo extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         ClipData clipData = result.getData().getClipData();
-                        if (clipData != null) {
-                            for (int i = 0; i < clipData.getItemCount(); i++) {
-                                imageUris.add(clipData.getItemAt(i).getUri());
-                            }
+                        if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                            if (clipData != null) {
+                                int itemCount = clipData.getItemCount();
+                                int currentImageCount = imageUris.size();
+                                int remainingSlots = 7 - currentImageCount;
 
+                                for (int i = 0; i < Math.min(itemCount, remainingSlots); i++) {
+                                    imageUris.add(clipData.getItemAt(i).getUri());
+                                }
+
+                                if (currentImageCount + itemCount > 7) {
+                                    // Notificar al usuario que solo se pueden seleccionar 7 imágenes
+                                    Toast.makeText(getApplicationContext(), "Solo puedes seleccionar hasta 7 imágenes.", Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                if (imageUris.size() < 7) {
+                                    Uri selectedImage = result.getData().getData();
+                                    imageUris.add(selectedImage);
+                                } else {
+                                    // Notificar al usuario que solo se pueden seleccionar 7 imágenes
+                                    Toast.makeText(getApplicationContext(), "Solo puedes seleccionar hasta 7 imágenes.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         } else {
-                            Uri selectedImage = result.getData().getData();
-                            imageUris.add(selectedImage);
+                            if (clipData != null) {
+                                for (int i = 0; i < clipData.getItemCount(); i++) {
+                                    imageUris.add(clipData.getItemAt(i).getUri());
+                                }
+
+                            } else {
+                                Uri selectedImage = result.getData().getData();
+                                imageUris.add(selectedImage);
+                            }
                         }
                     }
                 }
@@ -146,13 +177,12 @@ public class CrearReclamo extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
 
+
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         helperSitio = new SitiosHelper(this);
 
         helperReclamo = new ReclamosHelper(this);
-
-        recalculo();
 
         // Inicializar vistas
 
@@ -216,7 +246,7 @@ public class CrearReclamo extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
 
-        System.out.println(autenticacion.getToken());
+        botonVolver = findViewById(R.id.botonVolver);
 
         if (recalculo()){
             if(!helperReclamo.getReclamos().isEmpty()){
@@ -224,17 +254,21 @@ public class CrearReclamo extends AppCompatActivity {
                 Sitio sitio = null;
                 String idReclamoP;
                 for (Reclamo reclamo : reclamos){
-                    idReclamoP = reclamo.getIdPrevisorio();
+                    idReclamoP = reclamo.getIdPreliminar();
                     sitio = helperSitio.getSitio(idReclamoP);
-                    if (sitio!=null) {
+                    if (sitio.getIdPreliminar()!=null) {
+                        sitio.setIdPreliminar(null);
+                        reclamo.setIdPreliminar(null);
                         autenticacionSitio.setSitio(sitio);
-                        nuevoSitioLocal(autenticacionSitio);
-                        reclamo.setIdSitio(sitio.getIdSitio());
+                        nuevoSitioLocal(autenticacionSitio, reclamo);
                     }else {
+                        reclamo.setIdPreliminar(null);
                         autenticacionReclamo.setReclamo(reclamo);
                         nuevoReclamo(autenticacionReclamo);
                     }
                 }
+                helperReclamo.deleteReclamos();
+                helperSitio.deleteSitios();
             }
         }
 
@@ -256,10 +290,35 @@ public class CrearReclamo extends AppCompatActivity {
             }
         });
 
+        botonVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
+                if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                } else if (Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")) {
+                    nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+
+                }
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+        });
+
         buttonAdjuntarArchivos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO") && imageUris.size() >= 7) {
+                    Toast.makeText(getApplicationContext(), "No podés agregar más fotos.", Toast.LENGTH_LONG).show();
+                } else {
+                    openGallery();
+                }
+
             }
         });
 
@@ -275,18 +334,11 @@ public class CrearReclamo extends AppCompatActivity {
             }
         });
 
-        botonAgregarSitio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent nuevaActividad = new Intent(CrearReclamo.this, NuevoSitio.class);
-                startActivity(nuevaActividad);
-            }
-        });
-
         // Configurar el botón de generar reclamo
         buttonGenerar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UUID uuid = UUID.randomUUID();
                 sitio = new Sitio();
                 if (checkBoxMapa.isChecked()) {
                     sitio = new Sitio(
@@ -295,11 +347,12 @@ public class CrearReclamo extends AppCompatActivity {
                             "Sitio creado por el usuario" + getIntent().getStringExtra("documento")
                     );
 
+
                     autenticacionSitio.setSitio(sitio);
                     if (recalculo()){
                         nuevoSitio(autenticacionSitio);
                     }else{
-                        helperSitio.saveSitio(sitio);
+                        confirmarWifi(uuid);
                     }
 
                 } else if (!checkBoxMapa.isChecked()) {
@@ -329,7 +382,7 @@ public class CrearReclamo extends AppCompatActivity {
                     if (recalculo()){
                         nuevoReclamo(autenticacionReclamo);
                     }else{
-                        helperReclamo.saveReclamo(reclamo);
+                        confirmarWifi2(uuid, reclamo);
                     }
 
                 }
@@ -387,6 +440,7 @@ public class CrearReclamo extends AppCompatActivity {
     }
 
     private void uploadImages(Integer idReclamo, List<Uri> imageUris) {
+
         List<MultipartBody.Part> parts = new ArrayList<>();
         for (Uri uri : imageUris) {
             File file = new File(getRealPathFromURI(uri));
@@ -435,13 +489,130 @@ public class CrearReclamo extends AppCompatActivity {
         networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null) {
             if (networkInfo.getState().toString().equals("CONNECTED") && Objects.equals(networkInfo.getTypeName(), "WIFI")) {
-                nuevoReclamo(autenticacionReclamo);
                 return true;
+            } else {
+                return false;
             }
-            return false;
         }
         return false;
     }
+
+    private void confirmarWifi(UUID uuid) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.popup_confirmacion_nowifi, null);
+
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+
+        Button btnAceptar = view.findViewById(R.id.btnAceptar);
+        Button btnCancelar = view.findViewById(R.id.btnCancelar);
+
+        btnAceptar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nuevoSitio(autenticacionSitio);
+            }
+        });
+
+
+
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sitio.setIdPreliminar(uuid.toString().substring(0,5));
+
+                helperSitio.saveSitio(sitio);
+
+                for (Desperfecto r : desperfectoObjeto) {
+                    String c = r.getDescripcion().substring(0, 1).toUpperCase();
+                    if ((c + r.getDescripcion().substring(1)).equals(desperfectoSeleccionado)) {
+                        desperfecto = r;
+                        break;
+                    }
+                }
+
+                Reclamo reclamo = new Reclamo(
+                        descripcionReclamo.getText().toString(),
+                        "Nuevo",
+                        getIntent().getStringExtra("documento"),
+                        desperfecto.getIdDesperfecto(),
+                        uuid.toString().substring(0,5)
+                );
+
+                helperReclamo.saveReclamo(reclamo);
+
+                dialog.dismiss();
+
+                Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
+                if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                } else if (Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")) {
+                    nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+
+                }
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void confirmarWifi2(UUID uuid, Reclamo reclamo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.popup_confirmacion_nowifi, null);
+
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+
+        Button btnAceptar = view.findViewById(R.id.btnAceptar);
+        Button btnCancelar = view.findViewById(R.id.btnCancelar);
+
+        btnAceptar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nuevoReclamo(autenticacionReclamo);
+            }
+        });
+
+
+
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reclamo.setIdPreliminar(uuid.toString().substring(0,5));
+
+                helperReclamo.saveReclamo(reclamo);
+
+                dialog.dismiss();
+
+                Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
+                if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                } else if (Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")) {
+                    nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+
+                }
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+        });
+
+        dialog.show();
+    }
+
 
 
     private void getDesperfectos(Autenticacion autenticacion) {
@@ -700,7 +871,7 @@ public class CrearReclamo extends AppCompatActivity {
             }
         });
     }
-    private void nuevoSitioLocal(AutenticacionSitio autenticacionSitio) {
+    private void nuevoSitioLocal(AutenticacionSitio autenticacionSitio, Reclamo reclamo) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
         SitioService sitioService = retrofit.create(SitioService.class);
@@ -711,13 +882,9 @@ public class CrearReclamo extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
                 if (response.body()!= null) {
-                    Reclamo reclamo = new Reclamo(
-                            descripcionReclamo.getText().toString(),
-                            "Nuevo",
-                            getIntent().getStringExtra("documento"),
-                            response.body(),
-                            desperfecto.getIdDesperfecto()
-                    );
+
+                    reclamo.setIdSitio(response.body());
+
                     autenticacionReclamo.setReclamo(reclamo);
 
                     nuevoReclamo(autenticacionReclamo);

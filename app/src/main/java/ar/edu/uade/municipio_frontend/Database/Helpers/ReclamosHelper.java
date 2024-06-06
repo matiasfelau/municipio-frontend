@@ -5,14 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Database.DataContract;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
-import ar.edu.uade.municipio_frontend.Models.Vecino;
 
 public class ReclamosHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION=1;
@@ -21,7 +19,7 @@ public class ReclamosHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         final String CREATE_RECLAMOS = "CREATE TABLE " + DataContract.ReclamosEntry.TABLE_NAME + "("
-                + DataContract.ReclamosEntry.IDPRELIMINAR + "INTEGER NOT NULL PRIMARY KEY,"
+                + DataContract.ReclamosEntry.IDPRELIMINAR + " TEXT NOT NULL PRIMARY KEY,"
                 + DataContract.ReclamosEntry.DESCRIPCION + " TEXT NOT NULL,"
                 + DataContract.ReclamosEntry.ESTADO + " TEXT NOT NULL,"
                 + DataContract.ReclamosEntry.DOCUMENTO + " TEXT NOT NULL,"
@@ -55,7 +53,7 @@ public class ReclamosHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
             do {
                 Reclamo aux = new Reclamo();
-                aux.setIdPrevisorio(cursor.getString(0));
+                aux.setIdPreliminar(cursor.getString(0));
                 aux.setDescripcion(cursor.getString(1));
                 aux.setEstado(cursor.getString(2));
                 aux.setDocumento(cursor.getString(3));
@@ -70,6 +68,6 @@ public class ReclamosHelper extends SQLiteOpenHelper {
     public void deleteReclamos(){
         SQLiteDatabase db = getWritableDatabase();
 
-        db.delete(DataContract.VecinosEntry.TABLE_NAME, null, null);
+        db.delete(DataContract.ReclamosEntry.TABLE_NAME, null, null);
     }
 }

@@ -24,16 +24,6 @@
         app:layout_constraintVertical_bias="0.46"
         tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
 
-    <ListView
-        android:id="@+id/listReclamos"
-        android:layout_width="373dp"
-        android:layout_height="127dp"
-        android:layout_marginTop="616dp"
-        android:layout_marginEnd="16dp"
-        android:background="#BE656774"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
         android:id="@+id/botonCambiarPaginaIzquierda"
         android:layout_width="wrap_content"
@@ -148,7 +138,7 @@
         app:srcCompat="@android:drawable/ic_popup_reminder" />
 
     <TextView
-        android:id="@+id/idReclamo"
+        android:id="@+id/idReclamoParticular"
         android:layout_width="197dp"
         android:layout_height="33dp"
         android:layout_marginTop="141dp"
@@ -162,7 +152,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/estadoReclamo"
+        android:id="@+id/estadoReclamoParticular"
         android:layout_width="152dp"
         android:layout_height="33dp"
         android:layout_marginTop="174dp"
@@ -176,7 +166,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/descripcion"
+        android:id="@+id/descripcionReclamoParticular"
         android:layout_width="336dp"
         android:layout_height="98dp"
         android:layout_marginTop="228dp"
@@ -196,6 +186,33 @@
         android:layout_height="117dp"
         android:layout_marginTop="348dp"
         android:layout_marginEnd="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <HorizontalScrollView
+        android:layout_width="328dp"
+        android:layout_height="106dp"
+        android:layout_marginTop="484dp"
+        android:layout_marginEnd="44dp"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/contenedorFotos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"></LinearLayout>
+
+    </HorizontalScrollView>
+
+    <ListView
+        android:id="@+id/listReclamos"
+        android:layout_width="373dp"
+        android:layout_height="127dp"
+        android:layout_marginTop="616dp"
+        android:layout_marginEnd="16dp"
+        android:background="#BE656774"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

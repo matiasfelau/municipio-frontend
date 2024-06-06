@@ -20,7 +20,7 @@ public class Sitio {
     LocalTime apertura;
     LocalTime cierre;
     String comentarios;
-    String idPrevisorio;
+    String idPreliminar;
 
     public Sitio() {
     }
@@ -160,12 +160,12 @@ public class Sitio {
         this.comentarios = comentarios;
     }
 
-    public String getIdPrevisorio() {
-        return idPrevisorio;
+    public String getIdPreliminar() {
+        return idPreliminar;
     }
 
-    public void setIdPrevisorio(String idPrevisorio) {
-        this.idPrevisorio = idPrevisorio;
+    public void setIdPreliminar(String idPreliminar) {
+        this.idPreliminar = idPreliminar;
     }
 
     @Override
@@ -188,7 +188,7 @@ public class Sitio {
 
     public ContentValues toContentValues(){
         ContentValues cv = new ContentValues();
-        cv.put(DataContract.ReclamosEntry.IDPRELIMINAR,idPrevisorio);
+        cv.put(DataContract.ReclamosEntry.IDPRELIMINAR, idPreliminar);
         cv.put(DataContract.SitiosEntry.LATITUD,latitud.toString());
         cv.put(DataContract.SitiosEntry.LONGITUD,longitud.toString());
         cv.put(DataContract.SitiosEntry.DESCRIPCION,descripcion);

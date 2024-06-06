@@ -9,11 +9,19 @@ public class Reclamo {
     private String descripcion;
     private String estado;
     private String documento;
-    private int idSitio;
+    private Integer idSitio;
     private int idDesperfecto;
-    private String idPrevisorio;
+    private String idPreliminar;
 
     public Reclamo() {
+    }
+
+    public Reclamo(String descripcion, String estado, String documento, int idDesperfecto, String idPreliminar) {
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.documento = documento;
+        this.idDesperfecto = idDesperfecto;
+        this.idPreliminar = idPreliminar;
     }
 
     public Reclamo(String descripcion, String estado, String documento, int idSitio, int idDesperfecto) {
@@ -81,12 +89,12 @@ public class Reclamo {
         this.idDesperfecto = idDesperfecto;
     }
 
-    public String getIdPrevisorio() {
-        return idPrevisorio;
+    public String getIdPreliminar() {
+        return idPreliminar;
     }
 
-    public void setIdPrevisorio(String idPrevisorio) {
-        this.idPrevisorio = idPrevisorio;
+    public void setIdPreliminar(String idPreliminar) {
+        this.idPreliminar = idPreliminar;
     }
 
     @Override
@@ -103,7 +111,7 @@ public class Reclamo {
 
     public ContentValues toContentValues(){
         ContentValues cv = new ContentValues();
-        cv.put(DataContract.ReclamosEntry.IDPRELIMINAR,idPrevisorio);
+        cv.put(DataContract.ReclamosEntry.IDPRELIMINAR, idPreliminar);
         cv.put(DataContract.ReclamosEntry.DESCRIPCION,descripcion);
         cv.put(DataContract.ReclamosEntry.ESTADO,estado);
         cv.put(DataContract.ReclamosEntry.DOCUMENTO,documento);

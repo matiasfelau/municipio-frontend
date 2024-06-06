@@ -59,6 +59,7 @@ public class VerReclamos extends AppCompatActivity {
     Spinner dropdownDatoPertenencia;
     ListView listReclamos;
     ArrayList<String> p;
+    List<Reclamo> reclamos;
     ArrayAdapter<String> prueba;
     Integer c;
     ImageButton botonAgregar;
@@ -135,6 +136,8 @@ public class VerReclamos extends AppCompatActivity {
 
         p = new ArrayList<>();
 
+        reclamos = new ArrayList<>();
+
         prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
 
         autenticacion = new Autenticacion();
@@ -190,17 +193,23 @@ public class VerReclamos extends AppCompatActivity {
             filtro.setTipo("");
 
             filtro.setDato("");
+
+            autenticacionFiltro.setFiltro(filtro);
+
+            getPaginas(autenticacionFiltro);
+
+            getReclamos(1, autenticacionFiltro);
         } else if (autenticacion.getTipo().equals("Empleado")) {
             filtro.setTipo("sector");
 
             filtro.setDato(empleadoHelper.getEmpleadoByLegajo(getIntent().getIntExtra("legajo", -1)).getSector());
+
+            autenticacionFiltro.setFiltro(filtro);
+
+            getPaginas(autenticacionFiltro);
+
+            getReclamos(1, autenticacionFiltro);
         }
-
-        autenticacionFiltro.setFiltro(filtro);
-
-        getPaginas(autenticacionFiltro);
-
-        getReclamos(1, autenticacionFiltro);
 
         //verificacion
         if (from != null) {
@@ -396,20 +405,38 @@ public class VerReclamos extends AppCompatActivity {
     //endpoints y funciones
 
     private void setUpListViewListener(){
-        listReclamos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listReclamos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Context context = getApplicationContext();
-                Toast.makeText(context, "Item removed", Toast.LENGTH_LONG).show();
-                p.remove(position);
-                prueba.notifyDataSetChanged();
-                return true;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String idSeleccionado = prueba.getItem(position);
+                for (Reclamo reclamo : reclamos) {
+                    if (String.valueOf(reclamo.getIdReclamo()).equals(idSeleccionado)) {
+                        Intent nuevaActividad = new Intent(VerReclamos.this, ReclamoParticular.class);
+
+                        nuevaActividad.putExtra("id", reclamo.getIdReclamo());
+
+                        if (Objects.equals(autenticacion.getTipo(), "Vecino")) {
+                            nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                        } else if (Objects.equals(autenticacion.getTipo(), "Empleado")) {
+                            nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+
+                        }
+
+                        nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                        nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                        startActivity(nuevaActividad);
+                    }
+                }
             }
         });
+
     }
 
     private void addItem(Reclamo reclamo){
-        prueba.add(reclamo.getDocumento());
+        prueba.add(String.valueOf(reclamo.getIdReclamo()));
     }
 
     private void mostrarPopupSalir() {
@@ -519,6 +546,8 @@ public class VerReclamos extends AppCompatActivity {
                     for (Reclamo reclamo: response.body()) {
                         addItem(reclamo);
                     }
+                    reclamos.clear();
+                    reclamos.addAll(response.body());
                     prueba.notifyDataSetChanged();
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());

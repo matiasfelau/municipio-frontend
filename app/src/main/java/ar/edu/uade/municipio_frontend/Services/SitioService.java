@@ -8,8 +8,10 @@ import ar.edu.uade.municipio_frontend.Models.Sector;
 import ar.edu.uade.municipio_frontend.Models.Sitio;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface SitioService {
     public final String API_ROUTE = "/sitio";
@@ -19,4 +21,7 @@ public interface SitioService {
 
     @POST(API_ROUTE+"/nuevo")
     Call<Integer> nuevoSitio(@Body AutenticacionSitio autenticacionSitio);
+
+    @GET(API_ROUTE+"/particular"+"/{idSitio}")
+    Call<Sitio> getSitio(@Path("idSitio") Integer idSitio);
 }

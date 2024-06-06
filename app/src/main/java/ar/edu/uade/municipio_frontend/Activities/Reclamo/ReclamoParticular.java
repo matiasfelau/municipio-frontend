@@ -2,16 +2,21 @@ package ar.edu.uade.municipio_frontend.Activities.Reclamo;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,6 +24,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.squareup.picasso.Picasso;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -28,20 +41,38 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
+import java.util.List;
+import java.util.Objects;
 
+import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.Reclamo;
+import ar.edu.uade.municipio_frontend.Models.Sitio;
 import ar.edu.uade.municipio_frontend.R;
+import ar.edu.uade.municipio_frontend.Services.ReclamoService;
+import ar.edu.uade.municipio_frontend.Services.SitioService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ReclamoParticular extends AppCompatActivity {
-    TextView idReclamo;
+    Context context = this;
+    ImageButton botonVolver;
+    TextView idReclamoParticular;
     TextView estadoReclamo;
     TextView descripcionReclamo;
     MapView mapa;
     Marker marker;
+    LinearLayout contenedorFotos;
     ListView historialMovimientosReclamo;
     ImageButton botonCambiarPaginaIzquierda;
     TextView paginaActual;
     ImageButton botonCambiarPaginaDerecha;
-    @SuppressLint("CutPasteId")
+    Autenticacion autenticacion;
+    Reclamo reclamo;
+
+    @SuppressLint({"CutPasteId", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,13 +87,17 @@ public class ReclamoParticular extends AppCompatActivity {
             return insets;
         });
 
-        idReclamo = findViewById(R.id.idReclamo);
+        botonVolver = findViewById(R.id.botonVolver);
 
-        estadoReclamo = findViewById(R.id.estadoReclamo);
+        idReclamoParticular = findViewById(R.id.idReclamoParticular);
 
-        descripcionReclamo = findViewById(R.id.descripcion);
+        estadoReclamo = findViewById(R.id.estadoReclamoParticular);
+
+        descripcionReclamo = findViewById(R.id.descripcionReclamoParticular);
 
         mapa = findViewById(R.id.map);
+
+        contenedorFotos = findViewById(R.id.contenedorFotos);
 
         historialMovimientosReclamo = findViewById(R.id.listReclamos);
 
@@ -71,6 +106,13 @@ public class ReclamoParticular extends AppCompatActivity {
         paginaActual = findViewById(R.id.textPaginaActual);
 
         botonCambiarPaginaDerecha = findViewById(R.id.botonCambiarPaginaDerecha);
+
+        autenticacion = new Autenticacion(
+                getIntent().getStringExtra("token"),
+                getIntent().getStringExtra("USUARIO")
+        );
+
+        reclamo = new Reclamo();
 
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
 
@@ -81,6 +123,34 @@ public class ReclamoParticular extends AppCompatActivity {
         mapa = findViewById(R.id.map);
 
         mapa.setMultiTouchControls(true);
+
+        mapa.getController().setZoom(15.0);
+
+        mapa.invalidate();
+
+        marker = new Marker(mapa);
+
+        getReclamo(getIntent().getIntExtra("id", 0), autenticacion);
+
+        botonVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(ReclamoParticular.this, VerReclamos.class);
+                if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                } else if (Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")) {
+                    nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+
+                }
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+        });
 
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
@@ -171,6 +241,193 @@ public class ReclamoParticular extends AppCompatActivity {
 
         mapa.onPause();
 
+    }
+
+    private void addImageToLayout(String url) {
+
+        if (contenedorFotos == null) {
+            System.out.println("El contenedor de fotos es nulo");
+            return;
+        }
+
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        imageView.setLayoutParams(params);
+        contenedorFotos.addView(imageView);
+
+
+        // Usar Glide para cargar la imagen desde la URL
+        Glide.with(this)
+                .load(url)
+                .placeholder(R.drawable.placeholder) // Asegúrate de tener un recurso placeholder
+                .error(R.drawable.error) // Asegúrate de tener un recurso de error
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        if (e != null) {
+                            e.logRootCauses("Glide");
+                        }
+                        System.out.println("Error al cargar la imagen: " + e.getMessage());
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        // Imagen cargada exitosamente
+                        return false;
+                    }
+                })
+                .into(imageView);
+        //Picasso.get().load(url).into(imageView);
+    }
+
+    private void getFotos(int id) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        ReclamoService reclamoService = retrofit.create(ReclamoService.class);
+
+        Call<List<String>> call = reclamoService.getFotos(id);
+
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<String>> call, @NonNull Response<List<String>> response) {
+                if (response.code() == 200) {//este created
+                    System.out.println("LAS FOTOS DAN"+response.code());
+
+                    List<String> imageUrls = response.body();
+                    assert imageUrls != null;
+                    for (String url : imageUrls) {
+                        addImageToLayout(url);
+                    }
+
+                } else if (response.code() == 400) {//este? badrequest?
+                    System.out.println(response.code());
+                } else if (response.code() == 401) {//este? unauthorized?
+                    System.out.println(response.code());
+                } else if (response.code() == 403) {//este forbbiden
+                    System.out.println(response.code());
+                } else if (response.code() == 404) {//not found?
+                    System.out.println(response.code());
+                } else if (response.code() == 500) {//este internal error server
+                    System.out.println(response.code());
+                } else {
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<String>> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+    private void getReclamo(Integer id, Autenticacion autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        ReclamoService reclamoService = retrofit.create(ReclamoService.class);
+
+        System.out.println(autenticacion.getToken());
+
+        Call<Reclamo> call = reclamoService.getReclamo(id, autenticacion);
+
+        call.enqueue(new Callback<Reclamo>() {
+            @Override
+            public void onResponse(@NonNull Call<Reclamo> call, @NonNull Response<Reclamo> response) {
+                if (response.code() == 200) {//este created
+                    System.out.println(response.code());
+
+                    reclamo = response.body();
+
+                    assert reclamo != null;
+                    idReclamoParticular.setText(String.valueOf(reclamo.getIdReclamo()));
+
+                    estadoReclamo.setText(reclamo.getEstado());
+
+                    descripcionReclamo.setText(reclamo.getDescripcion());
+
+                    getFotos(reclamo.getIdReclamo());
+
+                    System.out.println(reclamo.toString());
+
+                    getSitio(reclamo.getIdSitio());
+
+                } else if (response.code() == 400) {//este? badrequest?
+                    System.out.println(response.code());
+                } else if (response.code() == 401) {//este? unauthorized?
+                    System.out.println(response.code());
+                } else if (response.code() == 403) {//este forbbiden
+                    System.out.println(response.code());
+                } else if (response.code() == 404) {//not found?
+                    System.out.println(response.code());
+                } else if (response.code() == 500) {//este internal error server
+                    System.out.println(response.code());
+                } else {
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Reclamo> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+    private void getSitio(Integer id) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        SitioService sitioService = retrofit.create(SitioService.class);
+
+        Call<Sitio> call = sitioService.getSitio(id);
+
+        call.enqueue(new Callback<Sitio>() {
+            @Override
+            public void onResponse(@NonNull Call<Sitio> call, @NonNull Response<Sitio> response) {
+                if (response.code() == 200) {//este created
+                    System.out.println(response.code());
+
+                    Sitio sitio = response.body();
+
+                    assert sitio != null;
+                    GeoPoint reclamoPoint = new GeoPoint(sitio.getLatitud().doubleValue(), sitio.getLongitud().doubleValue());
+
+                    mapa.getController().setZoom(15.0);
+
+                    marker.setPosition(reclamoPoint);
+
+                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+                    mapa.getOverlays().add(marker);
+
+                    mapa.getController().setCenter(reclamoPoint);
+
+                    mapa.invalidate();
+
+                } else if (response.code() == 400) {//este? badrequest?
+                    System.out.println(response.code());
+                } else if (response.code() == 401) {//este? unauthorized?
+                    System.out.println(response.code());
+                } else if (response.code() == 403) {//este forbbiden
+                    System.out.println(response.code());
+                } else if (response.code() == 404) {//not found?
+                    System.out.println(response.code());
+                } else if (response.code() == 500) {//este internal error server
+                    System.out.println(response.code());
+                } else {
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Sitio> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 
 }
