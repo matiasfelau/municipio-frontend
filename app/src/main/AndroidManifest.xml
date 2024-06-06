@@ -64,6 +64,12 @@
         <activity
             android:name=".Activities.Reclamo.VerReclamos"
             android:exported="false" />
+        <receiver android:name=".Utilities.ConnectivityReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

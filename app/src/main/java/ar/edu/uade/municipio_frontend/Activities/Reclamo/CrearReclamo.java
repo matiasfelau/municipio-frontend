@@ -10,7 +10,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,9 +29,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.google.gson.Gson;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -42,27 +38,23 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
+import ar.edu.uade.municipio_frontend.Database.Helpers.ReclamosHelper;
+import ar.edu.uade.municipio_frontend.Database.Helpers.SitiosHelper;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionReclamo;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionSitio;
 import ar.edu.uade.municipio_frontend.Models.Desperfecto;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
-import ar.edu.uade.municipio_frontend.Models.Sector;
 import ar.edu.uade.municipio_frontend.Models.Sitio;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.DesperfectoService;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
-import ar.edu.uade.municipio_frontend.Services.SectorService;
 import ar.edu.uade.municipio_frontend.Services.SitioService;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,6 +62,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CrearReclamo extends AppCompatActivity {
+    private SitiosHelper helperSitio;
+    private ReclamosHelper helperReclamo;
     Spinner dropdownSitio;
     EditText editTextDescripcion;
     Button buttonGenerar;
@@ -113,7 +107,11 @@ public class CrearReclamo extends AppCompatActivity {
 
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        //recalculo()
+        helperSitio = new SitiosHelper(this);
+
+        helperReclamo = new ReclamosHelper(this);
+
+        recalculo();
 
         // Inicializar vistas
 
@@ -179,6 +177,26 @@ public class CrearReclamo extends AppCompatActivity {
 
         System.out.println(autenticacion.getToken());
 
+        if (recalculo()){
+            if(!helperReclamo.getReclamos().isEmpty()){
+                List<Reclamo> reclamos = helperReclamo.getReclamos();
+                Sitio sitio = null;
+                String idReclamoP;
+                for (Reclamo reclamo : reclamos){
+                    idReclamoP = reclamo.getIdPrevisorio();
+                    sitio = helperSitio.getSitio(idReclamoP);
+                    if (sitio!=null) {
+                        autenticacionSitio.setSitio(sitio);
+                        nuevoSitioLocal(autenticacionSitio);
+                        reclamo.setIdSitio(sitio.getIdSitio());
+                    }else {
+                        autenticacionReclamo.setReclamo(reclamo);
+                        nuevoReclamo(autenticacionReclamo);
+                    }
+                }
+            }
+        }
+
         dropdownDesperfecto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -224,8 +242,11 @@ public class CrearReclamo extends AppCompatActivity {
                     );
 
                     autenticacionSitio.setSitio(sitio);
-
-                    nuevoSitio(autenticacionSitio);
+                    if (recalculo()){
+                        nuevoSitio(autenticacionSitio);
+                    }else{
+                        helperSitio.saveSitio(sitio);
+                    }
 
                 } else if (!checkBoxMapa.isChecked()) {
                     for (Sitio s : sitiosObjeto) {
@@ -251,8 +272,12 @@ public class CrearReclamo extends AppCompatActivity {
                     );
 
                     autenticacionReclamo.setReclamo(reclamo);
+                    if (recalculo()){
+                        nuevoReclamo(autenticacionReclamo);
+                    }else{
+                        helperReclamo.saveReclamo(reclamo);
+                    }
 
-                    nuevoReclamo(autenticacionReclamo);
                 }
             }
         });
@@ -301,13 +326,16 @@ public class CrearReclamo extends AppCompatActivity {
         map.getOverlays().add(eventsOverlay);
     }
 
-    private void recalculo() {
+    private boolean recalculo() {
         networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null) {
             if (networkInfo.getState().toString().equals("CONNECTED") && Objects.equals(networkInfo.getTypeName(), "WIFI")) {
                 nuevoReclamo(autenticacionReclamo);
+                return true;
             }
+            return false;
         }
+        return false;
     }
 
     private void getDesperfectos(Autenticacion autenticacion) {
@@ -523,7 +551,7 @@ public class CrearReclamo extends AppCompatActivity {
         SitioService sitioService = retrofit.create(SitioService.class);
 
         Call<Integer> call = sitioService.nuevoSitio(autenticacionSitio);
-
+        
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
@@ -548,6 +576,35 @@ public class CrearReclamo extends AppCompatActivity {
 
                     autenticacionReclamo.setReclamo(reclamo);
 
+                    nuevoReclamo(autenticacionReclamo);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Integer> call, @NonNull Throwable t) {
+                System.out.println("no funciona");
+            }
+        });
+    }
+    private void nuevoSitioLocal(AutenticacionSitio autenticacionSitio) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        SitioService sitioService = retrofit.create(SitioService.class);
+
+        Call<Integer> call = sitioService.nuevoSitio(autenticacionSitio);
+
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
+                if (response.body()!= null) {
+                    Reclamo reclamo = new Reclamo(
+                            descripcionReclamo.getText().toString(),
+                            "Nuevo",
+                            getIntent().getStringExtra("documento"),
+                            response.body(),
+                            desperfecto.getIdDesperfecto()
+                    );
+                    autenticacionReclamo.setReclamo(reclamo);
                     nuevoReclamo(autenticacionReclamo);
                 }
             }

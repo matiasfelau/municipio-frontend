@@ -27,4 +27,22 @@ public class DataContract {
         public static final String ID = "id";
         public static final String NOMBRE = "nombre";
     }
+
+    public static abstract class SitiosEntry implements BaseColumns{
+        public static final String TABLE_NAME = "Sitios";
+        public static final String IDPRELIMINAR = "idPreliminar";
+        public static final String LATITUD = "latitud";
+        public static final String LONGITUD = "longitud";
+        public static final String DESCRIPCION = "descripcion";
+    }
+
+    public static abstract class ReclamosEntry implements BaseColumns{
+        public static final String TABLE_NAME = "Reclamos";
+        public static final String IDPRELIMINAR = "idPreliminar";
+        public static final String DESCRIPCION = "descripcion";
+        public static final String ESTADO = "estado";
+        public static final String DOCUMENTO = "documento";
+        public static final String IDSITIO = "idSitio";
+        public static final String IDDESPERFECTO ="idDesperfecto";
+    }
 }

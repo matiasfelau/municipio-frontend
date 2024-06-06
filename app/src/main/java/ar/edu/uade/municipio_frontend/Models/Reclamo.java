@@ -1,5 +1,9 @@
 package ar.edu.uade.municipio_frontend.Models;
 
+import android.content.ContentValues;
+
+import ar.edu.uade.municipio_frontend.Database.DataContract;
+
 public class Reclamo {
     private Integer idReclamo;
     private String descripcion;
@@ -7,6 +11,7 @@ public class Reclamo {
     private String documento;
     private int idSitio;
     private int idDesperfecto;
+    private String idPrevisorio;
 
     public Reclamo() {
     }
@@ -76,6 +81,14 @@ public class Reclamo {
         this.idDesperfecto = idDesperfecto;
     }
 
+    public String getIdPrevisorio() {
+        return idPrevisorio;
+    }
+
+    public void setIdPrevisorio(String idPrevisorio) {
+        this.idPrevisorio = idPrevisorio;
+    }
+
     @Override
     public String toString() {
         return "Reclamo{" +
@@ -86,5 +99,16 @@ public class Reclamo {
                 ", idSitio=" + idSitio +
                 ", idDesperfecto=" + idDesperfecto +
                 '}';
+    }
+
+    public ContentValues toContentValues(){
+        ContentValues cv = new ContentValues();
+        cv.put(DataContract.ReclamosEntry.IDPRELIMINAR,idPrevisorio);
+        cv.put(DataContract.ReclamosEntry.DESCRIPCION,descripcion);
+        cv.put(DataContract.ReclamosEntry.ESTADO,estado);
+        cv.put(DataContract.ReclamosEntry.DOCUMENTO,documento);
+        cv.put(DataContract.ReclamosEntry.IDSITIO,idSitio);
+        cv.put(DataContract.ReclamosEntry.IDDESPERFECTO,idDesperfecto);
+        return cv;
     }
 }
