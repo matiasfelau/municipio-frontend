@@ -5,41 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/palmeras2"
+    android:background="@drawable/background"
     tools:context=".Activities.Reclamo.CrearReclamo">
-
-    <TextView
-        android:id="@+id/filterBackground"
-        android:layout_width="394dp"
-        android:layout_height="704dp"
-        android:layout_marginTop="45dp"
-        android:background="#80656774"
-        android:backgroundTint="#656774"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
-
-    <ImageView
-        android:id="@+id/bannerArriba"
-        android:layout_width="411dp"
-        android:layout_height="37dp"
-        android:contentDescription="bannerAbajo"
-        android:scaleX="2"
-        android:scaleY="1.5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/banner_abajo" />
 
     <ImageButton
         android:id="@+id/botonVolver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="341dp"
+        android:layout_marginEnd="357dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleX="1.5"
         android:scaleY="1.5"
@@ -51,10 +25,10 @@
 
     <TextView
         android:id="@+id/textNombreAplicacion"
-        android:layout_width="255dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="69dp"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="80dp"
         android:text="Palmas de Mallorca"
         android:textAlignment="center"
         android:textAllCaps="false"
@@ -62,28 +36,49 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/botonLogout"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="4dp"
-        android:background="#00FFFFFF"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:visibility="invisible"
+    <TextView
+        android:id="@+id/filterBackground"
+        android:layout_width="429dp"
+        android:layout_height="721dp"
+        android:layout_marginTop="45dp"
+        android:background="#80656774"
+        android:backgroundTint="#656774"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_delete" />
+        app:layout_constraintVertical_bias="0.325"
+        tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
+
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="312dp"
+        android:layout_height="93dp"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerSitio"
+        android:layout_width="341dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:drawable/spinner_dropdown_background"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/generarReclamo"
         android:layout_width="399dp"
         android:layout_height="49dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="124dp"
         android:baselineAligned="false"
         android:text="Generar Reclamo"
         android:textAlignment="center"
@@ -95,62 +90,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <Spinner
-        android:id="@+id/spinnerSitio"
-        android:layout_width="341dp"
-        android:layout_height="57dp"
-        android:layout_marginTop="116dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:drawable/spinner_dropdown_background"
-        android:spinnerMode="dropdown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Spinner
         android:id="@+id/spinnerDesperfecto"
         android:layout_width="336dp"
         android:layout_height="58dp"
-        android:layout_marginTop="184dp"
+        android:layout_marginTop="248dp"
         android:layout_marginEnd="32dp"
         android:background="@android:drawable/spinner_dropdown_background"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="261dp"
-        android:layout_marginEnd="9dp"
+        android:layout_marginTop="324dp"
+        android:layout_marginEnd="8dp"
         android:text="Si no encontras el sitio que buscás en la lista, marcalo acá:"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
-        android:layout_width="312dp"
-        android:layout_height="93dp"
-        android:layout_marginTop="288dp"
-        android:layout_marginEnd="44dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <CheckBox
-        android:id="@+id/checkBoxMapa"
-        android:layout_width="241dp"
-        android:layout_height="59dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="112dp"
-        android:buttonTint="@color/white"
-        android:text="Usar la ubicación en el mapa"
-        android:textColor="@color/white"
-        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -159,7 +118,7 @@
         android:id="@+id/editTextDescripcion"
         android:layout_width="335dp"
         android:layout_height="104dp"
-        android:layout_marginTop="472dp"
+        android:layout_marginTop="536dp"
         android:layout_marginEnd="28dp"
         android:background="@color/white"
         android:hint="Descripción"
@@ -171,7 +130,7 @@
         android:id="@+id/buttonAdjuntarArchivos"
         android:layout_width="255dp"
         android:layout_height="61dp"
-        android:layout_marginTop="600dp"
+        android:layout_marginTop="664dp"
         android:layout_marginEnd="76dp"
         android:background="?android:attr/galleryItemBackground"
         android:padding="8dp"
@@ -184,12 +143,26 @@
         android:id="@+id/buttonGenerar"
         android:layout_width="304dp"
         android:layout_height="60dp"
-        android:layout_marginTop="668dp"
+        android:layout_marginTop="732dp"
         android:layout_marginEnd="44dp"
         android:background="#C92E6FC1"
         android:text="Generar"
         android:textColor="@android:color/white"
         android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBoxMapa"
+        android:layout_width="241dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="464dp"
+        android:layout_marginEnd="112dp"
+        android:buttonTint="@color/white"
+        android:text="Usar la ubicación en el mapa"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -208,66 +181,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_input_add"
         app:tint="@color/white" />
-
-    <ImageView
-        android:id="@+id/bannerAbajo"
-        android:layout_width="411dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="748dp"
-        android:layout_marginEnd="2dp"
-        android:scaleX="2"
-        android:scaleY="1.5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/banner_abajo" />
-
-    <ImageButton
-        android:id="@+id/botonCambiarPantallaIzquierda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="742dp"
-        android:layout_marginEnd="345dp"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="#FFFDFD"
-        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
-
-    <TextView
-        android:id="@+id/textPantalla"
-        android:layout_width="178dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="747dp"
-        android:layout_marginEnd="108dp"
-        android:text="Reclamos"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/botonCambiarPantallaDerecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="742dp"
-        android:backgroundTint="#00FFFFFF"
-        android:rotationY="180"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="@color/white"
-        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

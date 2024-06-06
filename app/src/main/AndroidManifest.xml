@@ -35,14 +35,9 @@
         <activity
             android:name=".Activities.Reclamo.ReclamoParticular"
             android:exported="false" />
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-
-        <activity
-            android:name=".Activities.Reclamo.NuevoSitio"
-            android:exported="false" />
         <activity
             android:name=".Activities.Reclamo.CrearReclamo"
             android:exported="false" />
