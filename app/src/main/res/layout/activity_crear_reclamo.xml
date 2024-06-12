@@ -66,7 +66,7 @@
     <Spinner
         android:id="@+id/spinnerSitio"
         android:layout_width="341dp"
-        android:layout_height="57dp"
+        android:layout_height="60dp"
         android:layout_marginTop="180dp"
         android:layout_marginEnd="24dp"
         android:background="@android:drawable/spinner_dropdown_background"
@@ -92,10 +92,10 @@
 
     <Spinner
         android:id="@+id/spinnerDesperfecto"
-        android:layout_width="336dp"
-        android:layout_height="58dp"
+        android:layout_width="341dp"
+        android:layout_height="60dp"
         android:layout_marginTop="248dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="24dp"
         android:background="@android:drawable/spinner_dropdown_background"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
@@ -171,8 +171,8 @@
         android:id="@+id/botonAgregar"
         android:layout_width="50dp"
         android:layout_height="45dp"
-        android:layout_marginTop="196dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="28dp"
         android:background="#C92E6FC1"
         android:scaleX="1.5"
         android:scaleY="1.5"
