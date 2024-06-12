@@ -472,14 +472,26 @@ public class VerReclamos extends AppCompatActivity {
         try {
             Vecino vecino = vecinoHelper.getVecinos().get(0);
             vecinoHelper.deleteVecinos();
+            Intent nuevaActividad = new Intent(VerReclamos.this, VecinoIngreso.class);
+            nuevaActividad.putExtra("ingresado", false);
+            nuevaActividad.putExtra("from", "VerReclamos");
+            startActivity(nuevaActividad);
         } catch (Exception e2) {
             try {
                 Empleado empleado = empleadoHelper.getEmpleados().get(0);
                 empleadoHelper.deleteEmpleados();
+                Intent nuevaActividad = new Intent(VerReclamos.this, VecinoIngreso.class);
+                nuevaActividad.putExtra("ingresado", false);
+                nuevaActividad.putExtra("from", "VerReclamos");
+                startActivity(nuevaActividad);
             } catch (Exception e3) {
                 try {
                     invitadoHelper.getInvitados().get(0);
                     invitadoHelper.deleteInvitados();
+                    Intent nuevaActividad = new Intent(VerReclamos.this, VecinoIngreso.class);
+                    nuevaActividad.putExtra("ingresado", false);
+                    nuevaActividad.putExtra("from", "VerReclamos");
+                    startActivity(nuevaActividad);
                 } catch (Exception e4) {
                     Intent nuevaActividad = new Intent(VerReclamos.this, VecinoIngreso.class);
                     nuevaActividad.putExtra("ingresado", false);

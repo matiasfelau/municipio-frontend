@@ -15,8 +15,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Objects;
+
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
+import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Models.CredencialVecino;
+import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.CredencialVecinoService;
 import retrofit2.Call;
@@ -31,6 +35,7 @@ public class PrimerIngreso extends AppCompatActivity {
     TextView avisoDatosIncorrectos;
     Button botonEnviar;
     Button botonMantener;
+    VecinoHelper vecinoHelper;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -58,6 +63,8 @@ public class PrimerIngreso extends AppCompatActivity {
         botonEnviar = findViewById(R.id.botonEnviarPassword);
 
         botonMantener = findViewById(R.id.botonMismaPassword);
+
+        vecinoHelper = new VecinoHelper(this);
 
         botonEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,25 +104,33 @@ public class PrimerIngreso extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
-                if (response.body() != null) {
-                    if (response.body()) {
-                        Intent nuevaActividad = new Intent(PrimerIngreso.this, VerReclamos.class);
 
-                        nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
-
-                        nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
-
-                        nuevaActividad.putExtra("from", "PrimerIngreso");
-
-                        nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
-
-                        startActivity(nuevaActividad);
-
-                    } else {
-                        avisoDatosIncorrectos.setVisibility(View.VISIBLE);
-
+                if (response.code() == 200) {
+                    if (!Objects.equals(credencialVecino.getPassword(), "")) {
+                        Vecino vecino = vecinoHelper.getVecinos().get(0);
+                        vecinoHelper.deleteVecinos();
+                        vecino.setPassword(inputPassword.getText().toString());
+                        vecinoHelper.saveVecino(vecino);
                     }
+
+                    Intent nuevaActividad = new Intent(PrimerIngreso.this, VerReclamos.class);
+
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                    nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                    nuevaActividad.putExtra("from", "PrimerIngreso");
+
+                    nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                    startActivity(nuevaActividad);
+
                 }
+                else if (response.code() == 400) {
+                    avisoDatosIncorrectos.setVisibility(View.VISIBLE);
+
+                }
+
             }
             @Override
             public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable t) {

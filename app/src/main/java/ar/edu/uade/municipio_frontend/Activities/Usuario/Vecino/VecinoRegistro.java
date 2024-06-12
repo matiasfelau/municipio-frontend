@@ -108,17 +108,18 @@ public class VecinoRegistro extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
-                if (response.body() != null) {
-                    if (response.body()) {
-                        Intent nuevaActividad = new Intent(VecinoRegistro.this, VecinoIngreso.class);
+                System.out.println(response.code()+"hola");
+                if (response.code() == 201) {
 
-                        startActivity(nuevaActividad);
-
-                    } else {
-                        System.out.println("El DNI está mal.");
+                    Intent nuevaActividad = new Intent(VecinoRegistro.this, VecinoIngreso.class);
+                    startActivity(nuevaActividad);
+                }
+                else if (response.code() == 400) {
                         avisoDatosIncorrectos.setVisibility(View.VISIBLE);
 
-                    }
+                }
+                else if (response.code() == 500) {
+                    System.out.println("EL REGISTRO DEL VECINO DIO ERROR 500");
                 }
             }
             @Override

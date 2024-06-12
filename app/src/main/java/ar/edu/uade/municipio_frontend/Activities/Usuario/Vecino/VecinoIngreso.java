@@ -221,24 +221,28 @@ public class VecinoIngreso extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
-                Intent nuevaActividad;
+                Intent nuevaActividad = null;
 
-                if (Boolean.TRUE.equals(response.body())) {
+                if (response.code() == 200) {
                     nuevaActividad = new Intent(VecinoIngreso.this, PrimerIngreso.class);
 
-                } else {
+                }
+                else if (response.code() == 400) {
                     nuevaActividad = new Intent(VecinoIngreso.this, VerReclamos.class);
 
                 }
-                nuevaActividad.putExtra("documento", documento);
+                if (nuevaActividad != null) {
+                    nuevaActividad.putExtra("documento", documento);
 
-                nuevaActividad.putExtra("token", token);
+                    nuevaActividad.putExtra("token", token);
 
-                nuevaActividad.putExtra("from", "VecinoIngreso");
+                    nuevaActividad.putExtra("from", "VecinoIngreso");
 
-                nuevaActividad.putExtra("USUARIO", "VECINO");
+                    nuevaActividad.putExtra("USUARIO", "VECINO");
 
-                startActivity(nuevaActividad);
+                    startActivity(nuevaActividad);
+                }
+
 
             }
             @Override
