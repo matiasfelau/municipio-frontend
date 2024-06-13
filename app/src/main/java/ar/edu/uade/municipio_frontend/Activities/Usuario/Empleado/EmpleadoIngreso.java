@@ -91,12 +91,18 @@ public class EmpleadoIngreso extends AppCompatActivity {
         botonIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ingresar(new Empleado(Integer.parseInt(inputLegajo.getText().toString()),
-                        null,
-                        null,
-                        inputPassword.getText().toString(),
-                        null
-                ));
+                try {
+                    ingresar(new Empleado(Integer.parseInt(inputLegajo.getText().toString()),
+                            null,
+                            null,
+                            inputPassword.getText().toString(),
+                            null
+                    ));
+                }
+                catch (Exception e) {
+                    avisoDatosIncorrectos.setVisibility(View.VISIBLE);
+                }
+
 
             }
         });

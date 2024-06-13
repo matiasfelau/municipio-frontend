@@ -43,6 +43,7 @@ import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import ar.edu.uade.municipio_frontend.Services.SectorService;
+import ar.edu.uade.municipio_frontend.Utilities.IdDescripcionReclamo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,9 +59,9 @@ public class VerReclamos extends AppCompatActivity {
     Spinner dropdownDatoSector;
     Spinner dropdownDatoPertenencia;
     ListView listReclamos;
-    ArrayList<String> p;
+    ArrayList<IdDescripcionReclamo> p;
     List<Reclamo> reclamos;
-    ArrayAdapter<String> prueba;
+    ArrayAdapter<IdDescripcionReclamo> prueba;
     Integer c;
     ImageButton botonAgregar;
     Button botonFiltrar;
@@ -408,7 +409,7 @@ public class VerReclamos extends AppCompatActivity {
         listReclamos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String idSeleccionado = prueba.getItem(position);
+                String idSeleccionado = prueba.getItem(position).getId();
                 for (Reclamo reclamo : reclamos) {
                     if (String.valueOf(reclamo.getIdReclamo()).equals(idSeleccionado)) {
                         Intent nuevaActividad = new Intent(VerReclamos.this, ReclamoParticular.class);
@@ -436,7 +437,12 @@ public class VerReclamos extends AppCompatActivity {
     }
 
     private void addItem(Reclamo reclamo){
-        prueba.add(String.valueOf(reclamo.getIdReclamo()));
+        if (reclamo != null) {
+            if (reclamo.getDescripcion() != null) {
+                prueba.add(new IdDescripcionReclamo(String.valueOf(reclamo.getIdReclamo()), reclamo.getDescripcion()));
+            }
+        }
+
     }
 
     private void mostrarPopupSalir() {

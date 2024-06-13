@@ -89,6 +89,7 @@
         android:id="@+id/textAvisoDatosIncorrectos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="281dp"
         android:shadowColor="@color/white"
         android:shadowRadius="20"
         android:text="¡Alguno de los datos ingresados es INCORRECTO!"
@@ -97,10 +98,10 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/botonIngresoInspector"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputPasswordInspector" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/botonIngresoInspector"

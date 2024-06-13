@@ -70,21 +70,21 @@
 
     <Spinner
         android:id="@+id/tipoDocumentacion"
-        android:layout_width="250dp"
+        android:layout_width="45dp"
         android:layout_height="50dp"
-        android:layout_marginTop="224dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginTop="289dp"
+        android:layout_marginEnd="1dp"
         android:background="@color/white"
         android:entries="@array/tipoDocumentacion_options"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/inputDocumentoRegistro"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/inputDocumentoRegistro"
         android:layout_width="250dp"
-        android:layout_height="50dp"
+        android:layout_height="51dp"
         android:layout_marginTop="84dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginEnd="56dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="Documento"
@@ -95,22 +95,23 @@
 
     <EditText
         android:id="@+id/inputEmailRegistro"
-        android:layout_width="250dp"
+        android:layout_width="295dp"
         android:layout_height="50dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginTop="402dp"
+        android:layout_marginEnd="56dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputDocumentoRegistro" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textAvisoDatosIncorrectos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="237dp"
         android:shadowColor="@color/white"
         android:shadowRadius="20"
         android:text="¡Alguno de los datos ingresados es INCORRECTO!"
@@ -119,10 +120,10 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/botonEnviar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmailRegistro" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/botonEnviar"

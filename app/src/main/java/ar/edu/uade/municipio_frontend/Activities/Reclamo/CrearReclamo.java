@@ -791,6 +791,9 @@ public class CrearReclamo extends AppCompatActivity {
                         System.out.println(s);
                     }
 
+                    Toast.makeText(getApplicationContext(), "El ID del reclamo es:"+String.valueOf(reclamo.getIdReclamo()), Toast.LENGTH_LONG).show();
+
+
                     uploadImages(reclamo.getIdReclamo(), imageUris);
                     Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
 

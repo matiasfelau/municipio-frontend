@@ -8,6 +8,19 @@
     android:background="@drawable/background"
     tools:context=".Activities.Reclamo.CrearReclamo">
 
+    <TextView
+        android:id="@+id/filterBackground"
+        android:layout_width="433dp"
+        android:layout_height="728dp"
+        android:background="#80656774"
+        android:backgroundTint="#656774"
+        android:text=" "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
+
     <ImageButton
         android:id="@+id/botonVolver"
         android:layout_width="wrap_content"
@@ -38,47 +51,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/filterBackground"
-        android:layout_width="429dp"
-        android:layout_height="721dp"
-        android:layout_marginTop="45dp"
-        android:background="#80656774"
-        android:backgroundTint="#656774"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.325"
-        tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
-
-
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
-        android:layout_width="312dp"
-        android:layout_height="93dp"
-        android:layout_marginTop="352dp"
-        android:layout_marginEnd="44dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/spinnerSitio"
-        android:layout_width="341dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:drawable/spinner_dropdown_background"
-        android:spinnerMode="dropdown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/generarReclamo"
         android:layout_width="399dp"
         android:layout_height="49dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="104dp"
         android:baselineAligned="false"
         android:text="Generar Reclamo"
         android:textAlignment="center"
@@ -86,18 +64,29 @@
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/spinnerDesperfecto"
+    <CheckBox
+        android:id="@+id/checkBoxMapa"
+        android:layout_width="241dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="452dp"
+        android:layout_marginEnd="128dp"
+        android:buttonTint="@color/white"
+        android:text="Usar la ubicación en el mapa"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
         android:layout_width="341dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="248dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:drawable/spinner_dropdown_background"
-        android:spinnerMode="dropdown"
+        android:layout_height="93dp"
+        android:layout_marginTop="344dp"
+        android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,8 +94,8 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="324dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="312dp"
+        android:layout_marginEnd="16dp"
         android:text="Si no encontras el sitio que buscás en la lista, marcalo acá:"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -114,23 +103,63 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/spinnerDesperfecto"
+        android:layout_width="341dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="236dp"
+        android:layout_marginEnd="36dp"
+        android:background="@android:drawable/spinner_dropdown_background"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editTextDescripcion"
-        android:layout_width="335dp"
+        android:layout_width="341dp"
         android:layout_height="104dp"
-        android:layout_marginTop="536dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="524dp"
+        android:layout_marginEnd="36dp"
         android:background="@color/white"
         android:hint="Descripción"
         android:padding="8dp"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerSitio"
+        android:layout_width="341dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="36dp"
+        android:background="@android:drawable/spinner_dropdown_background"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonAgregar"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="188dp"
+        android:layout_marginEnd="40dp"
+        android:background="#C92E6FC1"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/white" />
 
     <Button
         android:id="@+id/buttonAdjuntarArchivos"
         android:layout_width="255dp"
         android:layout_height="61dp"
-        android:layout_marginTop="664dp"
+        android:layout_marginTop="640dp"
         android:layout_marginEnd="76dp"
         android:background="?android:attr/galleryItemBackground"
         android:padding="8dp"
@@ -143,8 +172,8 @@
         android:id="@+id/buttonGenerar"
         android:layout_width="304dp"
         android:layout_height="60dp"
-        android:layout_marginTop="732dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginTop="704dp"
+        android:layout_marginEnd="52dp"
         android:background="#C92E6FC1"
         android:text="Generar"
         android:textColor="@android:color/white"
@@ -152,34 +181,5 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <CheckBox
-        android:id="@+id/checkBoxMapa"
-        android:layout_width="241dp"
-        android:layout_height="59dp"
-        android:layout_marginTop="464dp"
-        android:layout_marginEnd="112dp"
-        android:buttonTint="@color/white"
-        android:text="Usar la ubicación en el mapa"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/botonAgregar"
-        android:layout_width="50dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="28dp"
-        android:background="#C92E6FC1"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

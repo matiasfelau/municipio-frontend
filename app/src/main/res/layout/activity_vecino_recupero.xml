@@ -68,36 +68,32 @@
 
     <Spinner
         android:id="@+id/tipoDocumentacion"
-        android:layout_width="232dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="268dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="46dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="356dp"
+        android:layout_marginEnd="1dp"
         android:background="@color/white"
         android:entries="@array/tipoDocumentacion_options"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/inputDocumentoRecupero"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/inputDocumentoRecupero"
-        android:layout_width="232dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="352dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="248dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="356dp"
+        android:layout_marginEnd="63dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="Documento"
         android:inputType="text"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/inputEmailRecupero"
-        android:layout_width="232dp"
+        android:layout_width="295dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="180dp"
@@ -108,7 +104,7 @@
         android:inputType="textEmailAddress"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
@@ -116,6 +112,7 @@
         android:id="@+id/textAvisoDatosIncorrectos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="305dp"
         android:shadowColor="@color/white"
         android:shadowRadius="20"
         android:text="¡Alguno de los datos ingresados es INCORRECTO!"
@@ -124,17 +121,17 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/botonEnviarOlvido"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmailRecupero" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/botonEnviarOlvido"
         android:layout_width="125dp"
         android:layout_height="50dp"
         android:layout_marginStart="146dp"
-        android:layout_marginTop="122dp"
+        android:layout_marginTop="124dp"
         android:layout_marginEnd="145dp"
         android:background="#2E6FC1"
         android:text="Enviar"
@@ -143,6 +140,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputEmailRecupero" />
 
