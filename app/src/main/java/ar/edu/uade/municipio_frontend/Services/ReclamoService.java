@@ -5,6 +5,7 @@ import java.util.List;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionReclamo;
+import ar.edu.uade.municipio_frontend.Models.MovimientoReclamo;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -30,4 +31,7 @@ public interface ReclamoService {
 
     @GET(API_ROUTE+"/fotos"+"/{idReclamo}")
     Call<List<String>> getFotos(@Path("idReclamo") Integer idReclamo);
+
+    @GET(API_ROUTE+"/movimientos"+"/{idReclamo}")
+    Call<List<MovimientoReclamo>> getMovimientos(@Path("idReclamo") Integer idReclamo);
 }

@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,15 +43,19 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.Filtro;
+import ar.edu.uade.municipio_frontend.Models.MovimientoReclamo;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.Models.Sitio;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import ar.edu.uade.municipio_frontend.Services.SitioService;
+import ar.edu.uade.municipio_frontend.Utilities.IdDescripcionReclamo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,6 +77,9 @@ public class ReclamoParticular extends AppCompatActivity {
     ImageButton botonCambiarPaginaDerecha;
     Autenticacion autenticacion;
     Reclamo reclamo;
+    ListView listMovimientos;
+    List<String> movimientos;
+    ArrayAdapter<String> adapter;
 
     @SuppressLint({"CutPasteId", "MissingInflatedId"})
     @Override
@@ -86,6 +95,14 @@ public class ReclamoParticular extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        listMovimientos = findViewById(R.id.listMovimientos);
+
+        movimientos = new ArrayList<>();
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, movimientos);
+
+        listMovimientos.setAdapter(adapter);
 
         botonVolver = findViewById(R.id.botonVolver);
 
@@ -131,6 +148,8 @@ public class ReclamoParticular extends AppCompatActivity {
         marker = new Marker(mapa);
 
         getReclamo(getIntent().getIntExtra("id", 0), autenticacion);
+
+
 
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,7 +315,7 @@ public class ReclamoParticular extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<String>> call, @NonNull Response<List<String>> response) {
                 if (response.code() == 200) {//este created
-                    System.out.println("LAS FOTOS DAN"+response.code());
+                    System.out.println("LAS FOTOS DAN" + response.code());
 
                     List<String> imageUrls = response.body();
                     assert imageUrls != null;
@@ -324,6 +343,17 @@ public class ReclamoParticular extends AppCompatActivity {
 
             }
         });
+    }
+
+
+
+
+    private void addItem(MovimientoReclamo movimientoReclamo){
+        if (movimientoReclamo != null) {
+            System.out.println(movimientoReclamo.toString());
+            adapter.add(movimientoReclamo.getCausa()+" "+movimientoReclamo.getFecha().substring(0,10));
+        }
+
     }
 
     private void getReclamo(Integer id, Autenticacion autenticacion) {
@@ -355,6 +385,8 @@ public class ReclamoParticular extends AppCompatActivity {
                     System.out.println(reclamo.toString());
 
                     getSitio(reclamo.getIdSitio());
+
+                    getMovimientos(reclamo.getIdReclamo());
 
                 } else if (response.code() == 400) {//este? badrequest?
                     System.out.println(response.code());
@@ -426,6 +458,48 @@ public class ReclamoParticular extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<Sitio> call, @NonNull Throwable t) {
 
+            }
+        });
+    }
+
+    private void getMovimientos(Integer id) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        ReclamoService reclamoService = retrofit.create(ReclamoService.class);
+
+        Call<List<MovimientoReclamo>> call = reclamoService.getMovimientos(id);
+
+        call.enqueue(new Callback<List<MovimientoReclamo>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<MovimientoReclamo>> call, @NonNull Response<List<MovimientoReclamo>> response) {
+                System.out.println("BRODA UAHHH");
+                if (response.code() == 200) {//este created
+                    System.out.println("SI ENTRA");
+                    assert response.body() != null;
+                    for (MovimientoReclamo movimientoReclamo : response.body()) {
+                        addItem(movimientoReclamo);
+
+                    }
+                    adapter.notifyDataSetChanged();
+
+                } else if (response.code() == 400) {//este? badrequest?
+                    System.out.println(response.code());
+                } else if (response.code() == 401) {//este? unauthorized?
+                    System.out.println(response.code());
+                } else if (response.code() == 403) {//este forbbiden
+                    System.out.println(response.code());
+                } else if (response.code() == 404) {//not found?
+                    System.out.println(response.code());
+                } else if (response.code() == 500) {//este internal error server
+                    System.out.println(response.code());
+                } else {
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<MovimientoReclamo>> call, @NonNull Throwable t) {
+                System.out.println(t);
             }
         });
     }

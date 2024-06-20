@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "715774820087",
+    "project_id": "palmas-de-mallorca",
+    "storage_bucket": "palmas-de-mallorca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715774820087:android:738fdca97da9bc3fd55df2",
+        "android_client_info": {
+          "package_name": "ar.edu.uade.municipio_frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeHNgO1Ie37sy5c0k005rIZH8LTGYxibs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

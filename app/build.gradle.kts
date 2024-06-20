@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -56,6 +57,11 @@ dependencies {
 
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+    implementation(libs.firebase.messaging)
+
+    //notis
+    implementation(libs.retrofit.v290)
+    implementation(libs.converter.gson.v290)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -65,4 +71,16 @@ dependencies {
     annotationProcessor(libs.compiler)
 
     implementation (libs.picasso)
+    implementation(platform(libs.firebase.bom))
+    //noinspection UseTomlInstead
+    implementation("com.google.firebase:firebase-analytics")
+    //noinspection UseTomlInstead
+    implementation ("com.google.firebase:firebase-messaging")
+
+    //noinspection UseTomlInstead
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib")
+}
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }

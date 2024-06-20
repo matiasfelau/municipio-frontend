@@ -296,6 +296,7 @@ public class VerReclamos extends AppCompatActivity {
                     dropdownDatoSector.setVisibility(View.INVISIBLE);
                     dropdownDatoPertenencia.setVisibility(View.VISIBLE);
                 }
+
             }
 
             @Override
@@ -346,7 +347,7 @@ public class VerReclamos extends AppCompatActivity {
                     case "id":
                         p.clear();
                         prueba.notifyDataSetChanged();
-                        getReclamo(1, autenticacion);
+                        getReclamo(Integer.parseInt(inputId.getText().toString()), autenticacion);
                         cantidadPaginas=1;
                         break;
                     case "sector":
@@ -369,7 +370,7 @@ public class VerReclamos extends AppCompatActivity {
                         break;
                 }
 
-
+                textPaginaActual.setText(String.valueOf(1));
             }
         });
 
