@@ -1,7 +1,6 @@
 package ar.edu.uade.municipio_frontend.Activities.Reclamo;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -29,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
+import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.EmpleadoHelper;
 import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
@@ -43,7 +43,7 @@ import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import ar.edu.uade.municipio_frontend.Services.SectorService;
-import ar.edu.uade.municipio_frontend.Utilities.IdDescripcionReclamo;
+import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,9 +59,9 @@ public class VerReclamos extends AppCompatActivity {
     Spinner dropdownDatoSector;
     Spinner dropdownDatoPertenencia;
     ListView listReclamos;
-    ArrayList<IdDescripcionReclamo> p;
+    ArrayList<IdDescripcion> p;
     List<Reclamo> reclamos;
-    ArrayAdapter<IdDescripcionReclamo> prueba;
+    ArrayAdapter<IdDescripcion> prueba;
     Integer c;
     ImageButton botonAgregar;
     Button botonFiltrar;
@@ -440,7 +440,7 @@ public class VerReclamos extends AppCompatActivity {
     private void addItem(Reclamo reclamo){
         if (reclamo != null) {
             if (reclamo.getDescripcion() != null) {
-                prueba.add(new IdDescripcionReclamo(String.valueOf(reclamo.getIdReclamo()), reclamo.getDescripcion()));
+                prueba.add(new IdDescripcion(String.valueOf(reclamo.getIdReclamo()), reclamo.getDescripcion()));
             }
         }
 
@@ -487,7 +487,7 @@ public class VerReclamos extends AppCompatActivity {
             try {
                 Empleado empleado = empleadoHelper.getEmpleados().get(0);
                 empleadoHelper.deleteEmpleados();
-                Intent nuevaActividad = new Intent(VerReclamos.this, VecinoIngreso.class);
+                Intent nuevaActividad = new Intent(VerReclamos.this, EmpleadoIngreso.class);
                 nuevaActividad.putExtra("ingresado", false);
                 nuevaActividad.putExtra("from", "VerReclamos");
                 startActivity(nuevaActividad);
@@ -495,7 +495,7 @@ public class VerReclamos extends AppCompatActivity {
                 try {
                     invitadoHelper.getInvitados().get(0);
                     invitadoHelper.deleteInvitados();
-                    Intent nuevaActividad = new Intent(VerReclamos.this, VecinoIngreso.class);
+                    Intent nuevaActividad = new Intent(VerReclamos.this, InvitadoIngreso.class);
                     nuevaActividad.putExtra("ingresado", false);
                     nuevaActividad.putExtra("from", "VerReclamos");
                     startActivity(nuevaActividad);
