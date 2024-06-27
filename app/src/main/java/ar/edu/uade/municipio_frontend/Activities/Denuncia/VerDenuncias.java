@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
@@ -47,7 +48,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VerDenuncias extends AppCompatActivity {
     //inicializaciones
     EmpleadoHelper empleadoHelper;
-    Button botonAgregar;
+    ImageButton botonAgregar;
     InvitadoHelper invitadoHelper;
     VecinoHelper vecinoHelper;
     EditText inputId;
@@ -56,7 +57,9 @@ public class VerDenuncias extends AppCompatActivity {
     ImageButton botonCambiarPaginaDerecha;
     TextView textPaginaActual;
     ListView listDenuncias;
-    Button boton;
+    ImageButton boton;
+    ImageButton botonCambiarPantallaDerecha;
+    ImageButton botonCambiarPantallaIzquierda;
     Integer pagina;
     Autenticacion autenticacion;
     ArrayList<IdDescripcion> p;
@@ -82,6 +85,10 @@ public class VerDenuncias extends AppCompatActivity {
         inputId =findViewById(R.id.inputId);
 
         botonAgregar = findViewById(R.id.botonAgregar);
+
+        botonCambiarPantallaDerecha = findViewById(R.id.botonCambiarPantallaDerecha);
+
+        botonCambiarPantallaIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
 
         botonFiltrar = findViewById(R.id.botonfiltrar);
 
@@ -189,6 +196,36 @@ public class VerDenuncias extends AppCompatActivity {
 
                 nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
 
+                startActivity(nuevaActividad);
+            }
+        });
+
+        botonCambiarPantallaDerecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VerDenuncias.this, VerDenuncias.class);//TODO CAMBIAR FUNCIONAMIENTO (QUE VAYA A VER PROMOCIONES, VER COMERCIOS, VER SERVICIOS)
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("from", "VerDenuncias");
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+                startActivity(nuevaActividad);
+            }
+        });
+
+        botonCambiarPantallaIzquierda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VerDenuncias.this, VerReclamos.class);
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("from", "VerDenuncias");
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
                 startActivity(nuevaActividad);
             }
         });

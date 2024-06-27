@@ -162,7 +162,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
-        android:id="@+id/botonCambiarUsuarioIzquierda"
+        android:id="@+id/botonCambiarPantallaIzquierda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"

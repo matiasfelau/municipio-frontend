@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ar.edu.uade.municipio_frontend.Activities.Denuncia.VerDenuncias;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
@@ -73,6 +74,7 @@ public class VerReclamos extends AppCompatActivity {
     Integer pagina;
     ImageButton botonCambiarPaginaIzquierda;
     ImageButton botonCambiarPaginaDerecha;
+    ImageButton botonCambiarPantallaDerecha;
     TextView textPaginaActual;
     List<Sector> listaSectores;
     Integer cantidadPaginas;
@@ -110,6 +112,8 @@ public class VerReclamos extends AppCompatActivity {
         adapterPertenencia.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
         textPaginaActual = findViewById(R.id.textPaginaActual);
+
+        botonCambiarPantallaDerecha = findViewById(R.id.botonCambiarPantallaDerecha);
 
         botonCambiarPaginaDerecha = findViewById(R.id.botonCambiarPaginaDerecha);
 
@@ -264,6 +268,7 @@ public class VerReclamos extends AppCompatActivity {
                     botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
                 }
             }
+
         });
 
 
@@ -399,6 +404,21 @@ public class VerReclamos extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mostrarPopupSalir();
+            }
+        });
+
+        botonCambiarPantallaDerecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VerReclamos.this, VerDenuncias.class);
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("from", "VerReclamos");
+
+                nuevaActividad.putExtra("USUARIO", tipoUsuario);
+                startActivity(nuevaActividad);
             }
         });
 

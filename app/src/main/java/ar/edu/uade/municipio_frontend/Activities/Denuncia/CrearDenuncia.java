@@ -122,7 +122,7 @@ public class CrearDenuncia extends AppCompatActivity {
 
         botonGenerar = findViewById(R.id.buttonGenerar);
 
-        botonCambiarTipoUsuarioIzquierda = findViewById(R.id.botonCambiarUsuarioIzquierda);
+        botonCambiarTipoUsuarioIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
 
         tipoDenunciado = findViewById(R.id.textTipoUsuario);
 
@@ -178,7 +178,7 @@ public class CrearDenuncia extends AppCompatActivity {
                                             insertDireccion.getText().toString(),
                                             insertNombre.getText().toString().split(" ")[0],
                                             insertNombre.getText().toString().split(" ")[1]
-                                    )));
+                                    )));//todo ver...
 
                         } else if (tipoDenunciado.getText().toString().equals("Comercio")) {
                             generarDenunciaComercio(new ContainerDenunciaComercio(

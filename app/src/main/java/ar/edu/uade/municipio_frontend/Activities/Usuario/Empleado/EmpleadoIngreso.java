@@ -67,7 +67,7 @@ public class EmpleadoIngreso extends AppCompatActivity {
 
         botonIngresar = findViewById(R.id.botonIngresoInspector);
 
-        botonCambiarUsuarioIzquierda = findViewById(R.id.botonCambiarUsuarioIzquierda);
+        botonCambiarUsuarioIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
 
         botonCambiarUsuarioDerecha = findViewById(R.id.botonCambiarUsuarioDerecha);
 

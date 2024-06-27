@@ -85,6 +85,9 @@
         <activity
             android:name=".Activities.Reclamo.VerReclamos"
             android:exported="false" />
+        <activity
+            android:name=".Activities.Denuncia.VerDenuncias"
+            android:exported="false" />
 
         <service
             android:name=".notificaciones.MyFirebaseMessagingService"

@@ -42,7 +42,7 @@ public class InvitadoIngreso extends AppCompatActivity {
 
         botonIngresar = findViewById(R.id.botonIngresoInvitado);
 
-        botonCambiarUsuarioIzquierda = findViewById(R.id.botonCambiarUsuarioIzquierda);
+        botonCambiarUsuarioIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
 
         helper = new InvitadoHelper(this);
 
