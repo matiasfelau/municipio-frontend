@@ -7,7 +7,13 @@ public class VecinoDenunciado {
     private String nombre;
     private String apellido;
 
-
+    public VecinoDenunciado(Integer idDenuncia, String documento, String direccion, String nombre, String apellido) {
+        this.idDenuncia = idDenuncia;
+        this.documento = documento;
+        this.direccion = direccion;
+        this.nombre = nombre;
+        this.apellido = apellido;
+    }
 
     public Integer getIdDenuncia() {
         return idDenuncia;

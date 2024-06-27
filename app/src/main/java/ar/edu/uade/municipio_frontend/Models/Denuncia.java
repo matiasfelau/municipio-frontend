@@ -7,7 +7,14 @@ public class Denuncia {
     private String estado;
     private Boolean aceptarResponsabilidad;
     private String documento;
-    private Integer idSitio;
+
+    public Denuncia(Integer idDenuncia, String descripcion, String estado, Boolean aceptarResponsabilidad, String documento) {
+        this.idDenuncia = idDenuncia;
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.aceptarResponsabilidad = aceptarResponsabilidad;
+        this.documento = documento;
+    }
 
     public Integer getIdDenuncia() {
         return idDenuncia;
@@ -49,14 +56,6 @@ public class Denuncia {
         this.documento = documento;
     }
 
-    public Integer getIdSitio() {
-        return idSitio;
-    }
-
-    public void setIdSitio(Integer idSitio) {
-        this.idSitio = idSitio;
-    }
-
     @Override
     public String toString() {
         return "Denuncia{" +
@@ -65,7 +64,6 @@ public class Denuncia {
                 ", estado='" + estado + '\'' +
                 ", aceptarResponsabilidad=" + aceptarResponsabilidad +
                 ", documento='" + documento + '\'' +
-                ", idSitio=" + idSitio +
                 '}';
     }
 }

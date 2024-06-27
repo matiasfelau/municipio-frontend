@@ -4,18 +4,21 @@
     tools:ignore="SelectedPhotoAccess">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
         tools:ignore="SelectedPhotoAccess" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_VIDEO"
         tools:ignore="SelectedPhotoAccess" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_AUDIO"
         tools:ignore="SelectedPhotoAccess" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -24,23 +27,28 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Municipiofrontend"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.Denuncia.CrearDenuncia"
+            android:exported="false" />
+        <activity
             android:name=".Activities.Reclamo.ReclamoParticular"
             android:exported="false" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
         <activity
             android:name=".Activities.Reclamo.CrearReclamo"
             android:exported="false" />
@@ -77,8 +85,9 @@
         <activity
             android:name=".Activities.Reclamo.VerReclamos"
             android:exported="false" />
+
         <service
-            android:name="ar.edu.uade.municipio_frontend.notificaciones.MyFirebaseMessagingService"
+            android:name=".notificaciones.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
