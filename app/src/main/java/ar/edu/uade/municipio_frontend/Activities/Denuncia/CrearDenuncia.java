@@ -58,6 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CrearDenuncia extends AppCompatActivity {
     ImageButton botonVolver;
     EditText insertNombre;
+    EditText insertApellido;
     EditText insertDireccion;
     EditText insertDescripcion;
     Button botonAdjuntarArchivos;
@@ -91,6 +92,7 @@ public class CrearDenuncia extends AppCompatActivity {
                 }
             });
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +113,8 @@ public class CrearDenuncia extends AppCompatActivity {
         botonVolver = findViewById(R.id.botonVolver);
 
         insertNombre = findViewById(R.id.insertNombre);
+
+        insertApellido = findViewById(R.id.insertApellido);
 
         insertDireccion = findViewById(R.id.insertDireccion);
 
@@ -176,8 +180,8 @@ public class CrearDenuncia extends AppCompatActivity {
                                             null,
                                             null,
                                             insertDireccion.getText().toString(),
-                                            insertNombre.getText().toString().split(" ")[0],
-                                            insertNombre.getText().toString().split(" ")[1]
+                                            insertNombre.getText().toString(),
+                                            insertApellido.getText().toString()
                                     )));//todo ver...
 
                         } else if (tipoDenunciado.getText().toString().equals("Comercio")) {
