@@ -1,17 +1,17 @@
 package ar.edu.uade.municipio_frontend.Utilities;
 
-public class IdDescripcionReclamo {
+public class IdDescripcion {
     private String id;
     private String descripcion;
 
-    public IdDescripcionReclamo() {
+    public IdDescripcion() {
     }
 
-    public IdDescripcionReclamo(String descripcion) {
+    public IdDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    public IdDescripcionReclamo(String id, String descripcion) {
+    public IdDescripcion(String id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
     }
