@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.ReclamoParticular;
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
@@ -52,6 +53,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VerDenuncias extends AppCompatActivity {
     //inicializaciones
     EmpleadoHelper empleadoHelper;
+    Button botonAgregar;
     InvitadoHelper invitadoHelper;
     VecinoHelper vecinoHelper;
     EditText inputId;
@@ -84,6 +86,8 @@ public class VerDenuncias extends AppCompatActivity {
         //intancias
 
         inputId =findViewById(R.id.inputId);
+
+        botonAgregar = findViewById(R.id.botonAgregar);
 
         botonFiltrar = findViewById(R.id.botonfiltrar);
 
@@ -180,10 +184,71 @@ public class VerDenuncias extends AppCompatActivity {
                 cantidadPaginas=1;
             }
         });
+
+        botonAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VerDenuncias.this, CrearDenuncia.class);
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+        });
     }
 
     private void getDenuncia(int i, Autenticacion autenticacion) {
 
+    }
+
+    private void addItem(Denuncia denuncia){
+        if (denuncia != null) {
+            if (denuncia.getDescripcion() != null) {
+                prueba.add(new IdDescripcion(String.valueOf(denuncia.getIdDenuncia()), denuncia.getDescripcion()));
+            }
+        }
+
+    }
+
+    private void getDenuncias(int i, Autenticacion autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        DenunciaService denunciaService = retrofit.create(DenunciaService.class);
+        Call<List<Denuncia>> call = denunciaService.getDenuncias(pagina,autenticacion);
+
+        call.enqueue(new Callback<List<Denuncia>>(){
+
+            @Override
+            public void onResponse(@NonNull Call<List<Denuncia>> call, @NonNull Response<List<Denuncia>> response) {
+                if (response.code()==200){
+                    assert response.body() != null;
+                    for (Denuncia denuncia: response.body()) {
+                        addItem(denuncia);
+                    }
+                    denuncias.clear();
+                    denuncias.addAll(response.body());
+                    prueba.notifyDataSetChanged();
+                }else if(response.code()==400){//este? badrequest?
+                    System.out.println(response.code());
+                }else if(response.code()==401){//este? unauthorized?
+                    System.out.println(response.code());
+                }else if(response.code()==403){//este forbbiden
+                    System.out.println(response.code());
+                }else if(response.code()==500){//este internal error server
+                    System.out.println(response.code());
+                }else{
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Denuncia>> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 
     private void getPaginas(Autenticacion autenticacion) {
@@ -226,10 +291,6 @@ public class VerDenuncias extends AppCompatActivity {
         });
     }
 
-    private void getDenuncias(int i, Autenticacion autenticacion) {
-
-    }
-
     private void setUpListViewListener(){
         listDenuncias.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -241,13 +302,7 @@ public class VerDenuncias extends AppCompatActivity {
 
                         nuevaActividad.putExtra("id", denuncia.getIdDenuncia());
 
-                        if (Objects.equals(autenticacion.getTipo(), "Vecino")) {
-                            nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
-
-                        } else if (Objects.equals(autenticacion.getTipo(), "Empleado")) {
-                            nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
-
-                        }
+                        nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
                         nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
 
