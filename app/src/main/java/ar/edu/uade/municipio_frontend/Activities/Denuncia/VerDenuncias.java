@@ -201,7 +201,38 @@ public class VerDenuncias extends AppCompatActivity {
     }
 
     private void getDenuncia(int i, Autenticacion autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+        DenunciaService denunciaService = retrofit.create(DenunciaService.class);
+        Call<Denuncia> call =denunciaService.getDenuncia(i,autenticacion);
 
+        call.enqueue(new Callback<Denuncia>() {
+            @Override
+            public void onResponse(@NonNull Call<Denuncia> call, @NonNull Response<Denuncia> response) {
+                //TODO COMPLETAR CUANDO ESTE LA VISTA
+                if (response.code()==200){//este ok
+                    assert response.body() != null;
+                    addItem(response.body());
+                    prueba.notifyDataSetChanged();
+                }else if(response.code()==400){//este? badrequest?
+                    System.out.println(response.code());
+                }else if(response.code()==401){//este? unauthorized?
+                    System.out.println(response.code());
+                }else if(response.code()==403){//este forbbiden
+                    System.out.println(response.code());
+                }else if(response.code()==404){//not found?
+                    System.out.println(response.code());
+                }else if(response.code()==500){//este internal error server
+                    System.out.println(response.code());
+                }else{
+                    System.out.println(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Denuncia> call, @NonNull Throwable t) {
+                System.out.println(t);
+            }
+        });
     }
 
     private void addItem(Denuncia denuncia){
