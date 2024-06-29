@@ -12,7 +12,7 @@
         android:id="@+id/textNombreAplicacion"
         android:layout_width="250dp"
         android:layout_height="30dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="35dp"
         android:layout_marginEnd="80dp"
         android:text="Palmas de Mallorca"
         android:textAlignment="center"
@@ -23,12 +23,40 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ListView
+        android:id="@+id/listPublicaciones"
+        android:layout_width="389dp"
+        android:layout_height="545dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="27dp"
+        android:background="#BE656774"
+        app:layout_constraintBottom_toTopOf="@+id/textPaginaActual"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewCargarPublicacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="732dp"
+        android:text="¿Te gustaría cargar tu propia publicación? \n Apretá acá:"
+        android:textAlignment="viewEnd"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textPaginaActual"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="712dp"
-        android:layout_marginEnd="184dp"
+        android:layout_marginTop="672dp"
+        android:layout_marginEnd="180dp"
         android:background="#C92E6FC1"
         android:text="1"
         android:textAlignment="center"
@@ -39,11 +67,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/botonCambiarPaginaDerecha"
+        android:id="@+id/botonCambiarPantallaDerecha"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="716dp"
-        android:layout_marginEnd="104dp"
+        android:layout_marginTop="676dp"
+        android:layout_marginEnd="100dp"
         android:backgroundTint="#00FFFFFF"
         android:rotationY="180"
         android:scaleX="1.5"
@@ -54,39 +82,12 @@
         app:tint="@android:color/white"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <ListView
-        android:id="@+id/listPublicaciones"
-        android:layout_width="389dp"
-        android:layout_height="545dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="160dp"
-        android:background="#BE656774"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewCargarPublicacion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="771dp"
-        android:text="¿Te gustaría cargar tu propia publicación? \n Apretá acá:"
-        android:textAlignment="viewEnd"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
         android:id="@+id/botonAgregar"
         android:layout_width="43dp"
         android:layout_height="37dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
         android:background="#C92E6FC1"
         android:scaleX="1.5"
         android:scaleY="1.5"
@@ -111,7 +112,7 @@
         android:layout_width="203dp"
         android:layout_height="34dp"
         android:layout_marginStart="104dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:text="Publicaciones"
         android:textAlignment="center"
         android:textColor="@android:color/white"
@@ -121,32 +122,17 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/botonCambiarPantallaDerecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="#00FFFFFF"
-        android:rotationY="180"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="@android:color/white"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <ImageButton
         android:id="@+id/botonCambiarPantallaIzquierda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleX="1.5"
         android:scaleY="1.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="@android:color/white"
-        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+        app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

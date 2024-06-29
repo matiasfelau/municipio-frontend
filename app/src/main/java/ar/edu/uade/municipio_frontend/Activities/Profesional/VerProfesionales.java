@@ -24,13 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
+import r.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
-import ar.edu.uade.municipio_frontend.Models.Autenticacion;
-import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
+import ar.edu.uade.municipio_frontend.Models.Autenticacion;import r.edu. uade.municipio_frontend.Models.AutenticacionFiltro;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
@@ -59,6 +57,7 @@ public class VerProfesionales extends AppCompatActivity {
     ArrayAdapter<Profesional> adapterProfesionales;
     int cantidadPaginas;
     Autenticacion autenticacion;
+    int paginaActualInt = 1;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -123,7 +122,7 @@ public class VerProfesionales extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Profesional profesional = adapterProfesionales.getItem(position);
 
-                //TODO iniciar actividad profesional particular
+                // TODO iniciar actividad profesional particular
 
             }
         });
@@ -131,26 +130,14 @@ public class VerProfesionales extends AppCompatActivity {
         botonCambiarPaginaIzquierda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int pagina = Integer.parseInt(paginaActual.getText().toString());
-
-                if (pagina > 1) {
-                    profesionales.clear();
-
-                    adapterProfesionales.notifyDataSetChanged();
-
-                    pagina--;
-
-                    paginaActual.setText(pagina); //TODO confirmar que este bien
-
+                if (paginaActualInt > 1) {
+                    paginaActualInt--;
+                    paginaActual.setText(String.valueOf(paginaActualInt));
                     getProfesionales();
-
-                    if (pagina == 1) {
-                        botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
-
-                    }
-
                     botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
-
+                    if (paginaActualInt == 1) {
+                        botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         });
@@ -158,25 +145,19 @@ public class VerProfesionales extends AppCompatActivity {
         botonCambiarPaginaDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int pagina = Integer.parseInt(paginaActual.getText().toString());
-
-                profesionales.clear();
-
-                adapterProfesionales.notifyDataSetChanged();
-
-                pagina++;
-
-                paginaActual.setText(pagina); //TODO confirmar que este bien
-
-                getProfesionales();
-
-                if (Objects.equals(cantidadPaginas, pagina)) {
-                    botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-
+                if (paginaActualInt < cantidadPaginas) {
+                    paginaActualInt++;
+                    paginaActual.setText(String.valueOf(paginaActualInt));
+                    getProfesionales();
+                    botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
+                    if (paginaActualInt == cantidadPaginas) {
+                        botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+                    }
+                } else {
+                    // Iniciar actividad de publicaciones
+                    Intent intent = new Intent(VerProfesionales.this, VerPublicacionesInvitado.class);
+                    startActivity(intent);
                 }
-
-                botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
-
             }
         });
 
@@ -215,8 +196,9 @@ public class VerProfesionales extends AppCompatActivity {
         botonCambiarModuloDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO comenzar actividad
-
+                // Iniciar actividad de publicaciones
+                Intent intent = new Intent(VerProfesionales.this, VerPublicacionesInvitado.class);
+                startActivity(intent);
             }
         });
     }
@@ -267,20 +249,21 @@ public class VerProfesionales extends AppCompatActivity {
 
         nuevaActividad.putExtra("ingresado", false);
 
-        nuevaActividad.putExtra("from", "VerProfesionales"); //TODO agregar al inicio de sesion
+        nuevaActividad.putExtra("from", "VerProfesionales"); // TODO agregar al inicio de sesion
 
         startActivity(nuevaActividad);
 
     }
 
-    private void getPaginas(){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+    private void getPaginas() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
 
         ProfesionalService profesionalService = retrofit.create(ProfesionalService.class);
 
         Call<Integer> call = profesionalService.getPaginas(autenticacion);
 
-        call.enqueue(new Callback<Integer>(){
+        call.enqueue(new Callback<Integer>() {
 
             @Override
             public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
@@ -291,12 +274,12 @@ public class VerProfesionales extends AppCompatActivity {
                     if (cantidadPaginas > 1) {
                         botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
 
-                    }else {
+                    } else {
                         botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
 
                     }
 
-                } else if (response.code() == 400){
+                } else if (response.code() == 400) {
                     System.out.println(response.code());
 
                 } else if (response.code() == 401) {
@@ -323,17 +306,19 @@ public class VerProfesionales extends AppCompatActivity {
     }
 
     private void getProfesionales() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
 
         ProfesionalService profesionalService = retrofit.create(ProfesionalService.class);
 
         Call<List<Profesional>> call = profesionalService.getAll(
-                Integer.parseInt(paginaActual.getText().toString()),
+                paginaActualInt,
                 autenticacion);
 
-        call.enqueue(new Callback<List<Profesional>>(){
+        call.enqueue(new Callback<List<Profesional>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Profesional>> call, @NonNull Response<List<Profesional>> response) {
+            public void onResponse(@NonNull Call<List<Profesional>> call,
+                    @NonNull Response<List<Profesional>> response) {
                 if (response.code() == 200) {
                     System.out.println("si");
                     for (Profesional profesional: response.body()) {
