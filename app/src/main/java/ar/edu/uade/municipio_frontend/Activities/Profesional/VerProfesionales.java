@@ -24,11 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import r.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
+import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
-import ar.edu.uade.municipio_frontend.Models.Autenticacion;import r.edu. uade.municipio_frontend.Models.AutenticacionFiltro;
+import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
 import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
@@ -153,10 +155,6 @@ public class VerProfesionales extends AppCompatActivity {
                     if (paginaActualInt == cantidadPaginas) {
                         botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
                     }
-                } else {
-                    // Iniciar actividad de publicaciones
-                    Intent intent = new Intent(VerProfesionales.this, VerPublicacionesInvitado.class);
-                    startActivity(intent);
                 }
             }
         });
@@ -196,9 +194,11 @@ public class VerProfesionales extends AppCompatActivity {
         botonCambiarModuloDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 // Iniciar actividad de publicaciones
                 Intent intent = new Intent(VerProfesionales.this, VerPublicacionesInvitado.class);
                 startActivity(intent);
+                */
             }
         });
     }

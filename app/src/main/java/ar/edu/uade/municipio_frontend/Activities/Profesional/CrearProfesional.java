@@ -231,7 +231,15 @@ public class CrearProfesional extends AppCompatActivity {
 
                 }
 
-                inicioJornada.setText(horas + ":" + minutos);
+                String h = String.valueOf(horas);
+                if(horas < 10){
+                    h = "0"+horas;
+                }
+                String m = String.valueOf(minutos);
+                if (minutos == 0) {
+                    m = "00";
+                }
+                inicioJornada.setText(h + ":" + m);
             }
         });
 
@@ -239,9 +247,9 @@ public class CrearProfesional extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                int horas = Integer.parseInt(inicioJornada.getText().toString().substring(0,2));
+                int horas = Integer.parseInt(inicioJornada.getText().toString().substring(0, 2));
 
-                int minutos = Integer.parseInt(inicioJornada.getText().toString().substring(3,5));
+                int minutos = Integer.parseInt(inicioJornada.getText().toString().substring(3, 5));
 
                 minutos += 30;
 
@@ -256,8 +264,15 @@ public class CrearProfesional extends AppCompatActivity {
                     horas = 0;
 
                 }
-
-                inicioJornada.setText(horas + ":" + minutos);
+                String h = String.valueOf(horas);
+                if(horas < 10){
+                    h = "0"+horas;
+                }
+                String m = String.valueOf(minutos);
+                if (minutos == 0) {
+                    m = "00";
+                }
+                inicioJornada.setText(h + ":" + m);
             }
         });
 
@@ -283,7 +298,15 @@ public class CrearProfesional extends AppCompatActivity {
 
                 }
 
-                finJornada.setText(horas + ":" + minutos);
+                String h = String.valueOf(horas);
+                if(horas < 10){
+                    h = "0"+horas;
+                }
+                String m = String.valueOf(minutos);
+                if (minutos == 0) {
+                    m = "00";
+                }
+                finJornada.setText(h + ":" + m);
             }
         });
 
@@ -309,7 +332,15 @@ public class CrearProfesional extends AppCompatActivity {
 
                 }
 
-                finJornada.setText(horas + ":" + minutos);
+                String h = String.valueOf(horas);
+                if(horas < 10){
+                    h = "0"+horas;
+                }
+                String m = String.valueOf(minutos);
+                if (minutos == 0) {
+                    m = "00";
+                }
+                finJornada.setText(h + ":" + m);
             }
         });
 

@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
@@ -161,70 +162,72 @@ public class CrearDenuncia extends AppCompatActivity {
             }
         });
 
+        //TODO SI EL CHECKBOX
+
         botonGenerar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
+                if(confirmacionResponsabilidad.isChecked()){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        CompletableFuture.supplyAsync(() -> {
+                            if (tipoDenuncia.getSelectedItem().equals("VECINO")) {
+                                generarDenunciaVecino(new ContainerDenunciaVecino(
+                                        new Denuncia(
+                                                null,
+                                                insertDescripcion.getText().toString(),
+                                                "Nuevo",
+                                                confirmacionResponsabilidad.isChecked(),
+                                                getIntent().getStringExtra("documento")
+                                        ),
+                                        new VecinoDenunciado(
+                                                null,
+                                                null,
+                                                insertDireccion.getText().toString(),
+                                                insertNombre.getText().toString(),
+                                                insertApellido.getText().toString()
+                                        )));
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    CompletableFuture.supplyAsync(() -> {
-                        if (tipoDenuncia.getSelectedItem().equals("VECINO")) {
-                            generarDenunciaVecino(new ContainerDenunciaVecino(
-                                    new Denuncia(
-                                            null,
-                                            insertDescripcion.getText().toString(),
-                                            "Nuevo",
-                                            confirmacionResponsabilidad.isChecked(),
-                                            getIntent().getStringExtra("documento")
-                                    ),
-                                    new VecinoDenunciado(
-                                            null,
-                                            null,
-                                            insertDireccion.getText().toString(),
-                                            insertNombre.getText().toString(),
-                                            insertApellido.getText().toString()
-                                    )));
+                            } else if (tipoDenuncia.getSelectedItem().equals("COMERCIO")) {
+                                System.out.println("GENERADO DE DENUNCIA DE COMERCIO");
+                                generarDenunciaComercio(new ContainerDenunciaComercio(
+                                        new Denuncia(
+                                                null,
+                                                insertDescripcion.getText().toString(),
+                                                "Nuevo",
+                                                confirmacionResponsabilidad.isChecked(),
+                                                getIntent().getStringExtra("documento")
+                                        ),
+                                        new ComercioDenunciado(
+                                                null,
+                                                null,
+                                                insertDireccion.getText().toString(),
+                                                insertNombreComercio.getText().toString()
+                                        )));
 
-                        } else if (tipoDenuncia.getSelectedItem().equals("COMERCIO")) {
-                            System.out.println("GENERADO DE DENUNCIA DE COMERCIO");
-                            generarDenunciaComercio(new ContainerDenunciaComercio(
-                                    new Denuncia(
-                                            null,
-                                            insertDescripcion.getText().toString(),
-                                            "Nuevo",
-                                            confirmacionResponsabilidad.isChecked(),
-                                            getIntent().getStringExtra("documento")
-                                    ),
-                                    new ComercioDenunciado(
-                                            null,
-                                            null,
-                                            insertDireccion.getText().toString(),
-                                            insertNombreComercio.getText().toString()
-                                    )));
+                            }
+                            return "Resultado de la primera tarea";
+                        }, executor).thenApply(result1 -> {
+                            // Puedes usar el resultado de la primera tarea aquí
+                            System.out.println(result1);
 
-                        }
-                        return "Resultado de la primera tarea";
-                    }, executor).thenApply(result1 -> {
-                        // Puedes usar el resultado de la primera tarea aquí
-                        System.out.println(result1);
-
-                        // Segunda tarea
-                        try {
-                            Thread.sleep(1000); // Simulando una tarea de 1 segundo
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return "Resultado de la segunda tarea";
-                    }).thenAccept(result2 -> {
-                        // Puedes usar el resultado de la segunda tarea aquí
-                        System.out.println(result2);
-                    }).exceptionally(ex -> {
-                        // Manejo de errores
-                        ex.printStackTrace();
-                        return null;
-                    });
+                            // Segunda tarea
+                            try {
+                                Thread.sleep(1000); // Simulando una tarea de 1 segundo
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return "Resultado de la segunda tarea";
+                        }).thenAccept(result2 -> {
+                            // Puedes usar el resultado de la segunda tarea aquí
+                            System.out.println(result2);
+                        }).exceptionally(ex -> {
+                            // Manejo de errores
+                            ex.printStackTrace();
+                            return null;
+                        });
+                    }
                 }
-
             }
         });
 
@@ -299,7 +302,20 @@ public class CrearDenuncia extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Denuncia> call, @NonNull Response<Denuncia> response) {
                 System.out.println("DENUNCIA VECINO GENERADA");
-                //TODO HACER QUE ENTREGUE EL ID DE LA DENUNCIA Y REGRESE
+
+                assert response.body() != null;
+                Toast.makeText(getApplicationContext(), "El ID de la denuncia es:"+String.valueOf(response.body().getIdDenuncia()), Toast.LENGTH_LONG).show();
+
+                Intent nuevaActividad = new Intent(CrearDenuncia.this, VerDenuncias.class);
+
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+
                 if (response.code() == 200) {
                     System.out.println(response.code());
 
@@ -338,7 +354,20 @@ public class CrearDenuncia extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Denuncia> call, @NonNull Response<Denuncia> response) {
                 System.out.println("DENUNCIA COMERCIO GENERADA");
-                //TODO HACER QUE ENTREGUE EL ID DE LA DENUNCIA Y REGRESE
+
+                assert response.body() != null;
+                Toast.makeText(getApplicationContext(), "El ID de la denuncia es:"+ response.body().getIdDenuncia(), Toast.LENGTH_LONG).show();
+
+                Intent nuevaActividad = new Intent(CrearDenuncia.this, VerDenuncias.class);
+
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+
                 if (response.code() == 200) {
                     System.out.println(response.code());
 
