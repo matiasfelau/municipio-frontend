@@ -336,7 +336,6 @@ public class VerProfesionales extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Profesional>> call, @NonNull Response<List<Profesional>> response) {
                 if (response.code() == 200) {
                     System.out.println("si");
-                    System.out.println(response.body().get(0).toString());
                     for (Profesional profesional: response.body()) {
                         adapterProfesionales.add(profesional);
 

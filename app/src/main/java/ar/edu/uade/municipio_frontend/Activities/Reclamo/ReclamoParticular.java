@@ -102,11 +102,11 @@ public class ReclamoParticular extends AppCompatActivity {
 
         botonVolver = findViewById(R.id.botonVolver);
 
-        idReclamoParticular = findViewById(R.id.idReclamoParticular);
+        idReclamoParticular = findViewById(R.id.nombreComercio);
 
-        estadoReclamo = findViewById(R.id.estadoReclamoParticular);
+        estadoReclamo = findViewById(R.id.cierre);
 
-        descripcionReclamo = findViewById(R.id.descripcionReclamoParticular);
+        descripcionReclamo = findViewById(R.id.descripcionComercioParticular);
 
         mapa = findViewById(R.id.map);
 

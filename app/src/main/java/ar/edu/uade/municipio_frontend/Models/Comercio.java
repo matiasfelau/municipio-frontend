@@ -1,14 +1,13 @@
 package ar.edu.uade.municipio_frontend.Models;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 
 public class Comercio {
 
     private Integer idComercio;
     private String nombre;
-    private LocalTime apertuna;
-    private LocalTime cierre;
+    private String apertura;
+    private String cierre;
     private String direccion;
     private Integer telefono;
     private String descripcion;
@@ -20,10 +19,10 @@ public class Comercio {
 
     }
 
-    public Comercio(Integer idComercio, String nombre, LocalTime apertuna, LocalTime cierre, String direccion, Integer telefono, String descripcion, BigDecimal latitud, BigDecimal longitud, String documento) {
+    public Comercio(Integer idComercio, String nombre, String apertura, String cierre, String direccion, Integer telefono, String descripcion, BigDecimal latitud, BigDecimal longitud, String documento) {
         this.idComercio = idComercio;
         this.nombre = nombre;
-        this.apertuna = apertuna;
+        this.apertura = apertura;
         this.cierre = cierre;
         this.direccion = direccion;
         this.telefono = telefono;
@@ -49,19 +48,19 @@ public class Comercio {
         this.nombre = nombre;
     }
 
-    public LocalTime getApertuna() {
-        return apertuna;
+    public String getApertura() {
+        return apertura;
     }
 
-    public void setApertuna(LocalTime apertuna) {
-        this.apertuna = apertuna;
+    public void setApertura(String apertura) {
+        this.apertura = apertura;
     }
 
-    public LocalTime getCierre() {
+    public String getCierre() {
         return cierre;
     }
 
-    public void setCierre(LocalTime cierre) {
+    public void setCierre(String cierre) {
         this.cierre = cierre;
     }
 
@@ -118,7 +117,7 @@ public class Comercio {
         return "Comercio{" +
                 "idComercio=" + idComercio +
                 ", nombre='" + nombre + '\'' +
-                ", apertuna=" + apertuna +
+                ", apertuna=" + apertura +
                 ", cierre=" + cierre +
                 ", direccion='" + direccion + '\'' +
                 ", telefono=" + telefono +

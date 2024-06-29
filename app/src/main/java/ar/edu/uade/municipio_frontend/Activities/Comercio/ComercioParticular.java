@@ -26,8 +26,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.ReclamoParticular;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Models.Comercio;
 
 import org.osmdroid.config.Configuration;
@@ -42,10 +40,8 @@ import java.util.List;
 import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
-import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.ComercioService;
-import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,7 +69,7 @@ public class ComercioParticular extends AppCompatActivity {
 
         EdgeToEdge.enable(this);
 
-        setContentView(R.layout.activity_ver_comercios);
+        setContentView(R.layout.activity_comercio_particular);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -122,7 +118,7 @@ public class ComercioParticular extends AppCompatActivity {
 
         contenedorFotos = findViewById(R.id.contenedorFotos);
 
-        getComercio(getIntent().getIntExtra("id",0),autenticacion);
+        getComercio(getIntent().getIntExtra("id",0));
         //Listener
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,9 +126,6 @@ public class ComercioParticular extends AppCompatActivity {
                 Intent nuevaActividad = new Intent(ComercioParticular.this, VerComercio.class);
                 if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
                     nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
-
-                } else if (Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")) {
-                    nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
 
                 }
 
@@ -152,7 +145,7 @@ public class ComercioParticular extends AppCompatActivity {
 
                 nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
 
-                nuevaActividad.putExtra("from", "VerDenuncias");
+                nuevaActividad.putExtra("from", "ComercioParticular");
 
                 nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
                 startActivity(nuevaActividad);
@@ -180,7 +173,7 @@ public class ComercioParticular extends AppCompatActivity {
 
     }
 
-    private void getComercio(Integer id, Autenticacion autenticacion) {
+    private void getComercio(Integer id) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
         ComercioService comercioService = retrofit.create(ComercioService.class);
@@ -194,19 +187,20 @@ public class ComercioParticular extends AppCompatActivity {
             public void onResponse(@NonNull Call<Comercio> call, @NonNull Response<Comercio> response) {
                 if (response.code() == 200) {//este created
                     System.out.println(response.code());
+                    System.out.println("entro");
 
                     comercio = response.body();
 
                     assert comercio != null;
                     nombreComercio.setText(String.valueOf(comercio.getNombre()));
 
-                    apertura.setText(String.valueOf(comercio.getApertuna()));
+                    apertura.setText(String.valueOf(comercio.getApertura()));
 
                     cierre.setText(String.valueOf(comercio.getCierre()));
 
                     direccion.setText(String.valueOf(comercio.getDireccion()));
 
-                    nroTelefono.setText(comercio.getTelefono());
+                    nroTelefono.setText(String.valueOf(comercio.getTelefono()));
 
                     descripcionComercioParticular.setText(comercio.getDescripcion());
 
@@ -306,7 +300,7 @@ public class ComercioParticular extends AppCompatActivity {
                         if (e != null) {
                             e.logRootCauses("Glide");
                         }
-                        System.out.println("Error al cargar la imagen: " + e.getMessage());
+                        System.out.println("Error al cargar la imagen: ");
                         return false;
                     }
 
