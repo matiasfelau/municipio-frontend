@@ -39,6 +39,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ComercioParticularActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerComerciosActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.Denuncia.CrearDenuncia"
             android:exported="false" />
         <activity
@@ -87,6 +96,9 @@
             android:exported="false" />
         <activity
             android:name=".Activities.Denuncia.VerDenuncias"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Comercio.VerComercio"
             android:exported="false" />
 
         <service
