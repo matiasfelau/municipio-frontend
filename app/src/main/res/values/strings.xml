@@ -7,6 +7,8 @@
     <string name="General">General</string>
     <string name="DNI">DNI</string>
     <string name="PASAPORTE">PAS</string>
+    <string name="VECINO">VECINO</string>
+    <string name="COMERCIO">COMERCIO</string>
     <string-array name="rubro_options">
         <item>"Filtro"</item>
         <item>@string/ID</item>
@@ -21,6 +23,11 @@
     <string-array name="tipoDocumentacion_options">
         <item>@string/DNI</item>
         <item>@string/PASAPORTE</item>
+    </string-array>
+
+    <string-array name="tipoDenuncia_options">
+        <item>@string/VECINO</item>
+        <item>@string/COMERCIO</item>
     </string-array>
 
 

@@ -53,8 +53,8 @@
 
     <TextView
         android:id="@+id/textCrearDenuncia"
-        android:layout_width="395dp"
-        android:layout_height="89dp"
+        android:layout_width="396dp"
+        android:layout_height="41dp"
         android:layout_marginTop="92dp"
         android:baselineAligned="false"
         android:text="Crear Denuncia"
@@ -70,9 +70,9 @@
     <EditText
         android:id="@+id/insertNombre"
         android:layout_width="170dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="208dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="232dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="Nombre"
@@ -84,10 +84,10 @@
 
     <EditText
         android:id="@+id/insertApellido"
-        android:layout_width="171dp"
-        android:layout_height="49dp"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
         android:layout_marginTop="184dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="8dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="Apellido"
@@ -102,7 +102,7 @@
         android:layout_width="241dp"
         android:layout_height="50dp"
         android:layout_marginTop="256dp"
-        android:layout_marginEnd="85dp"
+        android:layout_marginEnd="84dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="Dirección"
@@ -123,7 +123,6 @@
         android:hint="Descripción del incidente"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.285"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -170,49 +169,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/botonCambiarUsuarioDerecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:backgroundTint="#00FFFFFF"
-        android:rotationY="180"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
+    <Spinner
+        android:id="@+id/tipoDenuncia"
+        android:layout_width="109dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="148dp"
+        android:background="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:entries="@array/tipoDenuncia_options"
+        android:outlineProvider="bounds"
+        android:spinnerMode="dropdown"
+        android:verticalScrollbarPosition="right"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="@color/white"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textTipoUsuario"
-        android:layout_width="250dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="5dp"
-        android:text="Vecino"
+    <EditText
+        android:id="@+id/insertNombreComercio"
+        android:layout_width="212dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="100dp"
+        android:background="#FFFFFF"
+        android:ems="10"
+        android:hint="Nombre"
+        android:inputType="text"
         android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/botonCambiarPantallaIzquierda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="#FFFDFD"
-        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="18dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="148dp"
+        android:rotation="-90"
+        android:rotationY="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

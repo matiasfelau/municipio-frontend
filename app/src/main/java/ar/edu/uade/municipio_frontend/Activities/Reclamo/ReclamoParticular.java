@@ -68,9 +68,6 @@ public class ReclamoParticular extends AppCompatActivity {
     Marker marker;
     LinearLayout contenedorFotos;
     ListView historialMovimientosReclamo;
-    ImageButton botonCambiarPaginaIzquierda;
-    TextView paginaActual;
-    ImageButton botonCambiarPaginaDerecha;
     Autenticacion autenticacion;
     Reclamo reclamo;
     ListView listMovimientos;
@@ -113,12 +110,6 @@ public class ReclamoParticular extends AppCompatActivity {
         contenedorFotos = findViewById(R.id.contenedorFotos);
 
         historialMovimientosReclamo = findViewById(R.id.listReclamos);
-
-        botonCambiarPaginaIzquierda = findViewById(R.id.botonCambiarPaginaIzquierda);
-
-        paginaActual = findViewById(R.id.textPaginaActual);
-
-        botonCambiarPaginaDerecha = findViewById(R.id.botonCambiarPaginaDerecha);
 
         autenticacion = new Autenticacion(
                 getIntent().getStringExtra("token"),

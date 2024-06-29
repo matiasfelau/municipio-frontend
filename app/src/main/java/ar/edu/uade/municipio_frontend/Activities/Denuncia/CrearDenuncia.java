@@ -10,10 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -57,16 +59,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CrearDenuncia extends AppCompatActivity {
     ImageButton botonVolver;
+    Spinner tipoDenuncia;
     EditText insertNombre;
     EditText insertApellido;
+    EditText insertNombreComercio;
     EditText insertDireccion;
     EditText insertDescripcion;
     Button botonAdjuntarArchivos;
     CheckBox confirmacionResponsabilidad;
     Button botonGenerar;
-    ImageButton botonCambiarTipoUsuarioIzquierda;
-    TextView tipoDenunciado;
-    ImageButton botonCambiarTipoUsuarioDerecha;
     Autenticacion autenticacion;
     List<Uri> imageUris = new ArrayList<>();
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
@@ -112,9 +113,15 @@ public class CrearDenuncia extends AppCompatActivity {
 
         botonVolver = findViewById(R.id.botonVolver);
 
+        tipoDenuncia = findViewById(R.id.tipoDenuncia);
+
         insertNombre = findViewById(R.id.insertNombre);
 
         insertApellido = findViewById(R.id.insertApellido);
+
+        insertNombreComercio = findViewById(R.id.insertNombreComercio);
+
+        insertNombreComercio.setVisibility(View.INVISIBLE);
 
         insertDireccion = findViewById(R.id.insertDireccion);
 
@@ -125,12 +132,6 @@ public class CrearDenuncia extends AppCompatActivity {
         confirmacionResponsabilidad = findViewById(R.id.checkBoxAcceptResponsibility);
 
         botonGenerar = findViewById(R.id.buttonGenerar);
-
-        botonCambiarTipoUsuarioIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
-
-        tipoDenunciado = findViewById(R.id.textTipoUsuario);
-
-        botonCambiarTipoUsuarioDerecha = findViewById(R.id.botonCambiarUsuarioDerecha);
 
         autenticacion = new Autenticacion(
                 getIntent().getStringExtra("token"),
@@ -167,12 +168,12 @@ public class CrearDenuncia extends AppCompatActivity {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     CompletableFuture.supplyAsync(() -> {
-                        if (tipoDenunciado.getText().toString().equals("Vecino")) {
+                        if (tipoDenuncia.getSelectedItem().equals("VECINO")) {
                             generarDenunciaVecino(new ContainerDenunciaVecino(
                                     new Denuncia(
                                             null,
                                             insertDescripcion.getText().toString(),
-                                            null,
+                                            "Nuevo",
                                             confirmacionResponsabilidad.isChecked(),
                                             getIntent().getStringExtra("documento")
                                     ),
@@ -182,14 +183,15 @@ public class CrearDenuncia extends AppCompatActivity {
                                             insertDireccion.getText().toString(),
                                             insertNombre.getText().toString(),
                                             insertApellido.getText().toString()
-                                    )));//todo ver...
+                                    )));
 
-                        } else if (tipoDenunciado.getText().toString().equals("Comercio")) {
+                        } else if (tipoDenuncia.getSelectedItem().equals("COMERCIO")) {
+                            System.out.println("GENERADO DE DENUNCIA DE COMERCIO");
                             generarDenunciaComercio(new ContainerDenunciaComercio(
                                     new Denuncia(
                                             null,
                                             insertDescripcion.getText().toString(),
-                                            null,
+                                            "Nuevo",
                                             confirmacionResponsabilidad.isChecked(),
                                             getIntent().getStringExtra("documento")
                                     ),
@@ -197,7 +199,7 @@ public class CrearDenuncia extends AppCompatActivity {
                                             null,
                                             null,
                                             insertDireccion.getText().toString(),
-                                            insertNombre.getText().toString()
+                                            insertNombreComercio.getText().toString()
                                     )));
 
                         }
@@ -226,6 +228,29 @@ public class CrearDenuncia extends AppCompatActivity {
             }
         });
 
+        tipoDenuncia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position ==1){
+                    insertNombre.setVisibility(View.INVISIBLE);
+                    insertApellido.setVisibility(View.INVISIBLE);
+                    insertNombreComercio.setVisibility(View.VISIBLE);
+                }else{
+                    insertNombre.setVisibility(View.VISIBLE);
+                    insertApellido.setVisibility(View.VISIBLE);
+                    insertNombreComercio.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                insertNombre.setVisibility(View.VISIBLE);
+                insertApellido.setVisibility(View.VISIBLE);
+                insertNombreComercio.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        /*
         botonCambiarTipoUsuarioIzquierda.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -251,6 +276,7 @@ public class CrearDenuncia extends AppCompatActivity {
 
             }
         });
+        */
     }
 
     private void openGallery() {
@@ -272,8 +298,8 @@ public class CrearDenuncia extends AppCompatActivity {
         call.enqueue(new Callback<Denuncia>() {
             @Override
             public void onResponse(@NonNull Call<Denuncia> call, @NonNull Response<Denuncia> response) {
-                System.out.println("GENERAR DENUNCIA VECINO");
-
+                System.out.println("DENUNCIA VECINO GENERADA");
+                //TODO HACER QUE ENTREGUE EL ID DE LA DENUNCIA Y REGRESE
                 if (response.code() == 200) {
                     System.out.println(response.code());
 
@@ -305,16 +331,14 @@ public class CrearDenuncia extends AppCompatActivity {
 
     private void generarDenunciaComercio(ContainerDenunciaComercio containerDenunciaComercio) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
-
         DenunciaService denunciaService = retrofit.create(DenunciaService.class);
-
         Call<Denuncia> call = denunciaService.nuevaDenunciaComercio(new AutenticacionDenunciaComercio(autenticacion, containerDenunciaComercio));
 
         call.enqueue(new Callback<Denuncia>() {
             @Override
             public void onResponse(@NonNull Call<Denuncia> call, @NonNull Response<Denuncia> response) {
-                System.out.println("GENERAR DENUNCIA COMERCIO");
-
+                System.out.println("DENUNCIA COMERCIO GENERADA");
+                //TODO HACER QUE ENTREGUE EL ID DE LA DENUNCIA Y REGRESE
                 if (response.code() == 200) {
                     System.out.println(response.code());
 

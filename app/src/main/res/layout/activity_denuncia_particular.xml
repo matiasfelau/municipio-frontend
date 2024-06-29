@@ -52,7 +52,7 @@
     <TextView
         android:id="@+id/descripcion"
         android:layout_width="336dp"
-        android:layout_height="98dp"
+        android:layout_height="154dp"
         android:layout_marginTop="228dp"
         android:layout_marginEnd="36dp"
         android:background="#BE656774"
@@ -61,15 +61,6 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
-        android:layout_width="338dp"
-        android:layout_height="117dp"
-        android:layout_marginTop="348dp"
-        android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -112,5 +103,35 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/idDenunciado"
+        android:layout_width="334dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="540dp"
+        android:layout_marginEnd="36dp"
+        android:text="denunciado"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textNombreAplicacion" />
+
+    <HorizontalScrollView
+        android:id="@+id/vistaFotos"
+        android:layout_width="334dp"
+        android:layout_height="116dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginEnd="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutFotos"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+    </HorizontalScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

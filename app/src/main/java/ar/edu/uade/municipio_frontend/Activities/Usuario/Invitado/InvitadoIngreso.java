@@ -13,7 +13,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
-import ar.edu.uade.municipio_frontend.Activities.Publicacion.VerPublicacionesInvitado;
 import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
 import ar.edu.uade.municipio_frontend.Models.Invitado;
 import ar.edu.uade.municipio_frontend.R;
@@ -74,6 +73,7 @@ public class InvitadoIngreso extends AppCompatActivity {
     }
 
     private void ingresar() {
+        /*
         helper.saveInvitado(new Invitado(1, "John Doe"));
 
         Intent nuevaActividad = new Intent(InvitadoIngreso.this, VerPublicacionesInvitado.class);
@@ -81,6 +81,7 @@ public class InvitadoIngreso extends AppCompatActivity {
         nuevaActividad.putExtra("from", "InvitadoIngreso");
 
         startActivity(nuevaActividad);
+         */
 
     }
 }

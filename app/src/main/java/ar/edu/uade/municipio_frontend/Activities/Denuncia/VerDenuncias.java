@@ -35,6 +35,7 @@ import ar.edu.uade.municipio_frontend.Database.Helpers.EmpleadoHelper;
 import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionDenuncia;
 import ar.edu.uade.municipio_frontend.Models.Denuncia;
 import ar.edu.uade.municipio_frontend.Models.Empleado;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
@@ -279,9 +280,12 @@ public class VerDenuncias extends AppCompatActivity {
 
     private void getDenuncias(int i, Autenticacion autenticacion) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
-
+        AutenticacionDenuncia autenticacionDenuncia = new AutenticacionDenuncia(
+                autenticacion,
+                getIntent().getStringExtra("documento")
+        );
         DenunciaService denunciaService = retrofit.create(DenunciaService.class);
-        Call<List<Denuncia>> call = denunciaService.getDenuncias(pagina,autenticacion);
+        Call<List<Denuncia>> call = denunciaService.getDenuncias(pagina,autenticacionDenuncia);
 
         call.enqueue(new Callback<List<Denuncia>>(){
 

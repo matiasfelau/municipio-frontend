@@ -98,13 +98,13 @@
             android:name=".Activities.Usuario.Vecino.VecinoRegistro"
             android:exported="false" />
         <activity
-            android:name=".Activities.Publicacion.VerPublicacionesInvitado"
-            android:exported="false" />
-        <activity
             android:name=".Activities.Reclamo.VerReclamos"
             android:exported="false" />
         <activity
             android:name=".Activities.Denuncia.VerDenuncias"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Denuncia.DenunciaParticular"
             android:exported="false" />
         <activity
             android:name=".Activities.Comercio.VerComercio"
