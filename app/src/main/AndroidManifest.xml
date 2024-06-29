@@ -48,6 +48,9 @@
             android:name=".VerComerciosActivity"
             android:exported="false" />
         <activity
+            android:name=".Activities.Profesional.VerProfesionales"
+            android:exported="false" />
+        <activity
             android:name=".Activities.Denuncia.CrearDenuncia"
             android:exported="false" />
         <activity

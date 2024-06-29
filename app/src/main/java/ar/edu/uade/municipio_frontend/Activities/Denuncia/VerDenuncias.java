@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
@@ -203,7 +204,7 @@ public class VerDenuncias extends AppCompatActivity {
         botonCambiarPantallaDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nuevaActividad = new Intent(VerDenuncias.this, VerDenuncias.class);//TODO CAMBIAR FUNCIONAMIENTO (QUE VAYA A VER PROMOCIONES, VER COMERCIOS, VER SERVICIOS)
+                Intent nuevaActividad = new Intent(VerDenuncias.this, VerProfesionales.class);//TODO CAMBIAR FUNCIONAMIENTO (QUE VAYA A VER PROMOCIONES, VER COMERCIOS, VER SERVICIOS)
                 nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
                 nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
