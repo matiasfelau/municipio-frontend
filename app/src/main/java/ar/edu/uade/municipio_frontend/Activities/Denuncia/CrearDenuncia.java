@@ -133,8 +133,8 @@ public class CrearDenuncia extends AppCompatActivity {
         botonCambiarTipoUsuarioDerecha = findViewById(R.id.botonCambiarUsuarioDerecha);
 
         autenticacion = new Autenticacion(
-                getIntent().getStringExtra("USUARIO"),
-                getIntent().getStringExtra("token"));
+                getIntent().getStringExtra("token"),
+                getIntent().getStringExtra("USUARIO"));
 
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
