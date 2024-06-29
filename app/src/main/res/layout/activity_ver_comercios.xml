@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".VerComerciosActivity">
+    tools:context=".Activities.Comercio.VerComercio">
 
     <TextView
         android:id="@+id/filterBackground"
@@ -67,16 +67,6 @@
         app:srcCompat="?attr/actionModeCloseDrawable"
         app:tint="#FFFDFD"
         tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
-
-    <ListView
-        android:id="@+id/listComercios"
-        android:layout_width="383dp"
-        android:layout_height="487dp"
-        android:layout_marginTop="204dp"
-        android:layout_marginEnd="16dp"
-        android:background="#BE656774"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView4"
@@ -173,6 +163,16 @@
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/listComercios"
+        android:layout_width="351dp"
+        android:layout_height="504dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="30dp"
+        android:background="#BE656774"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

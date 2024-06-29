@@ -98,7 +98,7 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
-        android:id="@+id/idReclamoParticular"
+        android:id="@+id/nombreComercio"
         android:layout_width="197dp"
         android:layout_height="33dp"
         android:layout_marginTop="100dp"
@@ -112,7 +112,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/estadoReclamoParticular"
+        android:id="@+id/cierre"
         android:layout_width="152dp"
         android:layout_height="33dp"
         android:layout_marginTop="140dp"
@@ -126,7 +126,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/descripcionReclamoParticular"
+        android:id="@+id/descripcionComercioParticular"
         android:layout_width="336dp"
         android:layout_height="98dp"
         android:layout_marginTop="196dp"

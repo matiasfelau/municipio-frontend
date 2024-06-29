@@ -24,10 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import ar.edu.uade.municipio_frontend.Activities.Denuncia.CrearDenuncia;
-import ar.edu.uade.municipio_frontend.Activities.Denuncia.DenunciaParticular;
 import ar.edu.uade.municipio_frontend.Activities.Denuncia.VerDenuncias;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
+import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
@@ -36,12 +34,11 @@ import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.Comercio;
-import ar.edu.uade.municipio_frontend.Models.Denuncia;
 import ar.edu.uade.municipio_frontend.Models.Empleado;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.ComercioService;
-import ar.edu.uade.municipio_frontend.Services.DenunciaService;
+import ar.edu.uade.municipio_frontend.Utilities.AdapterCormercios;
 import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,9 +62,9 @@ public class VerComercio extends AppCompatActivity {
     ListView listComercios;
     ImageButton botonCambiarPantallaDerecha;
     ImageButton botonCambiarPantallaIzquierda;
-    ArrayAdapter<IdDescripcion> prueba;
     ArrayList<IdDescripcion> p;
     List<Comercio> comercios;
+    ArrayAdapter<Comercio> adapterComercio;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -104,25 +101,45 @@ public class VerComercio extends AppCompatActivity {
 
         listComercios = findViewById(R.id.listComercios);
 
+        comercios = new ArrayList<>();
+
         autenticacion = new Autenticacion();
 
         autenticacion.setToken(getIntent().getStringExtra("token"));
 
-        autenticacion.setTipo("Vecino");
+        autenticacion.setTipo("VECINO");
 
-        p = new ArrayList<>();
+        adapterComercio = new AdapterCormercios(this, comercios);
 
-        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
+        listComercios.setAdapter(adapterComercio);
 
-        listComercios.setAdapter(prueba);
+        getPaginas();
 
-        setUpListViewListener();
-
-        comercios = new ArrayList<>();
-
-        getPaginas(autenticacion);
+        getComercios();
 
         //Listener
+
+        listComercios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {//TODO REVISAR
+
+                Comercio comercio = adapterComercio.getItem(position);
+
+                Intent nuevaActividad = new Intent(VerComercio.this, ComercioParticular.class);
+
+                nuevaActividad.putExtra("id", comercio.getIdComercio());
+
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+
+
+        });
 
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,9 +154,9 @@ public class VerComercio extends AppCompatActivity {
             public void onClick(View v){
 
                 p.clear();
-                prueba.notifyDataSetChanged();
+                adapterComercio.notifyDataSetChanged();
                 pagina++;
-                getComercios(pagina,autenticacion);
+                getComercios();
                 textPaginaActual.setText(pagina.toString());
 
                 botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
@@ -157,11 +174,11 @@ public class VerComercio extends AppCompatActivity {
             public void onClick(View v) {
                 if(pagina>1) {
                     p.clear();
-                    prueba.notifyDataSetChanged();
-                    pagina-=1;
+                    adapterComercio.notifyDataSetChanged();
+                    pagina--;
                     textPaginaActual.setText(pagina.toString());
-                    //getComercio(Integer.parseInt(inputId.getText().toString()), autenticacion);
-                    getComercios(pagina,autenticacion);//TODO PREGUNTAR
+
+                    getComercios();
                     cantidadPaginas=1;
 
                     if (pagina==1) {
@@ -176,7 +193,7 @@ public class VerComercio extends AppCompatActivity {
         botonAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nuevaActividad = new Intent(VerComercio.this, VerComercio.class);
+                Intent nuevaActividad = new Intent(VerComercio.this, CrearComercio.class);
                 nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
                 nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
@@ -190,7 +207,7 @@ public class VerComercio extends AppCompatActivity {
         botonCambiarPantallaDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nuevaActividad = new Intent(VerComercio.this, VerComercio.class);//TODO CAMBIAR FUNCIONAMIENTO (QUE VAYA A VER PROMOCIONES, VER COMERCIOS, VER SERVICIOS)
+                Intent nuevaActividad = new Intent(VerComercio.this, VerProfesionales.class);
                 nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
                 nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
@@ -231,7 +248,7 @@ public class VerComercio extends AppCompatActivity {
                 if (response.code()==200){//este ok
                     assert response.body() != null;
                     addItem(response.body());
-                    prueba.notifyDataSetChanged();
+                    adapterComercio.notifyDataSetChanged();
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());
                 }else if(response.code()==401){//este? unauthorized?
@@ -257,50 +274,13 @@ public class VerComercio extends AppCompatActivity {
     private void addItem(Comercio comercio){
         if (comercio != null) {
             if (comercio.getDescripcion() != null) {
-                prueba.add(new IdDescripcion(String.valueOf(comercio.getIdComercio()), comercio.getDescripcion()));
+                adapterComercio.add(comercio);
             }
         }
 
     }
-    private void getComercios(int i, Autenticacion autenticacion) {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
-        ComercioService comercioService = retrofit.create(ComercioService.class);
-        Call<List<Comercio>> call = comercioService.getComercios(pagina,autenticacion);
-
-        call.enqueue(new Callback<List<Comercio>>(){
-
-            @Override
-            public void onResponse(@NonNull Call<List<Comercio>> call, @NonNull Response<List<Comercio>> response) {
-                if (response.code()==200){
-                    assert response.body() != null;
-                    for (Comercio comercio: response.body()) {
-                        addItem(comercio);
-                    }
-                    comercios.clear();
-                    comercios.addAll(response.body());
-                    prueba.notifyDataSetChanged();
-                }else if(response.code()==400){//este? badrequest?
-                    System.out.println(response.code());
-                }else if(response.code()==401){//este? unauthorized?
-                    System.out.println(response.code());
-                }else if(response.code()==403){//este forbbiden
-                    System.out.println(response.code());
-                }else if(response.code()==500){//este internal error server
-                    System.out.println(response.code());
-                }else{
-                    System.out.println(response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Comercio>> call, @NonNull Throwable t) {
-
-            }
-        });
-    }
-
-    private void getPaginas(Autenticacion autenticacion) {
+    private void getPaginas() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
         ComercioService comercioService = retrofit.create(ComercioService.class);
 
@@ -340,29 +320,44 @@ public class VerComercio extends AppCompatActivity {
         });
     }
 
-    private void setUpListViewListener(){
-        listComercios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void getComercios() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        ComercioService comercioService = retrofit.create(ComercioService.class);
+        Call<List<Comercio>> call = comercioService.getComercios(Integer.parseInt(textPaginaActual .getText().toString()),
+                autenticacion);
+
+        call.enqueue(new Callback<List<Comercio>>(){
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String idSeleccionado = Objects.requireNonNull(prueba.getItem(position)).getId();
-                for (Comercio comercio : comercios) {
-                    if (String.valueOf(comercio.getIdComercio()).equals(idSeleccionado)) {
-                        Intent nuevaActividad = new Intent(VerComercio.this, ComercioParticular.class);
-
-                        nuevaActividad.putExtra("id", comercio.getIdComercio());
-
-                        nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
-
-                        nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
-
-                        nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
-
-                        startActivity(nuevaActividad);
+            public void onResponse(@NonNull Call<List<Comercio>> call, @NonNull Response<List<Comercio>> response) {
+                if (response.code()==200){
+                    System.out.println("si");
+                    assert response.body() != null;
+                    for (Comercio comercio: response.body()) {
+                        adapterComercio.add(comercio);
                     }
+                    comercios.clear();
+                    comercios.addAll(response.body());
+                    adapterComercio.notifyDataSetChanged();
+                }else if(response.code()==400){//este? badrequest?
+                    System.out.println(response.code());
+                }else if(response.code()==401){//este? unauthorized?
+                    System.out.println(response.code());
+                }else if(response.code()==403){//este forbbiden
+                    System.out.println(response.code());
+                }else if(response.code()==500){//este internal error server
+                    System.out.println(response.code());
+                }else{
+                    System.out.println(response.code());
                 }
             }
-        });
 
+            @Override
+            public void onFailure(@NonNull Call<List<Comercio>> call, @NonNull Throwable t) {
+                System.out.println(t);
+            }
+        });
     }
 
     private void mostrarPopupSalir() {
@@ -400,7 +395,7 @@ public class VerComercio extends AppCompatActivity {
             vecinoHelper.deleteVecinos();
             Intent nuevaActividad = new Intent(VerComercio.this, VecinoIngreso.class);
             nuevaActividad.putExtra("ingresado", false);
-            nuevaActividad.putExtra("from", "VerDenuncias");
+            nuevaActividad.putExtra("from", "VerComercio");
             startActivity(nuevaActividad);
         } catch (Exception e2) {
             try {

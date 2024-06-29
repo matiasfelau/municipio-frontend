@@ -39,6 +39,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.Profesional.CrearProfesional"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Comercio.CrearComercio"
+            android:exported="false" />
+        <activity
             android:name=".ComercioParticularActivity"
             android:exported="false" />
         <activity
@@ -102,6 +108,12 @@
             android:exported="false" />
         <activity
             android:name=".Activities.Comercio.VerComercio"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Comercio.ComercioParticular"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Comercio.CrearComercio"
             android:exported="false" />
 
         <service
