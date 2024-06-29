@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;
+import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
@@ -180,7 +183,15 @@ public class VerProfesionales extends AppCompatActivity {
         botonNuevoProfesional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO comenzar actividad
+                Intent nuevaActividad = new Intent(VerProfesionales.this, CrearProfesional.class);
+
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
 
             }
         });
@@ -188,7 +199,15 @@ public class VerProfesionales extends AppCompatActivity {
         botonCambiarModuloIzquierda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO comenzar actividad
+                Intent nuevaActividad = new Intent(VerProfesionales.this, VerComercio.class);
+
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
 
             }
         });

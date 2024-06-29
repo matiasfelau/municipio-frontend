@@ -39,6 +39,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.Profesional.CrearProfesional"
+            android:exported="false" />
+        <activity
             android:name=".ComercioParticularActivity"
             android:exported="false" />
         <activity

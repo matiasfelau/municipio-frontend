@@ -5,10 +5,9 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 
 public class Profesional {
-    private int idProfesional;
+    private Integer idProfesional;
     private String nombre;
     private String direccion;
     private int telefono;
@@ -19,7 +18,7 @@ public class Profesional {
     private String finJornada;
     private String documento;
 
-    public Profesional(int idProfesional, String nombre, String direccion, int telefono, String email, BigDecimal latitud, BigDecimal longitud, String inicioJornada, String finJornada, String documento) {
+    public Profesional(Integer idProfesional, String nombre, String direccion, int telefono, String email, BigDecimal latitud, BigDecimal longitud, String inicioJornada, String finJornada, String documento) {
         this.idProfesional = idProfesional;
         this.nombre = nombre;
         this.direccion = direccion;
@@ -32,11 +31,11 @@ public class Profesional {
         this.documento = documento;
     }
 
-    public int getIdProfesional() {
+    public Integer getIdProfesional() {
         return idProfesional;
     }
 
-    public void setIdProfesional(int idProfesional) {
+    public void setIdProfesional(Integer idProfesional) {
         this.idProfesional = idProfesional;
     }
 
