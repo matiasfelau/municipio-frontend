@@ -1,136 +1,115 @@
-package ar.edu.uade.municipio_frontend.Activities.Publicacion;
+    package ar.edu.uade.municipio_frontend.Activities.Publicacion;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
+    import android.content.Intent;
+    import android.os.Bundle;
+    import android.view.LayoutInflater;
+    import android.view.View;
+    import android.widget.ArrayAdapter;
+    import android.widget.Button;
+    import android.widget.ImageButton;
 
-import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+    import androidx.activity.EdgeToEdge;
+    import androidx.activity.OnBackPressedCallback;
+    import androidx.appcompat.app.AlertDialog;
+    import androidx.appcompat.app.AppCompatActivity;
+    import androidx.core.graphics.Insets;
+    import androidx.core.view.ViewCompat;
+    import androidx.core.view.WindowInsetsCompat;
 
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
-import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
-import ar.edu.uade.municipio_frontend.Database.Helpers.EmpleadoHelper;
-import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
-import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
-import ar.edu.uade.municipio_frontend.Models.Empleado;
-import ar.edu.uade.municipio_frontend.Models.Vecino;
-import ar.edu.uade.municipio_frontend.R;
+    import java.util.ArrayList;
 
-public class VerPublicacionesInvitado extends AppCompatActivity {
-    ImageButton boton;
-    EmpleadoHelper empleadoHelper;
-    InvitadoHelper invitadoHelper;
-    VecinoHelper vecinoHelper;
+    import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
+    import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
+    import ar.edu.uade.municipio_frontend.Database.Helpers.EmpleadoHelper;
+    import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
+    import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
+    import ar.edu.uade.municipio_frontend.Models.Empleado;
+    import ar.edu.uade.municipio_frontend.Models.Vecino;
+    import ar.edu.uade.municipio_frontend.R;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public class VerPublicacionesInvitado extends AppCompatActivity {
 
-        EdgeToEdge.enable(this);
+        ImageButton botonAgregar;
+        ImageButton botonLogout;
+        ImageButton botonCambiarPantallaDerecha;
+        ImageButton botonCambiarPantallaIzquierda;
+        TextView textPaginaActual;
+        ListView listPublicaciones;
+        ArrayAdapter<Publicacion> mAdapter;
+        List<Publicacion> mPublicaciones;
 
-        setContentView(R.layout.activity_ver_publicaciones_invitado);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_ver_publicaciones_invitado);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+            // Inicialización de vistas
+            botonAgregar = findViewById(R.id.botonAgregar);
+            botonLogout = findViewById(R.id.botonLogout);
+            botonCambiarPantallaDerecha = findViewById(R.id.botonCambiarPantallaDerecha);
+            botonCambiarPantallaIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
+            textPaginaActual = findViewById(R.id.textPaginaActual);
+            listPublicaciones = findViewById(R.id.listPublicaciones);
 
-        boton = findViewById(R.id.botonLogout);
+            // Configuración de la lista de publicaciones
+            mPublicaciones = new ArrayList<>();
+            mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mPublicaciones);
+            listPublicaciones.setAdapter(mAdapter);
 
-        empleadoHelper = new EmpleadoHelper(this);
+            // Simulación de datos (puedes reemplazarlo con tu lógica de obtención de datos)
+            cargarDatosSimulados();
 
-        invitadoHelper = new InvitadoHelper(this);
-
-        vecinoHelper = new VecinoHelper(this);
-
-        String from = getIntent().getStringExtra("from");
-
-        if (from != null) {
-            if (from.equals("InvitadoIngreso")) {
-                getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                    }
-                });
-
-            }
-        }
-        boton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mostrarPopupSalir();
-            }
-        });
-    }
-    private void mostrarPopupSalir() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.popup_confirmacion, null);
-
-        builder.setView(view);
-        final AlertDialog dialog = builder.create();
-
-        Button btnConfirmarSalir = view.findViewById(R.id.btn_confirmar_salir);
-        Button btnCancelarsalir = view.findViewById(R.id.btn_cancelar_salir);
-
-        btnConfirmarSalir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cerrarSesion();
-                dialog.dismiss();
-            }
-        });
-
-        btnCancelarsalir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss(); // Cerrar el popup sin hacer nada si se cancela
-            }
-        });
-
-        dialog.show();
-    }
-
-    private void cerrarSesion() {
-        try {
-            Vecino vecino = vecinoHelper.getVecinos().get(0);
-            vecinoHelper.deleteVecinos();
-            Intent nuevaActividad = new Intent(VerPublicacionesInvitado.this, VecinoIngreso.class);
-            nuevaActividad.putExtra("ingresado", false);
-            nuevaActividad.putExtra("from", "VerReclamos");
-            startActivity(nuevaActividad);
-        } catch (Exception e2) {
-            try {
-                Empleado empleado = empleadoHelper.getEmpleados().get(0);
-                empleadoHelper.deleteEmpleados();
-                Intent nuevaActividad = new Intent(VerPublicacionesInvitado.this, VecinoIngreso.class);
-                nuevaActividad.putExtra("ingresado", false);
-                nuevaActividad.putExtra("from", "VerReclamos");
-                startActivity(nuevaActividad);
-            } catch (Exception e3) {
-                try {
-                    invitadoHelper.getInvitados().get(0);
-                    invitadoHelper.deleteInvitados();
-                    Intent nuevaActividad = new Intent(VerPublicacionesInvitado.this, VecinoIngreso.class);
-                    nuevaActividad.putExtra("ingresado", false);
-                    nuevaActividad.putExtra("from", "VerReclamos");
-                    startActivity(nuevaActividad);
-                } catch (Exception e4) {
-                    Intent nuevaActividad = new Intent(VerPublicacionesInvitado.this, VecinoIngreso.class);
-                    nuevaActividad.putExtra("ingresado", false);
-                    nuevaActividad.putExtra("from", "VerReclamos");
-                    startActivity(nuevaActividad);
+            // Listeners
+            botonLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mostrarPopupSalir();
                 }
-            }
+            });
+
+            botonAgregar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO Lógica para agregar una nueva publicación
+                }
+            });
+
+            botonCambiarPantallaDerecha.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO Lógica para cambiar a la pantalla siguiente
+                    cambiarPantallaSiguiente();
+                }
+            });
+
+            botonCambiarPantallaIzquierda.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO Lógica para cambiar a la pantalla anterior
+                    cambiarPantallaAnterior();
+                }
+            });
+        }
+
+        private void cargarDatosSimulados() {
+            // Simulación de datos para la lista de publicaciones
+            mPublicaciones.add(new Publicacion("Publicación 1"));
+            mPublicaciones.add(new Publicacion("Publicación 2"));
+            mPublicaciones.add(new Publicacion("Publicación 3"));
+
+            // Notificar al adaptador que los datos han cambiado
+            mAdapter.notifyDataSetChanged();
+        }
+
+        private void mostrarPopupSalir() {
+            //TODO agregar el popup
+        }
+
+        private void cambiarPantallaSiguiente() {
+            //TODO
+        }
+
+        private void cambiarPantallaAnterior() {
+            //TODO
         }
     }
-}

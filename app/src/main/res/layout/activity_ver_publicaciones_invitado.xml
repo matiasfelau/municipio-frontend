@@ -6,18 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".Activities.Publicacion.VerPublicacionesInvitado">
-
-    <ImageButton
-        android:id="@+id/botonLogout"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="#00FFFFFF"
-        android:scaleX="1.25"
-        android:scaleY="1.25"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_delete" />
+    tools:context=".VerPublicacionesInvitado">
 
     <TextView
         android:id="@+id/textNombreAplicacion"
@@ -35,15 +24,129 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/filterBackground"
-        android:layout_width="421dp"
-        android:layout_height="728dp"
-        android:background="#80656774"
-        android:backgroundTint="#656774"
-        android:text=" "
+        android:id="@+id/textPaginaActual"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="712dp"
+        android:layout_marginEnd="184dp"
+        android:background="#C92E6FC1"
+        android:text="1"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonCambiarPaginaDerecha"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="716dp"
+        android:layout_marginEnd="104dp"
+        android:backgroundTint="#00FFFFFF"
+        android:rotationY="180"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="@android:color/white"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ListView
+        android:id="@+id/listPublicaciones"
+        android:layout_width="389dp"
+        android:layout_height="545dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="160dp"
+        android:background="#BE656774"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewCargarPublicacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="771dp"
+        android:text="¿Te gustaría cargar tu propia publicación? \n Apretá acá:"
+        android:textAlignment="viewEnd"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonAgregar"
+        android:layout_width="43dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="24dp"
+        android:background="#C92E6FC1"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintBottom_toBottomOf="@id/textViewCargarPublicacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@android:color/white" />
+
+    <ImageButton
+        android:id="@+id/botonLogout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="#00FFFFFF"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <TextView
+        android:id="@+id/textPantalla"
+        android:layout_width="203dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginBottom="32dp"
+        android:text="Publicaciones"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonCambiarPantallaDerecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#00FFFFFF"
+        android:rotationY="180"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="@android:color/white"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/botonCambiarPantallaIzquierda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="@android:color/white"
+        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
