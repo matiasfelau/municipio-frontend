@@ -23,10 +23,10 @@
 
     <TextView
         android:id="@+id/descripcionComercioParticular"
-        android:layout_width="153dp"
-        android:layout_height="103dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="344dp"
+        android:layout_width="162dp"
+        android:layout_height="147dp"
+        android:layout_marginStart="208dp"
+        android:layout_marginTop="184dp"
         android:background="#BE656774"
         android:text="descripcion"
         android:textAlignment="center"
@@ -52,10 +52,10 @@
 
     <TextView
         android:id="@+id/direccion"
-        android:layout_width="152dp"
+        android:layout_width="339dp"
         android:layout_height="33dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="49dp"
+        android:layout_marginTop="392dp"
+        android:layout_marginEnd="36dp"
         android:text="Direccion"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -69,7 +69,7 @@
         android:layout_width="152dp"
         android:layout_height="33dp"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="184dp"
+        android:layout_marginTop="192dp"
         android:text="Horario"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -80,10 +80,10 @@
 
     <TextView
         android:id="@+id/nroTelefono"
-        android:layout_width="152dp"
+        android:layout_width="339dp"
         android:layout_height="33dp"
-        android:layout_marginTop="140dp"
-        android:layout_marginEnd="128dp"
+        android:layout_marginTop="148dp"
+        android:layout_marginEnd="36dp"
         android:text="nroTelefono"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -108,10 +108,10 @@
 
     <TextView
         android:id="@+id/nombreComercio"
-        android:layout_width="197dp"
+        android:layout_width="339dp"
         android:layout_height="33dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="104dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="36dp"
         android:text="Nombre Comercio"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -122,9 +122,9 @@
 
     <org.osmdroid.views.MapView
         android:id="@+id/map"
-        android:layout_width="174dp"
-        android:layout_height="126dp"
-        android:layout_marginTop="316dp"
+        android:layout_width="339dp"
+        android:layout_height="113dp"
+        android:layout_marginTop="444dp"
         android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -162,7 +162,7 @@
     <HorizontalScrollView
         android:layout_width="339dp"
         android:layout_height="113dp"
-        android:layout_marginTop="464dp"
+        android:layout_marginTop="572dp"
         android:layout_marginEnd="36dp"
         android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -175,15 +175,5 @@
             android:orientation="horizontal"></LinearLayout>
 
     </HorizontalScrollView>
-
-    <ImageButton
-        android:id="@+id/Novedades"
-        android:layout_width="183dp"
-        android:layout_height="66dp"
-        android:layout_marginEnd="118dp"
-        android:layout_marginBottom="171dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/separador" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

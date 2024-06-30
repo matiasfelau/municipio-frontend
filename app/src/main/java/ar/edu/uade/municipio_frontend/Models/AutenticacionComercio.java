@@ -2,17 +2,12 @@ package ar.edu.uade.municipio_frontend.Models;
 
 public class AutenticacionComercio {
 
-    Autenticacion autenticacion;
+    private Autenticacion autenticacion;
 
-    Comercio comercio;
+    private Comercio comercio;
 
-    public AutenticacionComercio(){
-
-    }
-
-    public AutenticacionComercio(Autenticacion autenticacion, Comercio comercio) {
+    public AutenticacionComercio(Autenticacion autenticacion) {
         this.autenticacion = autenticacion;
-        this.comercio = comercio;
     }
 
     public Autenticacion getAutenticacion() {
@@ -29,5 +24,13 @@ public class AutenticacionComercio {
 
     public void setComercio(Comercio comercio) {
         this.comercio = comercio;
+    }
+
+    @Override
+    public String toString() {
+        return "AutenticacionComercio{" +
+                "autenticacion=" + autenticacion +
+                ", comercio=" + comercio +
+                '}';
     }
 }

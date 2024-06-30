@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +43,7 @@ import java.util.Objects;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.ComercioService;
+import ar.edu.uade.municipio_frontend.Utilities.MapHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,12 +58,11 @@ public class ComercioParticular extends AppCompatActivity {
     TextView nroTelefono;
     TextView nombreComercio;
     MapView map;
-    Marker marker;
     ImageButton botonVolver;
-    ImageButton novedades;
     Autenticacion autenticacion;
     LinearLayout contenedorFotos;
     Comercio comercio;
+    private MapHelper mapHelper;
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,17 +105,13 @@ public class ComercioParticular extends AppCompatActivity {
 
         map = findViewById(R.id.map);
 
-        map.setMultiTouchControls(true);
+        mapHelper = new MapHelper(this,
+                this,
+                map);
 
-        map.getController().setZoom(15.0);
-
-        map.invalidate();
-
-        marker = new Marker(map);
+        mapHelper.startService(false);
 
         botonVolver = findViewById(R.id.botonVolver);
-
-        novedades = findViewById(R.id.Novedades);
 
         contenedorFotos = findViewById(R.id.contenedorFotos);
 
@@ -137,39 +134,6 @@ public class ComercioParticular extends AppCompatActivity {
             }
         });
 
-        novedades.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent nuevaActividad = new Intent(ComercioParticular.this, ComercioParticular.class);//TODO FUNCIONAMIENTO CUANDO ESTE NOVEDADES
-                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
-
-                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
-
-                nuevaActividad.putExtra("from", "ComercioParticular");
-
-                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
-                startActivity(nuevaActividad);
-                //TODO FALTA ALGO QUE HAGA QUE SOLO TE MUESTRE LAS NOVEDADES DEL RECLAMO EN EL QUE ESTABAS
-            }
-        });
-
-        MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
-            @Override
-            public boolean singleTapConfirmedHelper(GeoPoint p) {
-                return false;
-
-            }
-
-            @Override
-            public boolean longPressHelper(GeoPoint p) {
-                return false;
-
-            }
-        };
-
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(mapEventsReceiver);
-
-        map.getOverlays().add(mapEventsOverlay);
 
     }
 
@@ -194,9 +158,9 @@ public class ComercioParticular extends AppCompatActivity {
                     assert comercio != null;
                     nombreComercio.setText(String.valueOf(comercio.getNombre()));
 
-                    apertura.setText(String.valueOf(comercio.getApertura()));
+                    apertura.setText(String.valueOf(comercio.getApertura().substring(0,5)));
 
-                    cierre.setText(String.valueOf(comercio.getCierre()));
+                    cierre.setText(String.valueOf(comercio.getCierre().substring(0,5)));
 
                     direccion.setText(String.valueOf(comercio.getDireccion()));
 
