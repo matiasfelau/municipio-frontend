@@ -2,9 +2,15 @@ package ar.edu.uade.municipio_frontend.Activities.Denuncia;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.graphics.pdf.PdfRenderer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,6 +33,9 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,27 +230,56 @@ public class DenunciaParticular extends AppCompatActivity {
         });
     }
 
-    private void addImageToLayout(String url) {
-
+    private void addFileToLayout(String url) {
         if (contenedorArchivos == null) {
-            System.out.println("El contenedor de fotos es nulo");
+            System.out.println("El contenedor de archivos es nulo");
             return;
         }
 
+        if (url.toLowerCase().endsWith(".pdf")) {
+            addPdfToLayout(url);
+        } else {
+            addImageToLayout(url);
+        }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void addPdfToLayout(String url) {
+        System.out.println("URL del PDF: " + url);
+
+        WebView webView = new WebView(this);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                // Aquí puedes agregar código para manejar cuando el PDF termine de cargar
+            }
+        });
+
+        // Cargar el PDF usando Google Docs Viewer
+        webView.loadUrl("https://docs.google.com/viewer?url=" + Uri.encode(url) + "&embedded=true");
+
+        contenedorArchivos.addView(webView);
+    }
+
+    private void addImageToLayout(String url) {
         ImageView imageView = new ImageView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         imageView.setLayoutParams(params);
         contenedorArchivos.addView(imageView);
-        System.out.println(url);
+        System.out.println("URL de la imagen: " + url);
 
-        // Usar Glide para cargar la imagen desde la URL
         Glide.with(this)
                 .load(url)
-                .placeholder(R.drawable.placeholder) // Asegúrate de tener un recurso placeholder
-                .error(R.drawable.error) // Asegúrate de tener un recurso de error
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -249,18 +287,17 @@ public class DenunciaParticular extends AppCompatActivity {
                         if (e != null) {
                             e.logRootCauses("Glide");
                         }
-                        System.out.println("Error al cargar la imagen: " + e.getMessage());
+                        System.out.println("Error al cargar la imagen: " + (e != null ? e.getMessage() : "Desconocido"));
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        // Imagen cargada exitosamente
+                        System.out.println("Imagen cargada exitosamente");
                         return false;
                     }
                 })
                 .into(imageView);
-        //Picasso.get().load(url).into(imageView);
     }
 
     private void getFotos(int id) {
@@ -279,7 +316,7 @@ public class DenunciaParticular extends AppCompatActivity {
                     List<String> imageUrls = response.body();
                     assert imageUrls != null;
                     for (String url : imageUrls) {
-                        addImageToLayout(url);
+                        addFileToLayout(url);
                     }
 
                 } else if (response.code() == 400) {//este? badrequest?
@@ -322,7 +359,7 @@ public class DenunciaParticular extends AppCompatActivity {
         call.enqueue(new Callback<List<MovimientoDenuncia>>() {
             @Override
             public void onResponse(@NonNull Call<List<MovimientoDenuncia>> call, @NonNull Response<List<MovimientoDenuncia>> response) {
-
+                System.out.println("Llamando a movimientos");
                 if (response.code() == 200) {//este created
 
                     assert response.body() != null;

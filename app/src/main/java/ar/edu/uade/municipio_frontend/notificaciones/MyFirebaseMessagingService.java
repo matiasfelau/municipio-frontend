@@ -35,6 +35,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // Handle FCM messages here.
+        System.out.println("ME LLEGO LLAMADA DEL FIREBASE");
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         if (!remoteMessage.getData().isEmpty()) {
