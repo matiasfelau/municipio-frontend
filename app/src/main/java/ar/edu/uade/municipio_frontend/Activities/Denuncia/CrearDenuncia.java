@@ -1,14 +1,20 @@
 package ar.edu.uade.municipio_frontend.Activities.Denuncia;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,7 +22,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,11 +31,15 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -59,18 +68,44 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CrearDenuncia extends AppCompatActivity {
-    ImageButton botonVolver;
-    Spinner tipoDenuncia;
-    EditText insertNombre;
-    EditText insertApellido;
-    EditText insertNombreComercio;
-    EditText insertDireccion;
-    EditText insertDescripcion;
-    Button botonAdjuntarArchivos;
-    CheckBox confirmacionResponsabilidad;
-    Button botonGenerar;
-    Autenticacion autenticacion;
-    List<Uri> imageUris = new ArrayList<>();
+    private static final int PICK_FILES_REQUEST = 1;
+    private List<Uri> fileUris = new ArrayList<>();
+
+    private List<String> fileStrings = new ArrayList<>();
+
+    private final ActivityResultLauncher<Intent> filePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
+                    Intent data = result.getData();
+                    if (data.getClipData() != null) {
+                        int count = data.getClipData().getItemCount();
+                        for (int i = 0; i < count; i++) {
+                            Uri fileUri = data.getClipData().getItemAt(i).getUri();
+                            fileUris.add(fileUri);
+                            System.out.println(fileUri);
+                        }
+                    }else if (data.getData() != null) {
+                        Uri fileUri = data.getData();
+                        fileUris.add(fileUri);
+                    }
+                }
+            }
+    );
+    private ImageButton botonVolver;
+    private Spinner tipoDenuncia;
+    private EditText insertNombre;
+    private EditText insertApellido;
+    private EditText insertNombreComercio;
+    private EditText insertDireccion;
+    private EditText insertDescripcion;
+    private Button botonAdjuntarArchivos;
+    private CheckBox confirmacionResponsabilidad;
+    private Button botonGenerar;
+    private Autenticacion autenticacion;
+
+    /*
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -92,7 +127,7 @@ public class CrearDenuncia extends AppCompatActivity {
                         }
                     }
                 }
-            });
+            });*/
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -134,6 +169,8 @@ public class CrearDenuncia extends AppCompatActivity {
 
         botonGenerar = findViewById(R.id.buttonGenerar);
 
+        checkPermissions();
+
         autenticacion = new Autenticacion(
                 getIntent().getStringExtra("token"),
                 getIntent().getStringExtra("USUARIO"));
@@ -157,7 +194,7 @@ public class CrearDenuncia extends AppCompatActivity {
         botonAdjuntarArchivos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                openFilePicker();
 
             }
         });
@@ -170,6 +207,12 @@ public class CrearDenuncia extends AppCompatActivity {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 if(confirmacionResponsabilidad.isChecked()){
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+                        for(Uri uri: fileUris){
+                            System.out.println(uri);
+                            fileStrings.add(convertFileToBase64(uri));
+                        }
+
                         CompletableFuture.supplyAsync(() -> {
                             if (tipoDenuncia.getSelectedItem().equals("VECINO")) {
                                 generarDenunciaVecino(new ContainerDenunciaVecino(
@@ -178,7 +221,8 @@ public class CrearDenuncia extends AppCompatActivity {
                                                 insertDescripcion.getText().toString(),
                                                 "Nuevo",
                                                 confirmacionResponsabilidad.isChecked(),
-                                                getIntent().getStringExtra("documento")
+                                                getIntent().getStringExtra("documento"),
+                                                fileStrings
                                         ),
                                         new VecinoDenunciado(
                                                 null,
@@ -196,13 +240,14 @@ public class CrearDenuncia extends AppCompatActivity {
                                                 insertDescripcion.getText().toString(),
                                                 "Nuevo",
                                                 confirmacionResponsabilidad.isChecked(),
-                                                getIntent().getStringExtra("documento")
+                                                getIntent().getStringExtra("documento"),
+                                                fileStrings
                                         ),
                                         new ComercioDenunciado(
                                                 null,
                                                 null,
-                                                insertDireccion.getText().toString(),
-                                                insertNombreComercio.getText().toString()
+                                                insertNombreComercio.getText().toString(),
+                                                insertDireccion.getText().toString()
                                         )));
 
                             }
@@ -253,41 +298,13 @@ public class CrearDenuncia extends AppCompatActivity {
             }
         });
 
-        /*
-        botonCambiarTipoUsuarioIzquierda.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View v) {
-                tipoDenunciado.setText("Vecino");
-
-                botonCambiarTipoUsuarioDerecha.setVisibility(View.VISIBLE);
-
-                botonCambiarTipoUsuarioIzquierda.setVisibility(View.INVISIBLE);
-
-            }
-        });
-
-        botonCambiarTipoUsuarioDerecha.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View v) {
-                tipoDenunciado.setText("Comercio");
-
-                botonCambiarTipoUsuarioIzquierda.setVisibility(View.VISIBLE);
-
-                botonCambiarTipoUsuarioDerecha.setVisibility(View.INVISIBLE);
-
-            }
-        });
-        */
     }
 
-    private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-
-        galleryLauncher.launch(intent);
+        filePickerLauncher.launch(Intent.createChooser(intent, "Select Files"));
 
     }
 
@@ -397,7 +414,9 @@ public class CrearDenuncia extends AppCompatActivity {
         });
     }
 
+    /*
     private void uploadImages(Integer idReclamo, List<Uri> imageUris) {
+
 
         List<MultipartBody.Part> parts = new ArrayList<>();
         for (Uri uri : imageUris) {
@@ -431,19 +450,36 @@ public class CrearDenuncia extends AppCompatActivity {
             }
         });
     }
+    */
 
-    private String getRealPathFromURI(Uri uri) {
-        @SuppressLint("Recycle") Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        if (cursor == null) {
-            return uri.getPath();
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+    }
 
-        } else {
-            cursor.moveToFirst();
+    public String convertFileToBase64(Uri uri) {
+        try {
+            ContentResolver contentResolver = getContentResolver();
+            InputStream fileStream = contentResolver.openInputStream(uri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while (true) {
+                assert fileStream != null;
+                if ((bytesRead = fileStream.read(buffer)) == -1) break;
+                byteArrayOutputStream.write(buffer, 0, bytesRead);
+            }
 
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            String base64String = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            System.out.println("Base 64: " + base64String);
 
-            return cursor.getString(idx);
-
+            return base64String;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

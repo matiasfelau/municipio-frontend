@@ -50,25 +50,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VerDenuncias extends AppCompatActivity {
     //inicializaciones
-    EmpleadoHelper empleadoHelper;
-    ImageButton botonAgregar;
-    InvitadoHelper invitadoHelper;
-    VecinoHelper vecinoHelper;
-    EditText inputId;
-    Button botonFiltrar;
-    ImageButton botonCambiarPaginaIzquierda;
-    ImageButton botonCambiarPaginaDerecha;
-    TextView textPaginaActual;
-    ListView listDenuncias;
-    ImageButton boton;
-    ImageButton botonCambiarPantallaDerecha;
-    ImageButton botonCambiarPantallaIzquierda;
-    Integer pagina;
-    Autenticacion autenticacion;
-    ArrayList<IdDescripcion> p;
-    List<Denuncia> denuncias;
-    ArrayAdapter<IdDescripcion> prueba;
-    Integer cantidadPaginas;
+    private EmpleadoHelper empleadoHelper;
+    private ImageButton botonAgregar;
+    private InvitadoHelper invitadoHelper;
+    private VecinoHelper vecinoHelper;
+    private EditText inputId;
+    private Button botonFiltrar;
+    private ImageButton botonCambiarPaginaIzquierda;
+    private ImageButton botonCambiarPaginaDerecha;
+    private TextView textPaginaActual;
+    private ListView listDenuncias;
+    private ImageButton boton;
+    private ImageButton botonCambiarPantallaDerecha;
+    private ImageButton botonCambiarPantallaIzquierda;
+    private Integer pagina;
+    private Autenticacion autenticacion;
+    private ArrayList<IdDescripcion> p;
+    private List<Denuncia> denuncias;
+    private ArrayAdapter<IdDescripcion> prueba;
+    private Integer cantidadPaginas;
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,8 +165,7 @@ public class VerDenuncias extends AppCompatActivity {
                     prueba.notifyDataSetChanged();
                     pagina-=1;
                     textPaginaActual.setText(pagina.toString());
-                    getDenuncia(Integer.parseInt(inputId.getText().toString()), autenticacion);
-                    cantidadPaginas=1;
+                    getDenuncias(pagina, autenticacion);
 
                     if (pagina==1) {
                         botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
@@ -180,12 +179,22 @@ public class VerDenuncias extends AppCompatActivity {
         botonFiltrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
-                botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
-                p.clear();
-                prueba.notifyDataSetChanged();
-                getDenuncias(Integer.parseInt(inputId.getText().toString()), autenticacion);
-                cantidadPaginas=1;
+                if(inputId.getText().toString().isEmpty()){
+                    botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+                    botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
+                    p.clear();
+                    prueba.notifyDataSetChanged();
+                    pagina = 1;
+                    getDenuncias(pagina, autenticacion);
+                    getPaginas(autenticacion);
+                }else {
+                    botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+                    botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+                    p.clear();
+                    prueba.notifyDataSetChanged();
+                    getDenuncia(Integer.parseInt(inputId.getText().toString()), autenticacion);
+                    cantidadPaginas = 1;
+                }
             }
         });
 

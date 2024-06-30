@@ -52,7 +52,7 @@ public class DenunciaParticular extends AppCompatActivity {
     TextView descripcion;
     TextView denunciado;
     ListView listMovimientosDenuncias;
-    LinearLayout contenedorFotos;
+    LinearLayout contenedorArchivos;
     Denuncia denuncia;
     List<String> movimientos;
     ArrayAdapter<String> adapter;
@@ -98,7 +98,7 @@ public class DenunciaParticular extends AppCompatActivity {
 
         listMovimientosDenuncias.setAdapter(adapter);
 
-        contenedorFotos = findViewById(R.id.linearLayoutFotos);
+        contenedorArchivos = findViewById(R.id.linearLayoutFotos);
 
         autenticacion = new Autenticacion(
                 getIntent().getStringExtra("token"),
@@ -223,7 +223,7 @@ public class DenunciaParticular extends AppCompatActivity {
 
     private void addImageToLayout(String url) {
 
-        if (contenedorFotos == null) {
+        if (contenedorArchivos == null) {
             System.out.println("El contenedor de fotos es nulo");
             return;
         }
@@ -234,8 +234,8 @@ public class DenunciaParticular extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         imageView.setLayoutParams(params);
-        contenedorFotos.addView(imageView);
-
+        contenedorArchivos.addView(imageView);
+        System.out.println(url);
 
         // Usar Glide para cargar la imagen desde la URL
         Glide.with(this)

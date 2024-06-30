@@ -31,8 +31,4 @@ public interface ProfesionalService {
 
     @POST(API_ROUTE+"/nuevo")
     Call<Profesional> nuevoProfesional(@Body AutenticacionProfesional autenticacionProfesional);
-
-    @Multipart
-    @POST(API_ROUTE+"/subir-imagenes"+"/{idProfesional}")
-    Call<ResponseBody> uploadImages(@Path("idProfesional") int idProfesional, @Part List<MultipartBody.Part> image);
 }

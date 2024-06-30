@@ -9,11 +9,14 @@ import ar.edu.uade.municipio_frontend.Models.AutenticacionDenunciaVecino;
 import ar.edu.uade.municipio_frontend.Models.Denuncia;
 import ar.edu.uade.municipio_frontend.Models.Denunciado;
 import ar.edu.uade.municipio_frontend.Models.MovimientoDenuncia;
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface DenunciaService {
@@ -35,4 +38,6 @@ public interface DenunciaService {
     Call<List<String>> getFotos(@Path("idDenuncia") Integer idDenuncia);
     @GET(API_ROUTE+"/movimientos"+"/{idDenuncia}")
     Call<List<MovimientoDenuncia>> getMovimientos(@Path("idDenuncia") Integer idDenuncia);
+    @POST(API_ROUTE+"/subir-imagenes"+"/{idDenuncia}")
+    Call<ResponseBody> subirFotos(@Path("idDenuncia") int idDenuncia, @Part List<MultipartBody.Part> image);
 }
