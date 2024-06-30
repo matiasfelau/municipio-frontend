@@ -1,4 +1,4 @@
-package ar.edu.uade.municipio_frontend.Utilities;
+package ar.edu.uade.municipio_frontend.Utilities.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,9 +14,9 @@ import java.util.List;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
 import ar.edu.uade.municipio_frontend.R;
 
-public class CustomAdapter extends ArrayAdapter<Profesional> {
+public class ProfesionalAdapter extends ArrayAdapter<Profesional> {
 
-    public CustomAdapter(Context context, List<Profesional> items) {
+    public ProfesionalAdapter(Context context, List<Profesional> items) {
         super(context, 0, items);
 
     }

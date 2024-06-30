@@ -22,23 +22,16 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
-import ar.edu.uade.municipio_frontend.Models.AutenticacionFiltro;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
-import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.ProfesionalService;
-import ar.edu.uade.municipio_frontend.Services.ReclamoService;
-import ar.edu.uade.municipio_frontend.Utilities.CustomAdapter;
-import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
+import ar.edu.uade.municipio_frontend.Utilities.Adapter.ProfesionalAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -99,7 +92,7 @@ public class VerProfesionales extends AppCompatActivity {
 
         profesionales = new ArrayList<>();
 
-        adapterProfesionales = new CustomAdapter(this, profesionales);
+        adapterProfesionales = new ProfesionalAdapter(this, profesionales);
 
         listaProfesionales.setAdapter(adapterProfesionales);
 

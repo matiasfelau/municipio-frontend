@@ -79,7 +79,6 @@ public class CrearProfesional extends AppCompatActivity {
     private Button botonAdjuntarArchivos;
     private Button botonEnviarSolicitud;
     private MapHelper mapHelper;
-    private Marker marker;
     private List<Uri> imageUris = new ArrayList<>();
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -152,6 +151,10 @@ public class CrearProfesional extends AppCompatActivity {
 
         botonEnviarSolicitud = findViewById(R.id.buttonGenerar);
 
+        mapHelper = new MapHelper(this,
+                this,
+                mapa);
+
         autenticacion = new Autenticacion(
                 getIntent().getStringExtra("USUARIO"),
                 getIntent().getStringExtra("token")
@@ -159,44 +162,7 @@ public class CrearProfesional extends AppCompatActivity {
 
         autenticacionProfesional = new AutenticacionProfesional(autenticacion);
 
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-
-        marker = new Marker(mapa);
-
-        mapa.setTileSource(TileSourceFactory.MAPNIK);
-
-        requestPermissions();
-
-        MapEventsReceiver mReceive = new MapEventsReceiver() {
-            @Override
-            public boolean singleTapConfirmedHelper(GeoPoint p) {
-                double latitude = p.getLatitude();
-
-                double longitude = p.getLongitude();
-
-                marker.setPosition(p);
-
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-
-                marker.setTitle("Marcador en Lat: " + latitude + ", Lon: " + longitude);
-
-                mapa.getOverlays().add(marker);
-
-                mapa.invalidate();
-
-                return true;
-
-            }
-
-            @Override
-            public boolean longPressHelper(GeoPoint p) {
-                return false;
-            }
-        };
-
-        MapEventsOverlay eventsOverlay = new MapEventsOverlay(mReceive);
-
-        mapa.getOverlays().add(eventsOverlay);
+        mapHelper.startService(false);
 
         botonDisminuirInicioJornada.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
@@ -350,8 +316,8 @@ public class CrearProfesional extends AppCompatActivity {
                             inputDireccion.getText().toString(),
                             Integer.parseInt(inputTelefono.getText().toString()),
                             inputEmail.getText().toString(),
-                            BigDecimal.valueOf(marker.getPosition().getLatitude()),
-                            BigDecimal.valueOf(marker.getPosition().getLongitude()),
+                            mapHelper.getMarkerLatitude(),
+                            mapHelper.getMarkerLongitude(),
                             inicioJornada.getText().toString(),
                             finJornada.getText().toString(),
                             getIntent().getStringExtra("documento"));
@@ -360,26 +326,12 @@ public class CrearProfesional extends AppCompatActivity {
         });
     }
 
-    private void requestPermissions() {
-        String fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
-        String coarseLocationPermission = Manifest.permission.ACCESS_COARSE_LOCATION;
-        boolean fineLocationStatus = ActivityCompat.checkSelfPermission(this, fineLocationPermission) == PackageManager.PERMISSION_GRANTED;
-        boolean coarseLocationStatus = ActivityCompat.checkSelfPermission(this, coarseLocationPermission) == PackageManager.PERMISSION_GRANTED;
-        if (!fineLocationStatus && !coarseLocationStatus) {
-            ActivityCompat.requestPermissions(this, new String[]{
-                    fineLocationPermission,
-                    coarseLocationPermission}, PERMISSION_REQUEST_CODE);
-        } else {
-            mapHelper.initializeMap();
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mapHelper.initializeMap();
+                mapHelper.startService(true);
             } else {
                 Log.e("PermissionError", "Location permissions are required to use this feature.");
             }
