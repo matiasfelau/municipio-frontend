@@ -7,18 +7,16 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
@@ -33,10 +31,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.preference.PreferenceManager;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.library.BuildConfig;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
@@ -44,22 +43,16 @@ import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
-import ar.edu.uade.municipio_frontend.Models.AutenticacionReclamo;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
-import ar.edu.uade.municipio_frontend.Models.Reclamo;
 import ar.edu.uade.municipio_frontend.R;
-import ar.edu.uade.municipio_frontend.Services.ApiService;
 import ar.edu.uade.municipio_frontend.Services.ProfesionalService;
-import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import ar.edu.uade.municipio_frontend.Utilities.Container.AutenticacionProfesional;
+import ar.edu.uade.municipio_frontend.Utilities.MapHelper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -71,21 +64,23 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CrearProfesional extends AppCompatActivity {
-    EditText inputNombreProfesional;
-    EditText inputDireccion;
-    MapView mapa;
-    EditText inputTelefono;
-    EditText inputEmail;
-    ImageButton botonDisminuirInicioJornada;
-    TextView inicioJornada;
-    ImageButton botonAumentarInicioJornada;
-    ImageButton botonDisminuirFinJornada;
-    TextView finJornada;
-    ImageButton botonAumentarFinJornada;
-    Button botonAdjuntarArchivos;
-    Button botonEnviarSolicitud;
-    Marker marker;
-    List<Uri> imageUris = new ArrayList<>();
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    private EditText inputNombreProfesional;
+    private EditText inputDireccion;
+    private MapView mapa;
+    private EditText inputTelefono;
+    private EditText inputEmail;
+    private ImageButton botonDisminuirInicioJornada;
+    private TextView inicioJornada;
+    private ImageButton botonAumentarInicioJornada;
+    private ImageButton botonDisminuirFinJornada;
+    private TextView finJornada;
+    private ImageButton botonAumentarFinJornada;
+    private Button botonAdjuntarArchivos;
+    private Button botonEnviarSolicitud;
+    private MapHelper mapHelper;
+    private Marker marker;
+    private List<Uri> imageUris = new ArrayList<>();
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -164,19 +159,13 @@ public class CrearProfesional extends AppCompatActivity {
 
         autenticacionProfesional = new AutenticacionProfesional(autenticacion);
 
-        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-
-        Configuration.getInstance().setOsmdroidBasePath(new File(getCacheDir(), "osmdroid"));
-
-        Configuration.getInstance().setOsmdroidTileCache(new File(getCacheDir(), "osmdroid/tiles"));
-
-        mapa.setMultiTouchControls(true);
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
 
         marker = new Marker(mapa);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            checkLocationPermissions();
-        }
+        mapa.setTileSource(TileSourceFactory.MAPNIK);
+
+        requestPermissions();
 
         MapEventsReceiver mReceive = new MapEventsReceiver() {
             @Override
@@ -371,98 +360,30 @@ public class CrearProfesional extends AppCompatActivity {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void checkLocationPermissions() {
-        String[] permissions = new String[] {
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        };
-
-        boolean granted = true;
-
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                granted = false;
-
-                showCurrentLocation();
-
-                break;
-
-            }
-        }
-
-        if (!granted) {
-            ActivityCompat.requestPermissions(this, permissions, 1);
-
+    private void requestPermissions() {
+        String fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+        String coarseLocationPermission = Manifest.permission.ACCESS_COARSE_LOCATION;
+        boolean fineLocationStatus = ActivityCompat.checkSelfPermission(this, fineLocationPermission) == PackageManager.PERMISSION_GRANTED;
+        boolean coarseLocationStatus = ActivityCompat.checkSelfPermission(this, coarseLocationPermission) == PackageManager.PERMISSION_GRANTED;
+        if (!fineLocationStatus && !coarseLocationStatus) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    fineLocationPermission,
+                    coarseLocationPermission}, PERMISSION_REQUEST_CODE);
+        } else {
+            mapHelper.initializeMap();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 1) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (Objects.equals(permissions[0], Manifest.permission.ACCESS_FINE_LOCATION) ||
-                        Objects.equals(permissions[0], Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                    showCurrentLocation();
-
-                }
+                mapHelper.initializeMap();
+            } else {
+                Log.e("PermissionError", "Location permissions are required to use this feature.");
             }
         }
-    }
-
-    private void showCurrentLocation() {
-        Location location = getLastKnownLocation();
-
-        if (location != null) {
-            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-
-            mapa.getController().setZoom(20.0);
-
-            marker.setPosition(startPoint);
-
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-
-            mapa.getOverlays().add(marker);
-
-            mapa.getController().setCenter(startPoint);
-
-            mapa.invalidate();
-
-        }
-    }
-
-    private Location getLastKnownLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        if (locationManager != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return null;
-
-            }
-            return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        }
-        return null;
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        mapa.onResume();
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        mapa.onPause();
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)

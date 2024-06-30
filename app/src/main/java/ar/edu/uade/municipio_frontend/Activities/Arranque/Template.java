@@ -67,7 +67,7 @@ public class Template extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        /*
         FirebaseApp.initializeApp(this);
 
         requestNotificationPermission();
@@ -89,6 +89,8 @@ public class Template extends AppCompatActivity {
                         sendTokenToServer(token);
                     }
                 });
+
+         */
 
 
         vecinoHelper = new VecinoHelper(this);
