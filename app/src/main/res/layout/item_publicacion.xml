@@ -7,17 +7,33 @@
     android:layout_marginBottom="8dp">
 
     <TextView
-        android:id="@+id/textNombreNegocio"
+        android:id="@+id/textTituloPublicacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Titulo Publiacion"
+        android:text="Título de la Publicación"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textHorario"
+        android:id="@+id/textDescripcionPublicacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Horario"
+        android:text="Descripción de la Publicación"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textHoraPublicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hora de la Publicación"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/textAutorPublicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Autor de la Publicación"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray" />
 </LinearLayout>

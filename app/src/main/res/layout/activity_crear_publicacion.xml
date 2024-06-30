@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".Activities.Publicacion.CrearPublicacionActivity">
+
+    <TextView
+        android:id="@+id/filterBackground"
+        android:layout_width="433dp"
+        android:layout_height="728dp"
+        android:background="#80656774"
+        android:backgroundTint="#656774"
+        android:text=" "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
+
+    <EditText
+        android:id="@+id/inputTitulo"
+        android:layout_width="376dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="168dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Titulo de Publicacion"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/inputAutor"
+        android:layout_width="376dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="416dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Negocio/Profesional Autor"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/inputDescripcion"
+        android:layout_width="376dp"
+        android:layout_height="161dp"
+        android:layout_marginTop="239dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Descripcion"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.457"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/generarReclamo"
+        android:layout_width="399dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="104dp"
+        android:baselineAligned="false"
+        android:text="Nueva Publicacion"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textNombreAplicacion"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="80dp"
+        android:text="Palmas de Mallorca"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/botonVolver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="357dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="#FFFDFD"
+        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/textFechaHora"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="36dp"
+        android:text="Fecha y Hora"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCantidadImagenes" />
+
+    <Button
+        android:id="@+id/btnCrearPublicacion"
+        android:layout_width="375dp"
+        android:layout_height="62dp"
+        android:layout_marginBottom="16dp"
+        android:text="Crear Publicación"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnAdjuntarImagen"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="492dp"
+        android:text="Adjuntar Imágenes"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textCantidadImagenes"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0 imágenes subidas"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAdjuntarImagen" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

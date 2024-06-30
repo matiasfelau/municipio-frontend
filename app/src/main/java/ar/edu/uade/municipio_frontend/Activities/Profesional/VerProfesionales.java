@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
+import ar.edu.uade.municipio_frontend.Activities.Publicacion.VerPublicaciones;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
@@ -192,11 +193,7 @@ public class VerProfesionales extends AppCompatActivity {
         botonCambiarModuloDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                // Iniciar actividad de publicaciones
-                Intent intent = new Intent(VerProfesionales.this, VerPublicacionesInvitado.class);
-                startActivity(intent);
-                */
+                irAVerPublicaciones();
             }
         });
     }
@@ -319,7 +316,7 @@ public class VerProfesionales extends AppCompatActivity {
                     @NonNull Response<List<Profesional>> response) {
                 if (response.code() == 200) {
                     System.out.println("si");
-                    for (Profesional profesional: response.body()) {
+                    for (Profesional profesional : response.body()) {
                         adapterProfesionales.add(profesional);
 
                     }
@@ -354,6 +351,11 @@ public class VerProfesionales extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void irAVerPublicaciones() {
+        Intent intent = new Intent(VerProfesionales.this, VerPublicaciones.class);
+        startActivity(intent);
     }
 
 }
