@@ -1,16 +1,22 @@
 package ar.edu.uade.municipio_frontend.Activities.Profesional;
 
+import static org.osmdroid.tileprovider.cachemanager.CacheManager.getFileName;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,7 +47,10 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +111,7 @@ public class CrearProfesional extends AppCompatActivity {
                     }
                 }
             }
-            );
+    );
     Autenticacion autenticacion;
     AutenticacionProfesional autenticacionProfesional;
 
@@ -156,8 +165,8 @@ public class CrearProfesional extends AppCompatActivity {
                 mapa);
 
         autenticacion = new Autenticacion(
-                getIntent().getStringExtra("USUARIO"),
-                getIntent().getStringExtra("token")
+                getIntent().getStringExtra("token"),
+                getIntent().getStringExtra("USUARIO")
         );
 
         autenticacionProfesional = new AutenticacionProfesional(autenticacion);
@@ -168,9 +177,9 @@ public class CrearProfesional extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                int horas = Integer.parseInt(inicioJornada.getText().toString().substring(0,2));
+                int horas = Integer.parseInt(inicioJornada.getText().toString().substring(0, 2));
 
-                int minutos = Integer.parseInt(inicioJornada.getText().toString().substring(3,5));
+                int minutos = Integer.parseInt(inicioJornada.getText().toString().substring(3, 5));
 
                 minutos -= 30;
 
@@ -187,8 +196,8 @@ public class CrearProfesional extends AppCompatActivity {
                 }
 
                 String h = String.valueOf(horas);
-                if(horas < 10){
-                    h = "0"+horas;
+                if (horas < 10) {
+                    h = "0" + horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -220,8 +229,8 @@ public class CrearProfesional extends AppCompatActivity {
 
                 }
                 String h = String.valueOf(horas);
-                if(horas < 10){
-                    h = "0"+horas;
+                if (horas < 10) {
+                    h = "0" + horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -235,9 +244,9 @@ public class CrearProfesional extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                int horas = Integer.parseInt(finJornada.getText().toString().substring(0,2));
+                int horas = Integer.parseInt(finJornada.getText().toString().substring(0, 2));
 
-                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3,5));
+                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3, 5));
 
                 minutos -= 30;
 
@@ -254,8 +263,8 @@ public class CrearProfesional extends AppCompatActivity {
                 }
 
                 String h = String.valueOf(horas);
-                if(horas < 10){
-                    h = "0"+horas;
+                if (horas < 10) {
+                    h = "0" + horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -269,9 +278,9 @@ public class CrearProfesional extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                int horas = Integer.parseInt(finJornada.getText().toString().substring(0,2));
+                int horas = Integer.parseInt(finJornada.getText().toString().substring(0, 2));
 
-                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3,5));
+                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3, 5));
 
                 minutos += 30;
 
@@ -288,8 +297,8 @@ public class CrearProfesional extends AppCompatActivity {
                 }
 
                 String h = String.valueOf(horas);
-                if(horas < 10){
-                    h = "0"+horas;
+                if (horas < 10) {
+                    h = "0" + horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -302,16 +311,22 @@ public class CrearProfesional extends AppCompatActivity {
         botonAdjuntarArchivos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    checkFilesPermissions();
+                }
             }
         });
 
         botonEnviarSolicitud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    List<String> imagenes = new ArrayList<>();
+                    for (Uri uri : imageUris) {
+                        System.out.println(uri);
+                        imagenes.add(convertImageToBase64(uri));
+                    }
                     Profesional profesional = new Profesional(
-                            null,
                             inputNombreProfesional.getText().toString(),
                             inputDireccion.getText().toString(),
                             Integer.parseInt(inputTelefono.getText().toString()),
@@ -320,7 +335,9 @@ public class CrearProfesional extends AppCompatActivity {
                             mapHelper.getMarkerLongitude(),
                             inicioJornada.getText().toString(),
                             finJornada.getText().toString(),
-                            getIntent().getStringExtra("documento"));
+                            getIntent().getStringExtra("documento"),
+                            imagenes);
+                    nuevoProfesional(profesional);
                 }
             }
         });
@@ -340,28 +357,20 @@ public class CrearProfesional extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void checkFilesPermissions() {
-        String[] permissions = new String[] {
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
+        String[] permissions = new String[]{
                 Manifest.permission.READ_MEDIA_IMAGES
         };
-
         boolean granted = true;
-
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 granted = false;
-
-                openGallery();
-
                 break;
-
             }
         }
-
         if (!granted) {
             ActivityCompat.requestPermissions(this, permissions, 1);
-
+        } else {
+            openGallery();
         }
     }
 
@@ -379,6 +388,7 @@ public class CrearProfesional extends AppCompatActivity {
 
         ProfesionalService profesionalService = retrofit.create(ProfesionalService.class);
 
+
         autenticacionProfesional.setProfesional(profesional);
 
         Call<Profesional> call = profesionalService.nuevoProfesional(autenticacionProfesional);
@@ -391,8 +401,6 @@ public class CrearProfesional extends AppCompatActivity {
                 if (response.code() == 201) {
 
                     Profesional profesional = response.body();
-
-                    uploadImages(profesional.getIdProfesional());
 
                     Intent nuevaActividad = new Intent(CrearProfesional.this, VerReclamos.class);
 
@@ -424,6 +432,7 @@ public class CrearProfesional extends AppCompatActivity {
 
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<Profesional> call, @NonNull Throwable t) {
                 System.out.println(t);
@@ -432,57 +441,17 @@ public class CrearProfesional extends AppCompatActivity {
         });
     }
 
-    private void uploadImages(int idProfesional) {
-        List<MultipartBody.Part> parts = new ArrayList<>();
-
-        for (Uri uri : imageUris) {
-            File file = new File(getRealPathFromURI(uri));
-
-            RequestBody requestFile = RequestBody.Companion.create(file, MediaType.parse("multipart/form-data"));
-
-            MultipartBody.Part body = MultipartBody.Part.createFormData("images", file.getName(), requestFile);
-
-            parts.add(body);
-
-        }
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ProfesionalService service = retrofit.create(ProfesionalService.class);
-
-        Call<ResponseBody> call = service.uploadImages(idProfesional, parts);
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                System.out.println(t);
-
-            }
-        });
-    }
-
-    private String getRealPathFromURI(Uri uri) {
-        @SuppressLint("Recycle")
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
-        if (cursor == null) {
-            return uri.getPath();
-
-        } else {
-            cursor.moveToFirst();
-
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-
-            return cursor.getString(idx);
-
+    public String convertImageToBase64(Uri imageUri) {
+        try {
+            InputStream imageStream = getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            return Base64.encodeToString(byteArray, Base64.NO_WRAP);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

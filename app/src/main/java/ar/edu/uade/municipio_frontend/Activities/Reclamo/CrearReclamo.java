@@ -444,6 +444,7 @@ public class CrearReclamo extends AppCompatActivity {
         List<MultipartBody.Part> parts = new ArrayList<>();
         for (Uri uri : imageUris) {
             File file = new File(getRealPathFromURI(uri));
+            System.out.println(file);
             RequestBody requestFile = RequestBody.Companion.create(file, MediaType.parse("multipart/form-data"));
             MultipartBody.Part body = MultipartBody.Part.createFormData("images", file.getName(), requestFile);
             parts.add(body);

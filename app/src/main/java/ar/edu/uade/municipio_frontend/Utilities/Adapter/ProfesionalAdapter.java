@@ -1,5 +1,6 @@
 package ar.edu.uade.municipio_frontend.Utilities.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ public class ProfesionalAdapter extends ArrayAdapter<Profesional> {
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Profesional item = getItem(position);
@@ -30,11 +32,14 @@ public class ProfesionalAdapter extends ArrayAdapter<Profesional> {
 
         }
 
-        TextView textView = convertView.findViewById(R.id.textView);
-
-        textView.setText(item.toString());
-
-        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        TextView nombre = convertView.findViewById(R.id.itemNombre);
+        TextView direccion = convertView.findViewById(R.id.itemDireccion);
+        TextView inicio = convertView.findViewById(R.id.itemInicioJornada);
+        TextView fin = convertView.findViewById(R.id.itemFinJornada);
+        nombre.setText(item.getNombre());
+        direccion.setText(item.getDireccion());
+        inicio.setText(item.getInicioJornada().substring(0,5));
+        fin.setText(item.getFinJornada().substring(0,5));
 
         return convertView;
     }

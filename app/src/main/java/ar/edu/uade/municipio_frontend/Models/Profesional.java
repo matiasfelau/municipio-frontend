@@ -1,13 +1,15 @@
 package ar.edu.uade.municipio_frontend.Models;
 
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Profesional {
-    private Integer idProfesional;
     private String nombre;
     private String direccion;
     private int telefono;
@@ -17,9 +19,18 @@ public class Profesional {
     private String inicioJornada;
     private String finJornada;
     private String documento;
+    private List<String> images = new ArrayList<>();
 
-    public Profesional(Integer idProfesional, String nombre, String direccion, int telefono, String email, BigDecimal latitud, BigDecimal longitud, String inicioJornada, String finJornada, String documento) {
-        this.idProfesional = idProfesional;
+    public Profesional(String nombre,
+                       String direccion,
+                       int telefono,
+                       String email,
+                       BigDecimal latitud,
+                       BigDecimal longitud,
+                       String inicioJornada,
+                       String finJornada,
+                       String documento,
+                       List<String> images) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.telefono = telefono;
@@ -29,14 +40,7 @@ public class Profesional {
         this.inicioJornada = inicioJornada;
         this.finJornada = finJornada;
         this.documento = documento;
-    }
-
-    public Integer getIdProfesional() {
-        return idProfesional;
-    }
-
-    public void setIdProfesional(Integer idProfesional) {
-        this.idProfesional = idProfesional;
+        this.images = images;
     }
 
     public String getNombre() {
@@ -111,18 +115,27 @@ public class Profesional {
         this.documento = documento;
     }
 
-    @NonNull
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
     @Override
     public String toString() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return this.nombre
-                    + "\n"
-                    + this.direccion
-                    + " "
-                    + this.inicioJornada.substring(0,5)
-                    + " "
-                    + this.finJornada.substring(0,5);
-        }
-        return "";
+        return "Profesional{" +
+                "nombre='" + nombre + '\'' +
+                ", direccion='" + direccion + '\'' +
+                ", telefono=" + telefono +
+                ", email='" + email + '\'' +
+                ", latitud=" + latitud +
+                ", longitud=" + longitud +
+                ", inicioJornada='" + inicioJornada + '\'' +
+                ", finJornada='" + finJornada + '\'' +
+                ", documento='" + documento + '\'' +
+                ", images=" + images +
+                '}';
     }
 }
