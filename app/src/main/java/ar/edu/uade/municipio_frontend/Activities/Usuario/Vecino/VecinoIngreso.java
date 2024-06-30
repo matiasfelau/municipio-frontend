@@ -98,7 +98,7 @@ public class VecinoIngreso extends AppCompatActivity {
         String from = getIntent().getStringExtra("from");
 
         if (from != null) {
-            if (from.equals("VerReclamos")) {
+            if (from.equals("VerReclamos") || from.equals("VerProfesionales")) {
                 getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {

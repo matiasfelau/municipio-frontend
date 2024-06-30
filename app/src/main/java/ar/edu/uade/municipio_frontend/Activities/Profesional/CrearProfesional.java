@@ -402,7 +402,7 @@ public class CrearProfesional extends AppCompatActivity {
 
                     Profesional profesional = response.body();
 
-                    Intent nuevaActividad = new Intent(CrearProfesional.this, VerReclamos.class);
+                    Intent nuevaActividad = new Intent(CrearProfesional.this, VerProfesionales.class);
 
                     nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 

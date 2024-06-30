@@ -1,5 +1,7 @@
 package ar.edu.uade.municipio_frontend.Activities.Profesional;
 
+import static ar.edu.uade.municipio_frontend.Utilities.Container.ProfesionalStoraged.setProfesional;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -116,9 +118,12 @@ public class VerProfesionales extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Profesional profesional = adapterProfesionales.getItem(position);
-
-                // TODO iniciar actividad profesional particular
-
+                Intent nuevaActividad = new Intent(VerProfesionales.this, ProfesionalParticular.class);
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+                setProfesional(profesional);
+                startActivity(nuevaActividad);
             }
         });
 
@@ -242,7 +247,7 @@ public class VerProfesionales extends AppCompatActivity {
 
         nuevaActividad.putExtra("ingresado", false);
 
-        nuevaActividad.putExtra("from", "VerProfesionales"); // TODO agregar al inicio de sesion
+        nuevaActividad.putExtra("from", "VerProfesionales");
 
         startActivity(nuevaActividad);
 
