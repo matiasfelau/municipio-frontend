@@ -22,7 +22,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Activities.Denuncia.VerDenuncias;
 import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
@@ -38,7 +37,7 @@ import ar.edu.uade.municipio_frontend.Models.Empleado;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.ComercioService;
-import ar.edu.uade.municipio_frontend.Utilities.AdapterCormercios;
+import ar.edu.uade.municipio_frontend.Utilities.Adapter.AdapterCormercios;
 import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,16 +54,16 @@ public class VerComercio extends AppCompatActivity {
     ImageButton boton;
     Autenticacion autenticacion;
     Integer pagina;
-    Integer cantidadPaginas;
     ImageButton botonCambiarPaginaIzquierda;
     ImageButton botonCambiarPaginaDerecha;
-    TextView textPaginaActual;
+    TextView paginaActual;
     ListView listComercios;
     ImageButton botonCambiarPantallaDerecha;
     ImageButton botonCambiarPantallaIzquierda;
-    ArrayList<IdDescripcion> p;
     List<Comercio> comercios;
     ArrayAdapter<Comercio> adapterComercio;
+    Integer paginaActualInt = 1;
+    int cantidadPaginas;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -83,8 +82,6 @@ public class VerComercio extends AppCompatActivity {
         //instancias
         pagina = 1;
 
-        cantidadPaginas = 0;
-
         botonAgregar = findViewById(R.id.botonAgregar);
 
         boton = findViewById(R.id.botonLogout);
@@ -93,7 +90,7 @@ public class VerComercio extends AppCompatActivity {
 
         botonCambiarPantallaIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
 
-        textPaginaActual = findViewById(R.id.textPaginaActual);
+        paginaActual = findViewById(R.id.textPaginaActual);
 
         botonCambiarPaginaDerecha = findViewById(R.id.botonCambiarPaginaDerecha);
 
@@ -103,11 +100,10 @@ public class VerComercio extends AppCompatActivity {
 
         comercios = new ArrayList<>();
 
-        autenticacion = new Autenticacion();
+        autenticacion = new Autenticacion(
+                getIntent().getStringExtra("token"),
+                getIntent().getStringExtra("USUARIO"));
 
-        autenticacion.setToken(getIntent().getStringExtra("token"));
-
-        autenticacion.setTipo("VECINO");
 
         adapterComercio = new AdapterCormercios(this, comercios);
 
@@ -149,43 +145,31 @@ public class VerComercio extends AppCompatActivity {
         });
 
         botonCambiarPaginaDerecha.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
             @Override
-            public void onClick(View v){
-
-                p.clear();
-                adapterComercio.notifyDataSetChanged();
-                pagina++;
-                getComercios();
-                textPaginaActual.setText(pagina.toString());
-
-                botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
-
-                if (Objects.equals(cantidadPaginas, pagina)){
-
-                    botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+            public void onClick(View v) {
+                if (paginaActualInt < cantidadPaginas) {
+                    paginaActualInt++;
+                    paginaActual.setText(String.valueOf(paginaActualInt));
+                    getComercios();
+                    botonCambiarPaginaIzquierda.setVisibility(View.VISIBLE);
+                    if (paginaActualInt == cantidadPaginas) {
+                        botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         });
 
         botonCambiarPaginaIzquierda.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                if(pagina>1) {
-                    p.clear();
-                    adapterComercio.notifyDataSetChanged();
-                    pagina--;
-                    textPaginaActual.setText(pagina.toString());
-
+                if (paginaActualInt > 1) {
+                    paginaActualInt--;
+                    paginaActual.setText(String.valueOf(paginaActualInt));
                     getComercios();
-                    cantidadPaginas=1;
-
-                    if (pagina==1) {
+                    botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
+                    if (paginaActualInt == 1) {
                         botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
                     }
-
-                    botonCambiarPaginaDerecha.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -236,49 +220,6 @@ public class VerComercio extends AppCompatActivity {
 
     }
     //funciones
-    private void getComercio(int i, Autenticacion autenticacion) {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
-        ComercioService comercioService = retrofit.create(ComercioService.class);
-        Call<Comercio> call =comercioService.getComercio(i,autenticacion);
-
-        call.enqueue(new Callback<Comercio>() {
-            @Override
-            public void onResponse(@NonNull Call<Comercio> call, @NonNull Response<Comercio> response) {
-                //TODO COMPLETAR CUANDO ESTE LA VISTA
-                if (response.code()==200){//este ok
-                    assert response.body() != null;
-                    addItem(response.body());
-                    adapterComercio.notifyDataSetChanged();
-                }else if(response.code()==400){//este? badrequest?
-                    System.out.println(response.code());
-                }else if(response.code()==401){//este? unauthorized?
-                    System.out.println(response.code());
-                }else if(response.code()==403){//este forbbiden
-                    System.out.println(response.code());
-                }else if(response.code()==404){//not found?
-                    System.out.println(response.code());
-                }else if(response.code()==500){//este internal error server
-                    System.out.println(response.code());
-                }else{
-                    System.out.println(response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Comercio> call, @NonNull Throwable t) {
-                System.out.println(t);
-            }
-        });
-    }
-
-    private void addItem(Comercio comercio){
-        if (comercio != null) {
-            if (comercio.getDescripcion() != null) {
-                adapterComercio.add(comercio);
-            }
-        }
-
-    }
 
     private void getPaginas() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
@@ -324,8 +265,7 @@ public class VerComercio extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
         ComercioService comercioService = retrofit.create(ComercioService.class);
-        Call<List<Comercio>> call = comercioService.getComercios(Integer.parseInt(textPaginaActual .getText().toString()),
-                autenticacion);
+        Call<List<Comercio>> call = comercioService.getComercios(paginaActualInt, autenticacion);
 
         call.enqueue(new Callback<List<Comercio>>(){
 

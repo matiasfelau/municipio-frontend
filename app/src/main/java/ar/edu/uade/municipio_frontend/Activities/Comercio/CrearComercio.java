@@ -1,12 +1,9 @@
-package ar.edu.uade.municipio_frontend.Activities.Profesional;
-
-import static org.osmdroid.tileprovider.cachemanager.CacheManager.getFileName;
+package ar.edu.uade.municipio_frontend.Activities.Comercio;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,12 +16,9 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -40,38 +34,31 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.PreferenceManager;
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.library.BuildConfig;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import ar.edu.uade.municipio_frontend.Activities.Comercio.CrearComercio;
-import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
+import ar.edu.uade.municipio_frontend.Activities.Profesional.CrearProfesional;
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
-import ar.edu.uade.municipio_frontend.Models.Desperfecto;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionComercio;
+import ar.edu.uade.municipio_frontend.Models.Comercio;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
-import ar.edu.uade.municipio_frontend.Models.Sector;
 import ar.edu.uade.municipio_frontend.R;
-import ar.edu.uade.municipio_frontend.Services.DesperfectoService;
+import ar.edu.uade.municipio_frontend.Services.ComercioService;
 import ar.edu.uade.municipio_frontend.Services.ProfesionalService;
-import ar.edu.uade.municipio_frontend.Services.SectorService;
-import ar.edu.uade.municipio_frontend.Utilities.Container.AutenticacionProfesional;
-import ar.edu.uade.municipio_frontend.Utilities.EmailValidation;
 import ar.edu.uade.municipio_frontend.Utilities.MapHelper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -83,29 +70,25 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CrearProfesional extends AppCompatActivity {
+public class CrearComercio extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 100;
-    private EditText inputNombreProfesional;
-    Spinner dropdownRubros;
+    private EditText inputNombreComercio;
     private EditText inputDireccion;
     private MapView mapa;
-    private EditText inputTelefono;
-    private EditText inputEmail;
     private EditText inputDescripcion;
-    private ImageButton botonDisminuirInicioJornada;
+    private EditText inputTelefono;
     private TextView inicioJornada;
     private ImageButton botonAumentarInicioJornada;
-    private ImageButton botonDisminuirFinJornada;
+    private ImageButton botonDisminuirInicioJornada;
     private TextView finJornada;
     private ImageButton botonAumentarFinJornada;
+    private ImageButton botonDisminuirFinJornada;
     private Button botonAdjuntarArchivos;
     private Button botonEnviarSolicitud;
-    ArrayAdapter<String> adapterRubros;
-    List<String> rubros;
-    String rubroSeleccionado;
-    private MapHelper mapHelper;
     private ImageButton botonVolver;
+    private MapHelper mapHelper;
     private List<Uri> imageUris = new ArrayList<>();
+
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -130,10 +113,9 @@ public class CrearProfesional extends AppCompatActivity {
             }
     );
     Autenticacion autenticacion;
-    AutenticacionProfesional autenticacionProfesional;
-    String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    AutenticacionComercio autenticacionComercio;
 
-    @SuppressLint({"MissingInflatedId", "ResourceType"})
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -141,7 +123,7 @@ public class CrearProfesional extends AppCompatActivity {
 
         EdgeToEdge.enable(this);
 
-        setContentView(R.layout.activity_crear_profesional);
+        setContentView(R.layout.activity_crear_comercio);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -152,21 +134,15 @@ public class CrearProfesional extends AppCompatActivity {
 
         });
 
-        inputNombreProfesional = findViewById(R.id.inputNombre);
+        inputNombreComercio = findViewById(R.id.nombreDelComercio);
 
-        dropdownRubros = findViewById(R.id.spinnerRubro);
+        inputTelefono = findViewById(R.id.telefonoComercio);
 
-        inputDescripcion = findViewById(R.id.editTextDescripcion);
+        inputDireccion = findViewById(R.id.direccionComercio);
+
+        inputDescripcion = findViewById(R.id.editTextDescripcionComercio);
 
         mapa = findViewById(R.id.map);
-
-        inputTelefono = findViewById(R.id.inputTelefono);
-
-        inputEmail = findViewById(R.id.inputEmail);
-
-        botonVolver = findViewById(R.id.botonVolver);
-
-        inputDireccion = findViewById(R.id.inputDireccion);
 
         botonDisminuirInicioJornada = findViewById(R.id.disminuirInicioJornada);
 
@@ -184,31 +160,26 @@ public class CrearProfesional extends AppCompatActivity {
 
         botonEnviarSolicitud = findViewById(R.id.buttonGenerar);
 
-        rubros = new ArrayList<>();
-
-        adapterRubros = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, rubros);
-
-        adapterRubros.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        dropdownRubros.setAdapter(adapterRubros);
+        botonVolver = findViewById(R.id.botonVolver);
 
         mapHelper = new MapHelper(this,
                 this,
                 mapa);
+
 
         autenticacion = new Autenticacion(
                 getIntent().getStringExtra("token"),
                 getIntent().getStringExtra("USUARIO")
         );
 
-        autenticacionProfesional = new AutenticacionProfesional(autenticacion);
+        autenticacionComercio = new AutenticacionComercio(autenticacion);
 
         mapHelper.startService(false);
 
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nuevaActividad = new Intent(CrearProfesional.this, VerProfesionales.class);
+                Intent nuevaActividad = new Intent(CrearComercio.this, VerComercio.class);
                 if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
                     nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
@@ -221,27 +192,14 @@ public class CrearProfesional extends AppCompatActivity {
                 startActivity(nuevaActividad);
             }
         });
-        getRubros(autenticacion);
-
-        dropdownRubros.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                rubroSeleccionado = rubros.get(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         botonDisminuirInicioJornada.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                int horas = Integer.parseInt(inicioJornada.getText().toString().substring(0, 2));
+                int horas = Integer.parseInt(inicioJornada.getText().toString().substring(0,2));
 
-                int minutos = Integer.parseInt(inicioJornada.getText().toString().substring(3, 5));
+                int minutos = Integer.parseInt(inicioJornada.getText().toString().substring(3,5));
 
                 minutos -= 30;
 
@@ -258,8 +216,8 @@ public class CrearProfesional extends AppCompatActivity {
                 }
 
                 String h = String.valueOf(horas);
-                if (horas < 10) {
-                    h = "0" + horas;
+                if(horas < 10){
+                    h = "0"+horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -291,8 +249,8 @@ public class CrearProfesional extends AppCompatActivity {
 
                 }
                 String h = String.valueOf(horas);
-                if (horas < 10) {
-                    h = "0" + horas;
+                if(horas < 10){
+                    h = "0"+horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -306,9 +264,9 @@ public class CrearProfesional extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                int horas = Integer.parseInt(finJornada.getText().toString().substring(0, 2));
+                int horas = Integer.parseInt(finJornada.getText().toString().substring(0,2));
 
-                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3, 5));
+                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3,5));
 
                 minutos -= 30;
 
@@ -325,8 +283,8 @@ public class CrearProfesional extends AppCompatActivity {
                 }
 
                 String h = String.valueOf(horas);
-                if (horas < 10) {
-                    h = "0" + horas;
+                if(horas < 10){
+                    h = "0"+horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -340,9 +298,9 @@ public class CrearProfesional extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                int horas = Integer.parseInt(finJornada.getText().toString().substring(0, 2));
+                int horas = Integer.parseInt(finJornada.getText().toString().substring(0,2));
 
-                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3, 5));
+                int minutos = Integer.parseInt(finJornada.getText().toString().substring(3,5));
 
                 minutos += 30;
 
@@ -359,8 +317,8 @@ public class CrearProfesional extends AppCompatActivity {
                 }
 
                 String h = String.valueOf(horas);
-                if (horas < 10) {
-                    h = "0" + horas;
+                if(horas < 10){
+                    h = "0"+horas;
                 }
                 String m = String.valueOf(minutos);
                 if (minutos == 0) {
@@ -382,32 +340,28 @@ public class CrearProfesional extends AppCompatActivity {
         botonEnviarSolicitud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString();
-                if (EmailValidation.patternMatches(email, regexPattern)) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        List<String> imagenes = new ArrayList<>();
-                        for (Uri uri : imageUris) {
-                            System.out.println(uri);
-                            imagenes.add(convertImageToBase64(uri));
-                        }
-                        Profesional profesional = new Profesional(
-                                inputNombreProfesional.getText().toString(),
-                                rubroSeleccionado,
-                                inputDescripcion.getText().toString(),
-                                inputDireccion.getText().toString(),
-                                Integer.parseInt(inputTelefono.getText().toString()),
-                                email,
-                                mapHelper.getMarkerLatitude(),
-                                mapHelper.getMarkerLongitude(),
-                                inicioJornada.getText().toString(),
-                                finJornada.getText().toString(),
-                                getIntent().getStringExtra("documento"),
-                                imagenes);
-                        nuevoProfesional(profesional);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    List<String> imagenes = new ArrayList<>();
+                    for (Uri uri : imageUris) {
+                        System.out.println(uri);
+                        imagenes.add(convertImageToBase64(uri));
                     }
+                    Comercio comercio = new Comercio(
+                            inputNombreComercio.getText().toString(),
+                            getIntent().getStringExtra("documento"),
+                            inputDireccion.getText().toString(),
+                            inputDescripcion.getText().toString(),
+                            Integer.parseInt(inputTelefono.getText().toString()),
+                            inicioJornada.getText().toString(),
+                            finJornada.getText().toString(),
+                            mapHelper.getMarkerLatitude(),
+                            mapHelper.getMarkerLongitude(),
+                            imagenes);
+                    nuevoComercio(comercio);
                 }
             }
         });
+
     }
 
     @Override
@@ -424,20 +378,28 @@ public class CrearProfesional extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void checkFilesPermissions() {
-        String[] permissions = new String[]{
+        String[] permissions = new String[] {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.READ_MEDIA_IMAGES
         };
+
         boolean granted = true;
+
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 granted = false;
+
+                openGallery();
+
                 break;
+
             }
         }
+
         if (!granted) {
             ActivityCompat.requestPermissions(this, permissions, 1);
-        } else {
-            openGallery();
+
         }
     }
 
@@ -450,26 +412,25 @@ public class CrearProfesional extends AppCompatActivity {
 
     }
 
-    private void nuevoProfesional(Profesional profesional) {
+    private void nuevoComercio(Comercio comercio) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
-        ProfesionalService profesionalService = retrofit.create(ProfesionalService.class);
+        ComercioService comercioService = retrofit.create(ComercioService.class);
 
+        autenticacionComercio.setComercio(comercio);
 
-        autenticacionProfesional.setProfesional(profesional);
+        Call<Comercio> call = comercioService.nuevoComercio(autenticacionComercio);
 
-        Call<Profesional> call = profesionalService.nuevoProfesional(autenticacionProfesional);
-
-        call.enqueue(new Callback<Profesional>() {
+        call.enqueue(new Callback<Comercio>() {
             @Override
-            public void onResponse(@NonNull Call<Profesional> call, @NonNull Response<Profesional> response) {
-                System.out.println("CREAR PROFESIONAL");
+            public void onResponse(@NonNull Call<Comercio> call, @NonNull Response<Comercio> response) {
+                System.out.println("CREAR COMERCIO");
 
                 if (response.code() == 201) {
 
-                    Profesional profesional = response.body();
+                    Comercio comercio = response.body();
 
-                    Intent nuevaActividad = new Intent(CrearProfesional.this, VerProfesionales.class);
+                    Intent nuevaActividad = new Intent(CrearComercio.this, VerComercio.class);
 
                     nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
@@ -501,52 +462,11 @@ public class CrearProfesional extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Profesional> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Comercio> call, @NonNull Throwable t) {
                 System.out.println(t);
 
             }
         });
-    }
-
-    private void getRubros(Autenticacion autenticacion) {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
-
-        SectorService sectorService = retrofit.create(SectorService.class);
-
-        Call<List<Sector>> call = sectorService.getSectores(autenticacion);
-
-        call.enqueue(new Callback<List<Sector>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Sector>> call, @NonNull Response<List<Sector>> response) {
-                if (response.code() == 200) {//este ok
-                    System.out.println("EL RESULTADO ES:"+response.code());
-                    assert response.body() != null;
-                    List<Sector> sectores = response.body();
-                    for (Sector sector : sectores) {
-                        System.out.println(sector.getDescripcion());
-                        rubros.add(sector.getDescripcion());
-                    }
-                    adapterRubros.notifyDataSetChanged();
-                } else if (response.code() == 400) {
-                    System.out.println(response.code());
-                } else if (response.code() == 401) {
-                    System.out.println(response.code());
-                } else if (response.code() == 403) {
-                    System.out.println(response.code());
-                } else if (response.code() == 404) {
-                    System.out.println(response.code());
-                } else if (response.code() == 500) {
-                    System.out.println(response.code());
-                } else {
-                    System.out.println(response.code());
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<List<Sector>> call, @NonNull Throwable t) {
-                System.out.println(t);
-            }
-        });
-
     }
 
     public String convertImageToBase64(Uri imageUri) {
@@ -562,4 +482,8 @@ public class CrearProfesional extends AppCompatActivity {
             return null;
         }
     }
+
+
+
+
 }

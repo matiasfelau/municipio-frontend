@@ -51,6 +51,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/textViewCargarPublicacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="732dp"
+        android:text="¿Te gustaría cargar tu propia publicación? \n Apretá acá:"
+        android:textAlignment="viewEnd"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/textPaginaActual"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -80,6 +94,20 @@
         app:srcCompat="?attr/actionModeCloseDrawable"
         app:tint="@android:color/white"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/botonAgregar"
+        android:layout_width="43dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
+        android:background="#C92E6FC1"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintBottom_toBottomOf="@id/textViewCargarPublicacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@android:color/white" />
 
     <ImageButton
         android:id="@+id/botonLogout"

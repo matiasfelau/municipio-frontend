@@ -118,6 +118,13 @@
         <activity
             android:name=".Activities.Comercio.CrearComercio"
             android:exported="false" />
+        <activity
+            android:name=".Activities.Publicacion.VerPublicacionesInvitado"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Publicacion.VerPublicaciones"
+            android:exported="false" />
+        <activity android:name=".Activities.Publicacion.CrearPublicacionActivity" />
 
         <service
             android:name=".notificaciones.MyFirebaseMessagingService"

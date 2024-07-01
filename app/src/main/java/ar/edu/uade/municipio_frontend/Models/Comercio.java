@@ -1,35 +1,61 @@
 package ar.edu.uade.municipio_frontend.Models;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Comercio {
-
     private Integer idComercio;
     private String nombre;
+    private String documento;
+    private String direccion;
+    private String descripcion;
+    private Integer telefono;
     private String apertura;
     private String cierre;
-    private String direccion;
-    private Integer telefono;
-    private String descripcion;
     private BigDecimal latitud;
     private BigDecimal longitud;
-    private String documento;
+    private List<String> images = new ArrayList<>();
+
 
     public Comercio() {
 
     }
 
-    public Comercio(Integer idComercio, String nombre, String apertura, String cierre, String direccion, Integer telefono, String descripcion, BigDecimal latitud, BigDecimal longitud, String documento) {
-        this.idComercio = idComercio;
+    public Comercio(String nombre,
+                    String documento,
+                    String direccion,
+                    String descripcion,
+                    Integer telefono,
+                    String apertura,
+                    String cierre,
+                    BigDecimal latitud,
+                    BigDecimal longitud,
+                    List<String> images) {
         this.nombre = nombre;
+        this.documento = documento;
+        this.direccion = direccion;
+        this.descripcion = descripcion;
+        this.telefono = telefono;
         this.apertura = apertura;
         this.cierre = cierre;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.descripcion = descripcion;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.images = images;
+    }
+
+    public Comercio(Integer idComercio, String nombre, String documento, String direccion, String descripcion, Integer telefono, String apertura, String cierre, BigDecimal latitud, BigDecimal longitud, List<String> images) {
+        this.idComercio = idComercio;
+        this.nombre = nombre;
         this.documento = documento;
+        this.direccion = direccion;
+        this.descripcion = descripcion;
+        this.telefono = telefono;
+        this.apertura = apertura;
+        this.cierre = cierre;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.images = images;
     }
 
     public Integer getIdComercio() {
@@ -117,14 +143,15 @@ public class Comercio {
         return "Comercio{" +
                 "idComercio=" + idComercio +
                 ", nombre='" + nombre + '\'' +
-                ", apertuna=" + apertura +
-                ", cierre=" + cierre +
+                ", documento='" + documento + '\'' +
                 ", direccion='" + direccion + '\'' +
-                ", telefono=" + telefono +
                 ", descripcion='" + descripcion + '\'' +
+                ", telefono=" + telefono +
+                ", apertura='" + apertura + '\'' +
+                ", cierre='" + cierre + '\'' +
                 ", latitud=" + latitud +
                 ", longitud=" + longitud +
-                ", documento='" + documento + '\'' +
+                ", images=" + images +
                 '}';
     }
 }

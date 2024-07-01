@@ -38,6 +38,4 @@ public interface DenunciaService {
     Call<List<String>> getFotos(@Path("idDenuncia") Integer idDenuncia);
     @GET(API_ROUTE+"/movimientos"+"/{idDenuncia}")
     Call<List<MovimientoDenuncia>> getMovimientos(@Path("idDenuncia") Integer idDenuncia);
-    @POST(API_ROUTE+"/subir-imagenes"+"/{idDenuncia}")
-    Call<ResponseBody> subirFotos(@Path("idDenuncia") int idDenuncia, @Part List<MultipartBody.Part> image);
 }

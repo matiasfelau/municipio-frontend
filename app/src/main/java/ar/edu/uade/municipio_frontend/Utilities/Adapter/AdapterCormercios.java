@@ -1,4 +1,4 @@
-package ar.edu.uade.municipio_frontend.Utilities;
+package ar.edu.uade.municipio_frontend.Utilities.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Models.Comercio;
+import ar.edu.uade.municipio_frontend.Models.Profesional;
 import ar.edu.uade.municipio_frontend.R;
 
 public class AdapterCormercios extends ArrayAdapter<Comercio> {
@@ -28,11 +29,14 @@ public class AdapterCormercios extends ArrayAdapter<Comercio> {
 
         }
 
-        TextView textView = convertView.findViewById(R.id.textView);
-
-        textView.setText(item.toString());
-
-        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        TextView nombre = convertView.findViewById(R.id.itemNombre);
+        TextView direccion = convertView.findViewById(R.id.itemDireccion);
+        TextView inicio = convertView.findViewById(R.id.itemInicioJornada);
+        TextView fin = convertView.findViewById(R.id.itemFinJornada);
+        nombre.setText(item.getNombre());
+        direccion.setText(item.getDireccion());
+        inicio.setText(item.getApertura().substring(0,5));
+        fin.setText(item.getCierre().substring(0,5));
 
         return convertView;
     }

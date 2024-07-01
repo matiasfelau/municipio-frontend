@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.0"
+androidPdfViewer = "3.2.0-beta.1"
 converterGson = "2.9.0"
 firebaseBom = "33.1.0"
 glide = "4.12.0"
@@ -25,6 +26,7 @@ firebaseMessaging = "24.0.0"
 retrofitVersion = "2.9.0"
 
 [libraries]
+android-pdf-viewer = { module = "com.github.barteksc:android-pdf-viewer", version.ref = "androidPdfViewer" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }

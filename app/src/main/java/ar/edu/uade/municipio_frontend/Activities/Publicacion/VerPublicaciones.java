@@ -34,8 +34,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class VerPublicacionesInvitado extends AppCompatActivity {
+public class VerPublicaciones extends AppCompatActivity {
 
+    ImageButton botonAgregar;
     ImageButton botonLogout;
     ImageButton botonCambiarPantallaDerecha;
     ImageButton botonCambiarPantallaIzquierda;
@@ -55,9 +56,10 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ver_publicaciones_invitado);
+        setContentView(R.layout.activity_ver_publicaciones);
 
         // Inicialización de vistas
+        botonAgregar = findViewById(R.id.botonAgregar);
         botonLogout = findViewById(R.id.botonLogout);
         botonCambiarPantallaDerecha = findViewById(R.id.botonCambiarPantallaDerecha);
         botonCambiarPantallaIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
@@ -75,7 +77,18 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                 }
             });
         } else {
-            Log.e("VerPublicacionesInvitado", "botonCambiarPaginaDerecha es null. Verifica el ID en el layout.");
+            Log.e("VerPublicaciones", "botonCambiarPaginaDerecha es null. Verifica el ID en el layout.");
+        }
+
+        if (botonAgregar != null) {
+            botonAgregar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Acción al hacer clic
+                }
+            });
+        } else {
+            Log.e("VerPublicaciones", "botonAgregar es null. Verifica el ID en el layout.");
         }
 
         if (botonLogout != null) {
@@ -86,7 +99,7 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                 }
             });
         } else {
-            Log.e("VerPublicacionesInvitado", "botonLogout es null. Verifica el ID en el layout.");
+            Log.e("VerPublicaciones", "botonLogout es null. Verifica el ID en el layout.");
         }
 
         if (botonCambiarPaginaIzquierda != null) {
@@ -97,7 +110,7 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                 }
             });
         } else {
-            Log.e("VerPublicacionesInvitado", "botonCambiarPaginaIzquierda es null. Verifica el ID en el layout.");
+            Log.e("VerPublicaciones", "botonCambiarPaginaIzquierda es null. Verifica el ID en el layout.");
         }
 
         if (botonCambiarPantallaIzquierda != null) {
@@ -108,7 +121,7 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                 }
             });
         } else {
-            Log.e("VerPublicacionesInvitado", "botonCambiarPantallaIzquierda es null. Verifica el ID en el layout.");
+            Log.e("VerPublicaciones", "botonCambiarPantallaIzquierda es null. Verifica el ID en el layout.");
         }
 
         // Configuración de la lista de publicaciones
@@ -128,6 +141,16 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mostrarPopupSalir();
+                }
+            });
+        }
+
+        if (botonAgregar != null) {
+            botonAgregar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(VerPublicaciones.this, CrearPublicacionActivity.class);
+                    startActivity(intent);
                 }
             });
         }
@@ -153,7 +176,7 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                         getPublicaciones(paginaActual);
                     } else {
                         // Volver a la actividad de profesionales
-                        Intent intent = new Intent(VerPublicacionesInvitado.this, VerProfesionales.class);
+                        Intent intent = new Intent(VerPublicaciones.this, VerProfesionales.class);
                         startActivity(intent);
                     }
                 }
@@ -190,10 +213,12 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+
             }
         });
 
         dialog.show();
+
     }
 
     private void cerrarSesion() {
@@ -201,13 +226,14 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
 
         helperVecino.deleteVecinos();
 
-        Intent nuevaActividad = new Intent(VerPublicacionesInvitado.this, VecinoIngreso.class);
+        Intent nuevaActividad = new Intent(VerPublicaciones.this, VecinoIngreso.class);
 
         nuevaActividad.putExtra("ingresado", false);
 
-        nuevaActividad.putExtra("from", "VerPublicacionesInvitado");
+        nuevaActividad.putExtra("from", "VerPublicaciones");
 
         startActivity(nuevaActividad);
+
     }
 
     private void getPublicaciones(int pagina) {
@@ -236,6 +262,31 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Publicacion>> call, Throwable t) {
                 // Manejar fallo en la llamada
+            }
+        });
+    }
+
+    private void enviarNuevaPublicacion(Publicacion publicacion) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PublicacionService service = retrofit.create(PublicacionService.class);
+        Call<Publicacion> call = service.nuevaPublicacion(publicacion);
+
+        call.enqueue(new Callback<Publicacion>() {
+            @Override
+            public void onResponse(Call<Publicacion> call, Response<Publicacion> response) {
+                if (response.isSuccessful()) {
+                    // Publicación creada exitosamente
+                    getPublicaciones(paginaActual);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Publicacion> call, Throwable t) {
+                t.printStackTrace();
             }
         });
     }

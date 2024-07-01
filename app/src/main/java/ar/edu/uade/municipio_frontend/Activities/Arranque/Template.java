@@ -70,7 +70,6 @@ public class Template extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        requestNotificationPermission();
 
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -86,7 +85,11 @@ public class Template extends AppCompatActivity {
 
                         // Log and send token to your server
                         Log.d(TAG, "FCM Token: " + token);
-                        sendTokenToServer(token);
+                        try{
+                            sendTokenToServer(token);
+                        }catch(Exception e){
+
+                        }
                     }
                 });
 
@@ -96,67 +99,71 @@ public class Template extends AppCompatActivity {
 
         invitadoHelper = new InvitadoHelper(this);
 
-        Intent nuevaActividad;
-
-        try {
-            Vecino vecino = vecinoHelper.getVecinos().get(0);
-
-            nuevaActividad = new Intent(Template.this, VecinoIngreso.class);
-
-            nuevaActividad.putExtra("ingresado", true);
-
-            nuevaActividad.putExtra("documento", vecino.getDocumento());
-
-            startActivity(nuevaActividad);
-
-        } catch (Exception e2) {
-            try {
-                Empleado empleado = empleadoHelper.getEmpleados().get(0);
-
-                nuevaActividad = new Intent(Template.this, EmpleadoIngreso.class);
-
-                nuevaActividad.putExtra("ingresado", true);
-
-                nuevaActividad.putExtra("legajo", empleado.getLegajo());
-
-                startActivity(nuevaActividad);
-
-            } catch (Exception e3) {
-                try {
-                    invitadoHelper.getInvitados().get(0);
-
-                    nuevaActividad = new Intent(Template.this, InvitadoIngreso.class);
-
-                    nuevaActividad.putExtra("ingresado", true);
-
-                    startActivity(nuevaActividad);
-
-                } catch (Exception e4) {
-                    nuevaActividad = new Intent(Template.this, VecinoIngreso.class);
-
-                    nuevaActividad.putExtra("ingresado", false);
-
-                    startActivity(nuevaActividad);
-
-                }
-            }
-        }
+        requestNotificationPermission();
 
     }
 
     private void requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            System.out.println("PEDIDO DE NOTIFICACIONES");
             boolean hasPermission = ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED;
 
             if (!hasPermission) {
+                System.out.println("NO TIENE PERMISOS DE NOTIFICACION");
                 ActivityCompat.requestPermissions(
                         this,
                         new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        0
+                        1
                 );
+            }else{
+                Intent nuevaActividad;
+
+                try {
+                    Vecino vecino = vecinoHelper.getVecinos().get(0);
+
+                    nuevaActividad = new Intent(Template.this, VecinoIngreso.class);
+
+                    nuevaActividad.putExtra("ingresado", true);
+
+                    nuevaActividad.putExtra("documento", vecino.getDocumento());
+
+                    startActivity(nuevaActividad);
+
+                } catch (Exception e2) {
+                    try {
+                        Empleado empleado = empleadoHelper.getEmpleados().get(0);
+
+                        nuevaActividad = new Intent(Template.this, EmpleadoIngreso.class);
+
+                        nuevaActividad.putExtra("ingresado", true);
+
+                        nuevaActividad.putExtra("legajo", empleado.getLegajo());
+
+                        startActivity(nuevaActividad);
+
+                    } catch (Exception e3) {
+                        try {
+                            invitadoHelper.getInvitados().get(0);
+
+                            nuevaActividad = new Intent(Template.this, InvitadoIngreso.class);
+
+                            nuevaActividad.putExtra("ingresado", true);
+
+                            startActivity(nuevaActividad);
+
+                        } catch (Exception e4) {
+                            nuevaActividad = new Intent(Template.this, VecinoIngreso.class);
+
+                            nuevaActividad.putExtra("ingresado", false);
+
+                            startActivity(nuevaActividad);
+
+                        }
+                    }
+                }
             }
         }
     }
@@ -165,9 +172,53 @@ public class Template extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 0) {
+        if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "Notification permission granted");
+                Intent nuevaActividad;
+                try {
+                    Vecino vecino = vecinoHelper.getVecinos().get(0);
+
+                    nuevaActividad = new Intent(Template.this, VecinoIngreso.class);
+
+                    nuevaActividad.putExtra("ingresado", true);
+
+                    nuevaActividad.putExtra("documento", vecino.getDocumento());
+
+                    startActivity(nuevaActividad);
+
+                } catch (Exception e2) {
+                    try {
+                        Empleado empleado = empleadoHelper.getEmpleados().get(0);
+
+                        nuevaActividad = new Intent(Template.this, EmpleadoIngreso.class);
+
+                        nuevaActividad.putExtra("ingresado", true);
+
+                        nuevaActividad.putExtra("legajo", empleado.getLegajo());
+
+                        startActivity(nuevaActividad);
+
+                    } catch (Exception e3) {
+                        try {
+                            invitadoHelper.getInvitados().get(0);
+
+                            nuevaActividad = new Intent(Template.this, InvitadoIngreso.class);
+
+                            nuevaActividad.putExtra("ingresado", true);
+
+                            startActivity(nuevaActividad);
+
+                        } catch (Exception e4) {
+                            nuevaActividad = new Intent(Template.this, VecinoIngreso.class);
+
+                            nuevaActividad.putExtra("ingresado", false);
+
+                            startActivity(nuevaActividad);
+
+                        }
+                    }
+                }
             } else {
                 Log.d(TAG, "Notification permission denied");
             }
