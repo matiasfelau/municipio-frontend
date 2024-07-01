@@ -627,7 +627,7 @@ public class CrearReclamo extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<Desperfecto>> call, @NonNull Response<List<Desperfecto>> response) {
                 if (response.code() == 200) {//este ok
-                    System.out.println(response.code());
+                    System.out.println("EL RESULTADO ES:"+response.code());
                     assert response.body() != null;
                     List<Desperfecto> ss = response.body();
                     for (Desperfecto s : ss) {
@@ -653,7 +653,7 @@ public class CrearReclamo extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<List<Desperfecto>> call, @NonNull Throwable t) {
-
+                System.out.println(t);
             }
         });
 

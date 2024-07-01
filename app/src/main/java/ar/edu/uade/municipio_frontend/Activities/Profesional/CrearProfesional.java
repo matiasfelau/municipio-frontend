@@ -19,9 +19,12 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -57,10 +60,15 @@ import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.Desperfecto;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
+import ar.edu.uade.municipio_frontend.Models.Sector;
 import ar.edu.uade.municipio_frontend.R;
+import ar.edu.uade.municipio_frontend.Services.DesperfectoService;
 import ar.edu.uade.municipio_frontend.Services.ProfesionalService;
+import ar.edu.uade.municipio_frontend.Services.SectorService;
 import ar.edu.uade.municipio_frontend.Utilities.Container.AutenticacionProfesional;
+import ar.edu.uade.municipio_frontend.Utilities.EmailValidation;
 import ar.edu.uade.municipio_frontend.Utilities.MapHelper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -75,10 +83,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CrearProfesional extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 100;
     private EditText inputNombreProfesional;
+    Spinner dropdownRubros;
     private EditText inputDireccion;
     private MapView mapa;
     private EditText inputTelefono;
     private EditText inputEmail;
+    private EditText inputDescripcion;
     private ImageButton botonDisminuirInicioJornada;
     private TextView inicioJornada;
     private ImageButton botonAumentarInicioJornada;
@@ -87,6 +97,9 @@ public class CrearProfesional extends AppCompatActivity {
     private ImageButton botonAumentarFinJornada;
     private Button botonAdjuntarArchivos;
     private Button botonEnviarSolicitud;
+    ArrayAdapter<String> adapterRubros;
+    List<String> rubros;
+    String rubroSeleccionado;
     private MapHelper mapHelper;
     private List<Uri> imageUris = new ArrayList<>();
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
@@ -114,8 +127,9 @@ public class CrearProfesional extends AppCompatActivity {
     );
     Autenticacion autenticacion;
     AutenticacionProfesional autenticacionProfesional;
+    String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "ResourceType"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -136,13 +150,17 @@ public class CrearProfesional extends AppCompatActivity {
 
         inputNombreProfesional = findViewById(R.id.inputNombre);
 
-        inputDireccion = findViewById(R.id.inputDireccion);
+        dropdownRubros = findViewById(R.id.spinnerRubro);
+
+        inputDescripcion = findViewById(R.id.editTextDescripcion);
 
         mapa = findViewById(R.id.map);
 
         inputTelefono = findViewById(R.id.inputTelefono);
 
         inputEmail = findViewById(R.id.inputEmail);
+
+        inputDireccion = findViewById(R.id.inputDireccion);
 
         botonDisminuirInicioJornada = findViewById(R.id.disminuirInicioJornada);
 
@@ -160,6 +178,14 @@ public class CrearProfesional extends AppCompatActivity {
 
         botonEnviarSolicitud = findViewById(R.id.buttonGenerar);
 
+        rubros = new ArrayList<>();
+
+        adapterRubros = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, rubros);
+
+        adapterRubros.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        dropdownRubros.setAdapter(adapterRubros);
+
         mapHelper = new MapHelper(this,
                 this,
                 mapa);
@@ -172,6 +198,20 @@ public class CrearProfesional extends AppCompatActivity {
         autenticacionProfesional = new AutenticacionProfesional(autenticacion);
 
         mapHelper.startService(false);
+
+        getRubros(autenticacion);
+
+        dropdownRubros.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                rubroSeleccionado = rubros.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         botonDisminuirInicioJornada.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
@@ -320,24 +360,29 @@ public class CrearProfesional extends AppCompatActivity {
         botonEnviarSolicitud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    List<String> imagenes = new ArrayList<>();
-                    for (Uri uri : imageUris) {
-                        System.out.println(uri);
-                        imagenes.add(convertImageToBase64(uri));
+                String email = inputEmail.getText().toString();
+                if (EmailValidation.patternMatches(email, regexPattern)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        List<String> imagenes = new ArrayList<>();
+                        for (Uri uri : imageUris) {
+                            System.out.println(uri);
+                            imagenes.add(convertImageToBase64(uri));
+                        }
+                        Profesional profesional = new Profesional(
+                                inputNombreProfesional.getText().toString(),
+                                rubroSeleccionado,
+                                inputDescripcion.getText().toString(),
+                                inputDireccion.getText().toString(),
+                                Integer.parseInt(inputTelefono.getText().toString()),
+                                email,
+                                mapHelper.getMarkerLatitude(),
+                                mapHelper.getMarkerLongitude(),
+                                inicioJornada.getText().toString(),
+                                finJornada.getText().toString(),
+                                getIntent().getStringExtra("documento"),
+                                imagenes);
+                        nuevoProfesional(profesional);
                     }
-                    Profesional profesional = new Profesional(
-                            inputNombreProfesional.getText().toString(),
-                            inputDireccion.getText().toString(),
-                            Integer.parseInt(inputTelefono.getText().toString()),
-                            inputEmail.getText().toString(),
-                            mapHelper.getMarkerLatitude(),
-                            mapHelper.getMarkerLongitude(),
-                            inicioJornada.getText().toString(),
-                            finJornada.getText().toString(),
-                            getIntent().getStringExtra("documento"),
-                            imagenes);
-                    nuevoProfesional(profesional);
                 }
             }
         });
@@ -439,6 +484,47 @@ public class CrearProfesional extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void getRubros(Autenticacion autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+
+        SectorService sectorService = retrofit.create(SectorService.class);
+
+        Call<List<Sector>> call = sectorService.getSectores(autenticacion);
+
+        call.enqueue(new Callback<List<Sector>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Sector>> call, @NonNull Response<List<Sector>> response) {
+                if (response.code() == 200) {//este ok
+                    System.out.println("EL RESULTADO ES:"+response.code());
+                    assert response.body() != null;
+                    List<Sector> sectores = response.body();
+                    for (Sector sector : sectores) {
+                        System.out.println(sector.getDescripcion());
+                        rubros.add(sector.getDescripcion());
+                    }
+                    adapterRubros.notifyDataSetChanged();
+                } else if (response.code() == 400) {
+                    System.out.println(response.code());
+                } else if (response.code() == 401) {
+                    System.out.println(response.code());
+                } else if (response.code() == 403) {
+                    System.out.println(response.code());
+                } else if (response.code() == 404) {
+                    System.out.println(response.code());
+                } else if (response.code() == 500) {
+                    System.out.println(response.code());
+                } else {
+                    System.out.println(response.code());
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Sector>> call, @NonNull Throwable t) {
+                System.out.println(t);
+            }
+        });
+
     }
 
     public String convertImageToBase64(Uri imageUri) {

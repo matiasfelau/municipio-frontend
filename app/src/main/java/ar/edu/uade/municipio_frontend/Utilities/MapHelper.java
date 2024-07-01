@@ -130,6 +130,16 @@ public class MapHelper {
         };
     }
 
+    public void setLocation(BigDecimal latitude, BigDecimal longitude) {
+        GeoPoint startPoint = new GeoPoint(latitude.doubleValue(),
+                longitude.doubleValue());
+        map.getController().setCenter(startPoint);
+        marker.setPosition(startPoint);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setTitle("Nueva ubicación.");
+        map.getOverlays().add(marker);
+    }
+
     public BigDecimal getMarkerLatitude() {
         return BigDecimal.valueOf(marker.getPosition().getLatitude());
     }

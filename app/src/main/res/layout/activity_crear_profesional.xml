@@ -21,12 +21,53 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpeakableTextPresentCheck,TextContrastCheck" />
 
+    <Spinner
+        android:id="@+id/spinnerRubro"
+        android:layout_width="269dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="208dp"
+        android:layout_marginEnd="68dp"
+        android:background="@android:drawable/spinner_dropdown_background"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/inicioJornada"
+        android:layout_width="105dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="620dp"
+        android:layout_marginEnd="252dp"
+        android:text="00:00"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/disminuirFinJornada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="628dp"
+        android:layout_marginEnd="148dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable"
+        app:tint="#FFFDFD"
+        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
+
     <ImageButton
         android:id="@+id/aumentarFinJornada"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="580dp"
-        android:layout_marginEnd="104dp"
+        android:layout_marginTop="624dp"
+        android:layout_marginEnd="12dp"
         android:backgroundTint="#00FFFFFF"
         android:rotationY="180"
         android:scaleX="1.5"
@@ -37,26 +78,12 @@
         app:tint="#FFFDFD"
         tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
 
-    <TextView
-        android:id="@+id/inicioJornada"
-        android:layout_width="105dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="512dp"
-        android:layout_marginEnd="152dp"
-        android:text="00:00"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
         android:id="@+id/disminuirInicioJornada"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="512dp"
-        android:layout_marginEnd="256dp"
+        android:layout_marginTop="624dp"
+        android:layout_marginEnd="356dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleX="1.5"
         android:scaleY="1.5"
@@ -70,25 +97,10 @@
         android:id="@+id/aumentarInicioJornada"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="516dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginTop="624dp"
+        android:layout_marginEnd="204dp"
         android:backgroundTint="#00FFFFFF"
         android:rotationY="180"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="?attr/actionModeCloseDrawable"
-        app:tint="#FFFDFD"
-        tools:ignore="DuplicateIds,SpeakableTextPresentCheck" />
-
-    <ImageButton
-        android:id="@+id/disminuirFinJornada"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="584dp"
-        android:layout_marginEnd="252dp"
-        android:backgroundTint="#00FFFFFF"
         android:scaleX="1.5"
         android:scaleY="1.5"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,8 +113,8 @@
         android:id="@+id/finJornada"
         android:layout_width="105dp"
         android:layout_height="50dp"
-        android:layout_marginTop="580dp"
-        android:layout_marginEnd="148dp"
+        android:layout_marginTop="624dp"
+        android:layout_marginEnd="52dp"
         android:text="00:00"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -116,7 +128,7 @@
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginStart="71dp"
-        android:layout_marginTop="440dp"
+        android:layout_marginTop="492dp"
         android:layout_marginEnd="71dp"
         android:background="@color/white"
         android:ems="10"
@@ -129,11 +141,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:id="@+id/editTextDescripcion"
+        android:layout_width="323dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="552dp"
+        android:layout_marginEnd="25dp"
+        android:background="@color/white"
+        android:hint="Descripción"
+        android:padding="8dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.815"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
         android:id="@+id/inputTelefono"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginStart="71dp"
-        android:layout_marginTop="380dp"
+        android:layout_marginTop="432dp"
         android:layout_marginEnd="71dp"
         android:background="@color/white"
         android:ems="10"
@@ -150,7 +178,7 @@
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginStart="71dp"
-        android:layout_marginTop="208dp"
+        android:layout_marginTop="268dp"
         android:layout_marginEnd="71dp"
         android:background="@color/white"
         android:ems="10"
@@ -158,7 +186,7 @@
         android:inputType="text|textPostalAddress"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.578"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -175,7 +203,7 @@
         android:inputType="text|textPersonName"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.736"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -228,7 +256,7 @@
         android:id="@+id/map"
         android:layout_width="341dp"
         android:layout_height="93dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginTop="328dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -237,7 +265,7 @@
         android:id="@+id/buttonAdjuntarArchivos"
         android:layout_width="255dp"
         android:layout_height="61dp"
-        android:layout_marginTop="640dp"
+        android:layout_marginTop="680dp"
         android:layout_marginEnd="76dp"
         android:background="?android:attr/galleryItemBackground"
         android:padding="8dp"
@@ -250,7 +278,7 @@
         android:id="@+id/buttonGenerar"
         android:layout_width="304dp"
         android:layout_height="60dp"
-        android:layout_marginTop="704dp"
+        android:layout_marginTop="752dp"
         android:layout_marginEnd="52dp"
         android:background="#C92E6FC1"
         android:text="Enviar"

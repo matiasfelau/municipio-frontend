@@ -34,8 +34,10 @@ import ar.edu.uade.municipio_frontend.Utilities.MapHelper;
 
 public class ProfesionalParticular extends AppCompatActivity {
     TextView nombreProfesional;
+    TextView rubroProfesional;
     TextView telefonoProfesional;
     TextView emailProfesional;
+    TextView descripcionProfesional;
     TextView aperturaProfesional;
     TextView cierreProfesional;
     TextView direccionProfesional;
@@ -55,8 +57,10 @@ public class ProfesionalParticular extends AppCompatActivity {
             return insets;
         });
         nombreProfesional = findViewById(R.id.nombreProfesional);
+        rubroProfesional = findViewById(R.id.rubroProfesional);
         telefonoProfesional = findViewById(R.id.nroTelefono);
         emailProfesional = findViewById(R.id.email);
+        descripcionProfesional = findViewById(R.id.descripcionProfesionalParticular);
         aperturaProfesional = findViewById(R.id.apertura);
         cierreProfesional = findViewById(R.id.cierre);
         direccionProfesional = findViewById(R.id.direccion);
@@ -65,13 +69,16 @@ public class ProfesionalParticular extends AppCompatActivity {
         mapHelper = new MapHelper(this, this, mapa);
         Profesional profesional = getProfesional();
         nombreProfesional.setText(profesional.getNombre());
+        rubroProfesional.setText(profesional.getRubro());
         telefonoProfesional.setText(String.valueOf(profesional.getTelefono()));
         emailProfesional.setText(profesional.getEmail());
+        descripcionProfesional.setText(profesional.getDescripcion());
         aperturaProfesional.setText(profesional.getInicioJornada().substring(0, 5));
         cierreProfesional.setText(profesional.getFinJornada().substring(0, 5));
         direccionProfesional.setText(profesional.getDireccion());
         mapHelper.startService(false);
-        //TODO SET LOCATION
+        mapHelper.setLocation(profesional.getLatitud(),
+                profesional.getLongitud());
         for (String url : profesional.getImages()) {
             addImageToLayout(url);
         }
@@ -83,6 +90,8 @@ public class ProfesionalParticular extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mapHelper.startService(true);
+                mapHelper.setLocation(getProfesional().getLatitud(),
+                        getProfesional().getLongitud());
             } else {
                 Log.e("PermissionError", "Location permissions are required to use this feature.");
             }

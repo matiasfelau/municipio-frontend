@@ -33,7 +33,6 @@ public class VecinoRegistro extends AppCompatActivity {
     TextView avisoDatosIncorrectos;
     Button botonEnviar;
     String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-
     Spinner spinnerTipoDocumentacion;
     String tipoDocumentacion;
 

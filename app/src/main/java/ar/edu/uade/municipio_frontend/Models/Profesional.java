@@ -11,6 +11,8 @@ import java.util.List;
 
 public class Profesional {
     private String nombre;
+    private String rubro;
+    private String descripcion;
     private String direccion;
     private int telefono;
     private String email;
@@ -21,17 +23,10 @@ public class Profesional {
     private String documento;
     private List<String> images = new ArrayList<>();
 
-    public Profesional(String nombre,
-                       String direccion,
-                       int telefono,
-                       String email,
-                       BigDecimal latitud,
-                       BigDecimal longitud,
-                       String inicioJornada,
-                       String finJornada,
-                       String documento,
-                       List<String> images) {
+    public Profesional(String nombre, String rubro, String descripcion, String direccion, int telefono, String email, BigDecimal latitud, BigDecimal longitud, String inicioJornada, String finJornada, String documento, List<String> images) {
         this.nombre = nombre;
+        this.rubro = rubro;
+        this.descripcion = descripcion;
         this.direccion = direccion;
         this.telefono = telefono;
         this.email = email;
@@ -49,6 +44,22 @@ public class Profesional {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getRubro() {
+        return rubro;
+    }
+
+    public void setRubro(String rubro) {
+        this.rubro = rubro;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public String getDireccion() {
@@ -127,6 +138,8 @@ public class Profesional {
     public String toString() {
         return "Profesional{" +
                 "nombre='" + nombre + '\'' +
+                ", rubro='" + rubro + '\'' +
+                ", descripcion='" + descripcion + '\'' +
                 ", direccion='" + direccion + '\'' +
                 ", telefono=" + telefono +
                 ", email='" + email + '\'' +
