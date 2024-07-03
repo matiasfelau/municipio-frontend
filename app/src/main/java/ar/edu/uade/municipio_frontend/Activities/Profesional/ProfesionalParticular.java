@@ -3,10 +3,13 @@ package ar.edu.uade.municipio_frontend.Activities.Profesional;
 import static ar.edu.uade.municipio_frontend.Utilities.Container.ProfesionalStoraged.getProfesional;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +31,10 @@ import com.bumptech.glide.request.target.Target;
 
 import org.osmdroid.views.MapView;
 
+import java.util.Objects;
+
+import ar.edu.uade.municipio_frontend.Activities.Comercio.ComercioParticular;
+import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
 import ar.edu.uade.municipio_frontend.Models.Profesional;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Utilities.MapHelper;
@@ -41,6 +48,7 @@ public class ProfesionalParticular extends AppCompatActivity {
     TextView aperturaProfesional;
     TextView cierreProfesional;
     TextView direccionProfesional;
+    ImageButton botonVolver;
     MapView mapa;
     LinearLayout contenedorFotos;
     MapHelper mapHelper;
@@ -64,6 +72,7 @@ public class ProfesionalParticular extends AppCompatActivity {
         aperturaProfesional = findViewById(R.id.apertura);
         cierreProfesional = findViewById(R.id.cierre);
         direccionProfesional = findViewById(R.id.direccion);
+        botonVolver = findViewById(R.id.botonVolver);
         mapa = findViewById(R.id.map);
         contenedorFotos = findViewById(R.id.contenedorFotos);
         mapHelper = new MapHelper(this, this, mapa);
@@ -82,6 +91,24 @@ public class ProfesionalParticular extends AppCompatActivity {
         for (String url : profesional.getImages()) {
             addImageToLayout(url);
         }
+
+        botonVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(ProfesionalParticular.this, VerProfesionales.class);
+                if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                }
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+        });
+
     }
 
     @Override

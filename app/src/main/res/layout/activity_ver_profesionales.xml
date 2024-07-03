@@ -81,10 +81,10 @@
 
     <ListView
         android:id="@+id/listProfesionales"
-        android:layout_width="383dp"
-        android:layout_height="487dp"
-        android:layout_marginTop="204dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="350dp"
+        android:layout_height="563dp"
+        android:layout_marginTop="123dp"
+        android:layout_marginEnd="28dp"
         android:background="#BE656774"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
