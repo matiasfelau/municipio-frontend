@@ -7,12 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
-
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Models.Comercio;
-import ar.edu.uade.municipio_frontend.Models.Profesional;
 import ar.edu.uade.municipio_frontend.R;
 
 public class AdapterCormercios extends ArrayAdapter<Comercio> {
@@ -31,8 +28,8 @@ public class AdapterCormercios extends ArrayAdapter<Comercio> {
 
         TextView nombre = convertView.findViewById(R.id.itemNombre);
         TextView direccion = convertView.findViewById(R.id.itemDireccion);
-        TextView inicio = convertView.findViewById(R.id.itemInicioJornada);
-        TextView fin = convertView.findViewById(R.id.itemFinJornada);
+        TextView inicio = convertView.findViewById(R.id.itemDescripcion);
+        TextView fin = convertView.findViewById(R.id.itemApellido);
         nombre.setText(item.getNombre());
         direccion.setText(item.getDireccion());
         inicio.setText(item.getApertura().substring(0,5));

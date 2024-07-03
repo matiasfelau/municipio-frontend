@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
-import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
 import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
@@ -41,6 +39,7 @@ import ar.edu.uade.municipio_frontend.Models.Empleado;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.DenunciaService;
+import ar.edu.uade.municipio_frontend.Utilities.Adapter.AdapterDenunciaReclamo;
 import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,7 +66,7 @@ public class VerDenuncias extends AppCompatActivity {
     private Autenticacion autenticacion;
     private ArrayList<IdDescripcion> p;
     private List<Denuncia> denuncias;
-    private ArrayAdapter<IdDescripcion> prueba;
+    private AdapterDenunciaReclamo prueba;
     private Integer cantidadPaginas;
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -115,7 +114,7 @@ public class VerDenuncias extends AppCompatActivity {
 
         p = new ArrayList<>();
 
-        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
+        prueba = new AdapterDenunciaReclamo(this, p);
 
         listDenuncias.setAdapter(prueba);
 
@@ -194,6 +193,7 @@ public class VerDenuncias extends AppCompatActivity {
                     prueba.notifyDataSetChanged();
                     getDenuncia(Integer.parseInt(inputId.getText().toString()), autenticacion);
                     cantidadPaginas = 1;
+                    prueba.notifyDataSetChanged();
                 }
             }
         });
@@ -255,6 +255,8 @@ public class VerDenuncias extends AppCompatActivity {
                 if (response.code()==200){//este ok
                     assert response.body() != null;
                     addItem(response.body());
+                    denuncias.clear();
+                    denuncias.add(response.body());
                     prueba.notifyDataSetChanged();
                 }else if(response.code()==400){//este? badrequest?
                     System.out.println(response.code());

@@ -340,24 +340,26 @@ public class CrearComercio extends AppCompatActivity {
         botonEnviarSolicitud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    List<String> imagenes = new ArrayList<>();
-                    for (Uri uri : imageUris) {
-                        System.out.println(uri);
-                        imagenes.add(convertImageToBase64(uri));
+                if(!inputNombreComercio.getText().toString().isEmpty()){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        List<String> imagenes = new ArrayList<>();
+                        for (Uri uri : imageUris) {
+                            System.out.println(uri);
+                            imagenes.add(convertImageToBase64(uri));
+                        }
+                        Comercio comercio = new Comercio(
+                                inputNombreComercio.getText().toString(),
+                                getIntent().getStringExtra("documento"),
+                                inputDireccion.getText().toString(),
+                                inputDescripcion.getText().toString(),
+                                Integer.parseInt(inputTelefono.getText().toString()),
+                                inicioJornada.getText().toString(),
+                                finJornada.getText().toString(),
+                                mapHelper.getMarkerLatitude(),
+                                mapHelper.getMarkerLongitude(),
+                                imagenes);
+                        nuevoComercio(comercio);
                     }
-                    Comercio comercio = new Comercio(
-                            inputNombreComercio.getText().toString(),
-                            getIntent().getStringExtra("documento"),
-                            inputDireccion.getText().toString(),
-                            inputDescripcion.getText().toString(),
-                            Integer.parseInt(inputTelefono.getText().toString()),
-                            inicioJornada.getText().toString(),
-                            finJornada.getText().toString(),
-                            mapHelper.getMarkerLatitude(),
-                            mapHelper.getMarkerLongitude(),
-                            imagenes);
-                    nuevoComercio(comercio);
                 }
             }
         });

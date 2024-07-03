@@ -44,6 +44,7 @@ import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
 import ar.edu.uade.municipio_frontend.Services.ReclamoService;
 import ar.edu.uade.municipio_frontend.Services.SectorService;
+import ar.edu.uade.municipio_frontend.Utilities.Adapter.AdapterDenunciaReclamo;
 import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,7 +63,7 @@ public class VerReclamos extends AppCompatActivity {
     private ListView listReclamos;
     private ArrayList<IdDescripcion> p;
     private List<Reclamo> reclamos;
-    private ArrayAdapter<IdDescripcion> prueba;
+    private AdapterDenunciaReclamo prueba;
     private Integer c;
     private ImageButton botonAgregar;
     private Button botonFiltrar;
@@ -146,7 +147,7 @@ public class VerReclamos extends AppCompatActivity {
 
         reclamos = new ArrayList<>();
 
-        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
+        prueba = new AdapterDenunciaReclamo(this, p);
 
         autenticacion = new Autenticacion();
 

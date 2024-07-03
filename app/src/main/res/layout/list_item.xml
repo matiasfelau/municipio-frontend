@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/itemInicioJornada"
+        android:id="@+id/itemDescripcion"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/itemFinJornada"
+        android:id="@+id/itemApellido"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
