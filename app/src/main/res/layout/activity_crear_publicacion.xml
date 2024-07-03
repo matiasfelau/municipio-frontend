@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/filterBackground"
-        android:layout_width="433dp"
+        android:layout_width="421dp"
         android:layout_height="728dp"
         android:background="#80656774"
         android:backgroundTint="#656774"
@@ -23,7 +23,7 @@
 
     <EditText
         android:id="@+id/inputTitulo"
-        android:layout_width="376dp"
+        android:layout_width="341dp"
         android:layout_height="58dp"
         android:layout_marginTop="168dp"
         android:background="@color/white"
@@ -39,7 +39,7 @@
 
     <EditText
         android:id="@+id/inputAutor"
-        android:layout_width="376dp"
+        android:layout_width="341dp"
         android:layout_height="58dp"
         android:layout_marginTop="416dp"
         android:background="@color/white"
@@ -55,7 +55,7 @@
 
     <EditText
         android:id="@+id/inputDescripcion"
-        android:layout_width="376dp"
+        android:layout_width="341dp"
         android:layout_height="161dp"
         android:layout_marginTop="239dp"
         android:background="@color/white"
@@ -123,7 +123,7 @@
         android:text="Fecha y Hora"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="34sp"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textCantidadImagenes" />
@@ -132,11 +132,10 @@
         android:id="@+id/btnCrearPublicacion"
         android:layout_width="375dp"
         android:layout_height="62dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="18dp"
         android:text="Crear Publicación"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btnAdjuntarImagen"
@@ -157,7 +156,7 @@
         android:text="0 imágenes subidas"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="34sp"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAdjuntarImagen" />
