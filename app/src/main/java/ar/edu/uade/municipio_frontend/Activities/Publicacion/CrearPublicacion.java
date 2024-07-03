@@ -33,8 +33,10 @@ import java.util.List;
 import java.util.Locale;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.Comercio;
 import ar.edu.uade.municipio_frontend.Models.Publicacion;
 import ar.edu.uade.municipio_frontend.R;
+import ar.edu.uade.municipio_frontend.Services.ComercioService;
 import ar.edu.uade.municipio_frontend.Services.PublicacionService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,6 +54,8 @@ public class CrearPublicacion extends AppCompatActivity {
     private Autenticacion autenticacion;
     private TextView textFechaHora;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private List<String> comercios;
+    private  ArrayAdapter<String> adapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -80,11 +84,15 @@ public class CrearPublicacion extends AppCompatActivity {
         autenticacion.setToken(getIntent().getStringExtra("token"));
         autenticacion.setTipo("Vecino");
 
-        // Rellenar el Spinner con los negocios del vecino
-        List<String> negocios = obtenerNegociosDelVecino();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, negocios);
+        comercios = new ArrayList<>();
+        adapter = new ArrayAdapter<>(CrearPublicacion.this,
+                android.R.layout.simple_spinner_item, comercios);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         inputAutor.setAdapter(adapter);
+        adapter.add("Seleccione un negocio...");
+        adapter.notifyDataSetChanged();
+
+        obtenerComerciosDelVecino();
 
         inputAutor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -167,12 +175,38 @@ public class CrearPublicacion extends AppCompatActivity {
         }
     }
 
-    private List<String> obtenerNegociosDelVecino() {
-        List<String> negocios = new ArrayList<>();
-        negocios.add("Selecciona un negocio"); // Opción por defecto
-        // TODO: Agregar la lógica para obtener los negocios del vecino y añadirlos a la
-        // lista
-        return negocios;
+    private void obtenerComerciosDelVecino() {
+        // Simulación de llamada a una API para obtener los comercios
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ComercioService comercioService = retrofit.create(ComercioService.class);
+
+        Call<List<Comercio>> call = comercioService.obtenerComercios(getIntent().getStringExtra("documento"), autenticacion);
+        call.enqueue(new Callback<List<Comercio>>() {
+            @Override
+            public void onResponse(Call<List<Comercio>> call, Response<List<Comercio>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    for (Comercio comercio : response.body()) {
+                        adapter.add(comercio.getNombre());
+                    }
+
+                    adapter.notifyDataSetChanged();
+                } else {
+                    // manejar el error
+                    Snackbar.make(findViewById(android.R.id.content), "Error al obtener los comercios",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Comercio>> call, Throwable t) {
+                // manejar el error
+                Snackbar.make(findViewById(android.R.id.content), "Error de red", Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void crearPublicacion(Publicacion publicacion, Autenticacion autenticacion) {
