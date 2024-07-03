@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
@@ -22,9 +22,10 @@ public class ProfesionalAdapter extends ArrayAdapter<Profesional> {
 
     }
 
+    @NonNull
     @SuppressLint("SetTextI18n")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Profesional item = getItem(position);
 
         if (convertView == null) {
@@ -34,8 +35,9 @@ public class ProfesionalAdapter extends ArrayAdapter<Profesional> {
 
         TextView nombre = convertView.findViewById(R.id.itemNombre);
         TextView direccion = convertView.findViewById(R.id.itemDireccion);
-        TextView inicio = convertView.findViewById(R.id.itemInicioJornada);
-        TextView fin = convertView.findViewById(R.id.itemFinJornada);
+        TextView inicio = convertView.findViewById(R.id.itemDescripcion);
+        TextView fin = convertView.findViewById(R.id.itemApellido);
+        assert item != null;
         nombre.setText(item.getNombre());
         direccion.setText(item.getDireccion());
         inicio.setText(item.getInicioJornada().substring(0,5));

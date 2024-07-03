@@ -140,6 +140,7 @@ public class EmpleadoIngreso extends AppCompatActivity {
             public void onResponse(@NonNull Call<Token> call, @NonNull Response<Token> response) {
                 if (response.body() != null) {
                     buscar(empleado.getLegajo());
+                    System.out.println("EMPLEADO RECONOCIDO ...");
 
                     Intent nuevaActividad = new Intent(EmpleadoIngreso.this, VerReclamos.class);
 

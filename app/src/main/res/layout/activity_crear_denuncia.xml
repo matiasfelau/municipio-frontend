@@ -68,40 +68,10 @@
 
 
     <EditText
-        android:id="@+id/insertNombre"
-        android:layout_width="170dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="232dp"
-        android:background="@color/white"
-        android:ems="10"
-        android:hint="Nombre"
-        android:inputType="text"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/insertApellido"
-        android:layout_width="170dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/white"
-        android:ems="10"
-        android:hint="Apellido"
-        android:inputType="text"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
         android:id="@+id/insertDireccion"
         android:layout_width="241dp"
         android:layout_height="50dp"
-        android:layout_marginTop="256dp"
+        android:layout_marginTop="264dp"
         android:layout_marginEnd="84dp"
         android:background="@color/white"
         android:ems="10"
@@ -172,7 +142,7 @@
     <Spinner
         android:id="@+id/tipoDenuncia"
         android:layout_width="109dp"
-        android:layout_height="32dp"
+        android:layout_height="50dp"
         android:layout_marginTop="140dp"
         android:layout_marginEnd="148dp"
         android:background="#FFFFFF"
@@ -187,15 +157,45 @@
 
     <EditText
         android:id="@+id/insertNombreComercio"
-        android:layout_width="212dp"
+        android:layout_width="241dp"
         android:layout_height="51dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="84dp"
         android:background="#FFFFFF"
         android:ems="10"
         android:hint="Nombre"
         android:inputType="text"
         android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/insertNombre"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="212dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Nombre"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/insertApellido"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="28dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Apellido"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

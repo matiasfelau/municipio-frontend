@@ -382,28 +382,30 @@ public class CrearProfesional extends AppCompatActivity {
         botonEnviarSolicitud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString();
-                if (EmailValidation.patternMatches(email, regexPattern)) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        List<String> imagenes = new ArrayList<>();
-                        for (Uri uri : imageUris) {
-                            System.out.println(uri);
-                            imagenes.add(convertImageToBase64(uri));
+                if (!inputNombreProfesional.getText().toString().isEmpty()){
+                    String email = inputEmail.getText().toString();
+                    if (EmailValidation.patternMatches(email, regexPattern)) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            List<String> imagenes = new ArrayList<>();
+                            for (Uri uri : imageUris) {
+                                System.out.println(uri);
+                                imagenes.add(convertImageToBase64(uri));
+                            }
+                            Profesional profesional = new Profesional(
+                                    inputNombreProfesional.getText().toString(),
+                                    rubroSeleccionado,
+                                    inputDescripcion.getText().toString(),
+                                    inputDireccion.getText().toString(),
+                                    Integer.parseInt(inputTelefono.getText().toString()),
+                                    email,
+                                    mapHelper.getMarkerLatitude(),
+                                    mapHelper.getMarkerLongitude(),
+                                    inicioJornada.getText().toString(),
+                                    finJornada.getText().toString(),
+                                    getIntent().getStringExtra("documento"),
+                                    imagenes);
+                            nuevoProfesional(profesional);
                         }
-                        Profesional profesional = new Profesional(
-                                inputNombreProfesional.getText().toString(),
-                                rubroSeleccionado,
-                                inputDescripcion.getText().toString(),
-                                inputDireccion.getText().toString(),
-                                Integer.parseInt(inputTelefono.getText().toString()),
-                                email,
-                                mapHelper.getMarkerLatitude(),
-                                mapHelper.getMarkerLongitude(),
-                                inicioJornada.getText().toString(),
-                                finJornada.getText().toString(),
-                                getIntent().getStringExtra("documento"),
-                                imagenes);
-                        nuevoProfesional(profesional);
                     }
                 }
             }

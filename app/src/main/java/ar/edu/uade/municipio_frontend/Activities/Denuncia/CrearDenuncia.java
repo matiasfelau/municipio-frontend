@@ -212,7 +212,9 @@ public class CrearDenuncia extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
-                if(confirmacionResponsabilidad.isChecked()){
+                if(confirmacionResponsabilidad.isChecked()
+                        && ((!insertNombre.getText().toString().isEmpty() && !insertApellido.getText().toString().isEmpty()) || !insertNombreComercio.getText().toString().isEmpty())
+                        && !insertDireccion.getText().toString().isEmpty()){
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
                         for(Uri uri: fileUris){
