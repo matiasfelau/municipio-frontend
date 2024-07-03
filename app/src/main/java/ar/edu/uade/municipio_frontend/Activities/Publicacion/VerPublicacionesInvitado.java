@@ -25,9 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
+import ar.edu.uade.municipio_frontend.Activities.Usuario.Invitado.InvitadoIngreso;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
 import ar.edu.uade.municipio_frontend.Adapters.ImagenPagerAdapter;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
+import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.Publicacion;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
@@ -49,12 +51,14 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
     VecinoHelper helperVecino;
     ListView listPublicaciones;
     ViewPager viewPagerImagenes;
+    ImageButton botonFlechaAtras;
 
     ArrayAdapter<Publicacion> mAdapter;
     List<Publicacion> mPublicaciones;
     int paginaActual = 1;
     int totalPaginas = 1;
     final int ITEMS_POR_PAGINA = 10;
+    private Autenticacion autenticacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,11 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
         botonCambiarPaginaIzquierda = findViewById(R.id.botonCambiarPaginaIzquierda);
         textPaginaActual = findViewById(R.id.textPaginaActual);
         listPublicaciones = findViewById(R.id.listPublicaciones);
+        botonFlechaAtras = findViewById(R.id.botonFlechaAtras);
+
+        autenticacion = new Autenticacion();
+        autenticacion.setToken(getIntent().getStringExtra("token"));
+        autenticacion.setTipo("Invitado");
 
         // Verificación de null y asignación de OnClickListener
         if (botonCambiarPaginaDerecha != null) {
@@ -168,6 +177,15 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                 }
             });
         }
+
+        // Listener para el botón de flecha atrás
+        botonFlechaAtras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(VerPublicacionesInvitado.this, InvitadoIngreso.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void mostrarPopupSalir() {
@@ -226,7 +244,7 @@ public class VerPublicacionesInvitado extends AppCompatActivity {
                 .build();
 
         PublicacionService service = retrofit.create(PublicacionService.class);
-        Call<List<Publicacion>> call = service.getPublicaciones(pagina);
+        Call<List<Publicacion>> call = service.getPublicaciones(pagina, autenticacion);
 
         call.enqueue(new Callback<List<Publicacion>>() {
             @Override

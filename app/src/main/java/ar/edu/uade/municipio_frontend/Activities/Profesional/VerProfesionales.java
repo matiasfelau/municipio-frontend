@@ -193,7 +193,15 @@ public class VerProfesionales extends AppCompatActivity {
         botonCambiarModuloDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                irAVerPublicaciones();
+                Intent nuevaActividad = new Intent(VerProfesionales.this, VerPublicaciones.class);
+
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
             }
         });
     }

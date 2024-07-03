@@ -124,7 +124,7 @@
         <activity
             android:name=".Activities.Publicacion.VerPublicaciones"
             android:exported="false" />
-        <activity android:name=".Activities.Publicacion.CrearPublicacionActivity" />
+        <activity android:name=".Activities.Publicacion.CrearPublicacion" />
 
         <service
             android:name=".notificaciones.MyFirebaseMessagingService"

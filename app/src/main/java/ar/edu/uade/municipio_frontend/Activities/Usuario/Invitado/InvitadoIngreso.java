@@ -12,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import ar.edu.uade.municipio_frontend.Activities.Publicacion.VerPublicacionesInvitado;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Empleado.EmpleadoIngreso;
 import ar.edu.uade.municipio_frontend.Database.Helpers.InvitadoHelper;
 import ar.edu.uade.municipio_frontend.Models.Invitado;
@@ -55,8 +56,7 @@ public class InvitadoIngreso extends AppCompatActivity {
         botonIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ingresar();
-
+                irAVerPublicacionesInvitado(v);
             }
         });
 
@@ -74,14 +74,20 @@ public class InvitadoIngreso extends AppCompatActivity {
 
     private void ingresar() {
         /*
-        helper.saveInvitado(new Invitado(1, "John Doe"));
-
-        Intent nuevaActividad = new Intent(InvitadoIngreso.this, VerPublicacionesInvitado.class);
-
-        nuevaActividad.putExtra("from", "InvitadoIngreso");
-
-        startActivity(nuevaActividad);
+         * helper.saveInvitado(new Invitado(1, "John Doe"));
+         * 
+         * Intent nuevaActividad = new Intent(InvitadoIngreso.this,
+         * VerPublicacionesInvitado.class);
+         * 
+         * nuevaActividad.putExtra("from", "InvitadoIngreso");
+         * 
+         * startActivity(nuevaActividad);
          */
 
+    }
+
+    public void irAVerPublicacionesInvitado(View view) {
+        Intent intent = new Intent(this, VerPublicacionesInvitado.class);
+        startActivity(intent);
     }
 }

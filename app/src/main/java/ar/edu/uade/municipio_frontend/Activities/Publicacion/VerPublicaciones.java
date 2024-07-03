@@ -1,21 +1,26 @@
 package ar.edu.uade.municipio_frontend.Activities.Publicacion;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -23,15 +28,17 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
-import ar.edu.uade.municipio_frontend.Adapters.ImagenPagerAdapter;
 import ar.edu.uade.municipio_frontend.Database.Helpers.VecinoHelper;
+import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.Publicacion;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.PublicacionService;
+import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,24 +46,25 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VerPublicaciones extends AppCompatActivity {
+    private VecinoHelper vecinoHelper;
+    private ImageButton botonAgregar;
+    private EditText inputId;
+    private ImageButton botonCambiarPaginaIzquierda;
+    private ImageButton botonCambiarPaginaDerecha;
+    private TextView textPaginaActual;
+    private ListView listPublicaciones;
+    private ImageButton boton;
+    private Integer pagina;
+    private Autenticacion autenticacion;
+    private ArrayList<IdDescripcion> p;
+    private List<Publicacion> publicaciones;
+    private ArrayAdapter<IdDescripcion> prueba;
+    private Integer cantidadPaginas;
+    private ImageButton botonCambiarPantallaIzquierda;
+    private int paginaActual;
+    private int totalPaginas;
 
-    ImageButton botonAgregar;
-    ImageButton botonLogout;
-    ImageButton botonCambiarPantallaDerecha;
-    ImageButton botonCambiarPantallaIzquierda;
-    ImageButton botonCambiarPaginaDerecha;
-    ImageButton botonCambiarPaginaIzquierda;
-    TextView textPaginaActual;
-    VecinoHelper helperVecino;
-    ListView listPublicaciones;
-    ViewPager viewPagerImagenes;
-
-    ArrayAdapter<Publicacion> mAdapter;
-    List<Publicacion> mPublicaciones;
-    int paginaActual = 1;
-    int totalPaginas = 1;
-    final int ITEMS_POR_PAGINA = 10;
-
+    @SuppressLint({ "MissingInflatedId", "WrongViewCast" })
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,129 +76,155 @@ public class VerPublicaciones extends AppCompatActivity {
             return insets;
         });
 
-        // Inicialización de vistas
+        vecinoHelper = new VecinoHelper(this);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        inputId = findViewById(R.id.inputId);
         botonAgregar = findViewById(R.id.botonAgregar);
-        botonLogout = findViewById(R.id.botonLogout);
-        botonCambiarPantallaDerecha = findViewById(R.id.botonCambiarPantallaDerecha);
         botonCambiarPantallaIzquierda = findViewById(R.id.botonCambiarPantallaIzquierda);
+        pagina = 1;
+        textPaginaActual = findViewById(R.id.textPaginaActual);
         botonCambiarPaginaDerecha = findViewById(R.id.botonCambiarPaginaDerecha);
         botonCambiarPaginaIzquierda = findViewById(R.id.botonCambiarPaginaIzquierda);
-        textPaginaActual = findViewById(R.id.textPaginaActual);
         listPublicaciones = findViewById(R.id.listPublicaciones);
+        boton = findViewById(R.id.botonLogout);
 
-        // Verificación de null y asignación de OnClickListener
-        if (botonCambiarPaginaDerecha != null) {
-            botonCambiarPaginaDerecha.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Acción al hacer clic
+        autenticacion = new Autenticacion();
+        autenticacion.setToken(getIntent().getStringExtra("token"));
+        autenticacion.setTipo("Vecino");
+
+        p = new ArrayList<>();
+        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
+        listPublicaciones.setAdapter(prueba);
+
+        publicaciones = new ArrayList<>();
+        getPaginas(autenticacion);
+        getPublicaciones(1, autenticacion);
+
+        botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostrarPopupSalir();
+            }
+        });
+
+        botonCambiarPaginaDerecha.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View v) {
+                if (cantidadPaginas != null && pagina < cantidadPaginas) {
+                    pagina++;
+                    getPublicaciones(pagina, autenticacion);
+                    textPaginaActual.setText(pagina.toString());
                 }
-            });
-        } else {
-            Log.e("VerPublicaciones", "botonCambiarPaginaDerecha es null. Verifica el ID en el layout.");
-        }
+            }
+        });
 
-        if (botonAgregar != null) {
-            botonAgregar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Acción al hacer clic
+        botonCambiarPaginaIzquierda.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View v) {
+                if (pagina > 1) {
+                    pagina--;
+                    getPublicaciones(pagina, autenticacion);
+                    textPaginaActual.setText(pagina.toString());
                 }
-            });
-        } else {
-            Log.e("VerPublicaciones", "botonAgregar es null. Verifica el ID en el layout.");
-        }
+            }
+        });
 
-        if (botonLogout != null) {
-            botonLogout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mostrarPopupSalir();
+        botonCambiarPantallaIzquierda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VerPublicaciones.this, VerProfesionales.class);
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+                nuevaActividad.putExtra("from", "VerPublicaciones");
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+                startActivity(nuevaActividad);
+            }
+        });
+
+        botonAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VerPublicaciones.this, CrearPublicacion.class);
+                nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+                startActivity(nuevaActividad);
+            }
+        });
+    }
+
+    private void getPaginas(Autenticacion autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        PublicacionService publicacionService = retrofit.create(PublicacionService.class);
+
+        Call<Integer> call = publicacionService.getPaginas(autenticacion);
+
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
+                if (response.code() == 200 && response.body() != null) {
+                    cantidadPaginas = response.body();
+                    actualizarBotones();
+                } else {
+                    System.out.println(response.code());
                 }
-            });
-        } else {
-            Log.e("VerPublicaciones", "botonLogout es null. Verifica el ID en el layout.");
-        }
+            }
 
-        if (botonCambiarPaginaIzquierda != null) {
-            botonCambiarPaginaIzquierda.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Acción al hacer clic
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                System.out.println(t);
+            }
+        });
+    }
+
+    private void getPublicaciones(int pagina, Autenticacion autenticacion) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        PublicacionService publicacionService = retrofit.create(PublicacionService.class);
+
+        Call<List<Publicacion>> call = publicacionService.getPublicaciones(pagina, autenticacion);
+
+        call.enqueue(new Callback<List<Publicacion>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Publicacion>> call,
+                    @NonNull Response<List<Publicacion>> response) {
+                if (response.code() == 200) {
+                    publicaciones.clear();
+                    publicaciones.addAll(response.body());
+                    prueba.notifyDataSetChanged();
+                    actualizarBotones();
+                } else {
+                    System.out.println(response.code());
                 }
-            });
-        } else {
-            Log.e("VerPublicaciones", "botonCambiarPaginaIzquierda es null. Verifica el ID en el layout.");
-        }
+            }
 
-        if (botonCambiarPantallaIzquierda != null) {
-            botonCambiarPantallaIzquierda.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Acción al hacer clic
-                }
-            });
-        } else {
-            Log.e("VerPublicaciones", "botonCambiarPantallaIzquierda es null. Verifica el ID en el layout.");
-        }
+            @Override
+            public void onFailure(@NonNull Call<List<Publicacion>> call, @NonNull Throwable t) {
+                System.out.println(t);
+            }
+        });
+    }
 
-        // Configuración de la lista de publicaciones
-        mPublicaciones = new ArrayList<>();
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mPublicaciones);
-        listPublicaciones.setAdapter(mAdapter);
-
-        // Configurar visibilidad inicial de los botones de navegación
-        actualizarBotones();
-
-        // Cargar datos desde la base de datos
-        getPublicaciones(paginaActual);
-
-        // Listeners
-        if (botonLogout != null) {
-            botonLogout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mostrarPopupSalir();
-                }
-            });
-        }
-
-        if (botonAgregar != null) {
-            botonAgregar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(VerPublicaciones.this, CrearPublicacionActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
-
-        if (botonCambiarPantallaDerecha != null) {
-            botonCambiarPantallaDerecha.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (paginaActual < totalPaginas) {
-                        paginaActual++;
-                        getPublicaciones(paginaActual);
-                    }
-                }
-            });
-        }
-
-        if (botonCambiarPantallaIzquierda != null) {
-            botonCambiarPantallaIzquierda.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (paginaActual > 1) {
-                        paginaActual--;
-                        getPublicaciones(paginaActual);
-                    } else {
-                        // Volver a la actividad de profesionales
-                        Intent intent = new Intent(VerPublicaciones.this, VerProfesionales.class);
-                        startActivity(intent);
-                    }
-                }
-            });
+    private void addItem(Publicacion publicacion) {
+        if (publicacion != null) {
+            if (publicacion.getDescripcion() != null) {
+                prueba.add(new IdDescripcion(String.valueOf(publicacion.getIdPublicacion()),
+                        publicacion.getDescripcion()));
+            }
         }
     }
 
@@ -232,9 +266,9 @@ public class VerPublicaciones extends AppCompatActivity {
     }
 
     private void cerrarSesion() {
-        Vecino vecino = helperVecino.getVecinos().get(0);
+        Vecino vecino = vecinoHelper.getVecinos().get(0);
 
-        helperVecino.deleteVecinos();
+        vecinoHelper.deleteVecinos();
 
         Intent nuevaActividad = new Intent(VerPublicaciones.this, VecinoIngreso.class);
 
@@ -246,63 +280,8 @@ public class VerPublicaciones extends AppCompatActivity {
 
     }
 
-    private void getPublicaciones(int pagina) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        PublicacionService service = retrofit.create(PublicacionService.class);
-        Call<List<Publicacion>> call = service.getPublicaciones(pagina);
-
-        call.enqueue(new Callback<List<Publicacion>>() {
-            @Override
-            public void onResponse(Call<List<Publicacion>> call, Response<List<Publicacion>> response) {
-                if (response.isSuccessful()) {
-                    mPublicaciones.clear();
-                    mPublicaciones.addAll(response.body());
-                    mAdapter.notifyDataSetChanged();
-                    totalPaginas = (int) Math.ceil((double) response.body().size() / ITEMS_POR_PAGINA);
-                    actualizarBotones();
-                } else {
-                    // Manejar error en la respuesta
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Publicacion>> call, Throwable t) {
-                // Manejar fallo en la llamada
-            }
-        });
-    }
-
-    private void enviarNuevaPublicacion(Publicacion publicacion) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        PublicacionService service = retrofit.create(PublicacionService.class);
-        Call<Publicacion> call = service.nuevaPublicacion(publicacion);
-
-        call.enqueue(new Callback<Publicacion>() {
-            @Override
-            public void onResponse(Call<Publicacion> call, Response<Publicacion> response) {
-                if (response.isSuccessful()) {
-                    // Publicación creada exitosamente
-                    getPublicaciones(paginaActual);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Publicacion> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
     private void actualizarBotones() {
-        botonCambiarPaginaIzquierda.setVisibility(paginaActual > 1 ? View.VISIBLE : View.GONE);
-        botonCambiarPaginaDerecha.setVisibility(paginaActual < totalPaginas ? View.VISIBLE : View.GONE);
+        botonCambiarPaginaIzquierda.setVisibility(pagina > 1 ? View.VISIBLE : View.INVISIBLE);
+        botonCambiarPaginaDerecha.setVisibility(pagina < cantidadPaginas ? View.VISIBLE : View.INVISIBLE);
     }
 }
