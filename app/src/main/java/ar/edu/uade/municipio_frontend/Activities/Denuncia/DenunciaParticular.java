@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -237,33 +239,29 @@ public class DenunciaParticular extends AppCompatActivity {
         }
 
         if (url.toLowerCase().endsWith(".pdf")) {
-            addPdfToLayout(url);
-        } else {
+            mostrarPdf(url);
+        } else if (url.toLowerCase().matches(".*\\.(jpg|jpeg|png|gif)$")) {
             addImageToLayout(url);
+        } else {
+            Toast.makeText(this, "Tipo de archivo no soportado", Toast.LENGTH_SHORT).show();
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private void addPdfToLayout(String url) {
-        System.out.println("URL del PDF: " + url);
-
+    public void mostrarPdf(String urlPdf) {
         WebView webView = new WebView(this);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                // Aquí puedes agregar código para manejar cuando el PDF termine de cargar
-            }
-        });
-
-        // Cargar el PDF usando Google Docs Viewer
-        webView.loadUrl("https://docs.google.com/viewer?url=" + Uri.encode(url) + "&embedded=true");
-
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        webView.setLayoutParams(params);
         contenedorArchivos.addView(webView);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
+
+        String pdfUrl = "https://docs.google.com/gview?embedded=true&url=" + urlPdf;
+        webView.loadUrl(pdfUrl);
     }
 
     private void addImageToLayout(String url) {
@@ -299,7 +297,6 @@ public class DenunciaParticular extends AppCompatActivity {
                 })
                 .into(imageView);
     }
-
     private void getFotos(int id) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
