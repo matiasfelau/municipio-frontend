@@ -79,6 +79,7 @@ public class VerReclamos extends AppCompatActivity {
     private List<Sector> listaSectores;
     private Integer cantidadPaginas;
     private EditText util;
+    private TextView pantalla;
     private List<String> sectores;
     private ArrayAdapter<String> adapterSector;
 
@@ -98,6 +99,8 @@ public class VerReclamos extends AppCompatActivity {
         });
 
         pagina = 1;
+
+        pantalla = findViewById(R.id.textPantalla);
 
         //inicializacion
 
@@ -214,6 +217,12 @@ public class VerReclamos extends AppCompatActivity {
             getPaginas(autenticacionFiltro);
 
             getReclamos(1, autenticacionFiltro);
+        }
+
+        if(Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")){
+            botonCambiarPantallaDerecha.setVisibility(View.INVISIBLE);
+            pantalla.setVisibility(View.INVISIBLE);
+
         }
 
         //verificacion

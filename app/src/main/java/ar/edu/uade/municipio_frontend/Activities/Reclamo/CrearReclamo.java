@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,6 +41,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -791,11 +794,12 @@ public class CrearReclamo extends AppCompatActivity {
                     for (Uri s : imageUris) {
                         System.out.println(s);
                     }
-
-                    Toast.makeText(getApplicationContext(), "El ID del reclamo es:"+String.valueOf(reclamo.getIdReclamo()), Toast.LENGTH_LONG).show();
-
+                    String message = "El ID del reclamo es: " + reclamo.getIdReclamo();
+                    showSnackbarAndWait(message,reclamo.getIdReclamo(), true, this::navigateToVerReclamos);
 
                     uploadImages(reclamo.getIdReclamo(), imageUris);
+
+                    /*
                     Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
 
 
@@ -811,7 +815,8 @@ public class CrearReclamo extends AppCompatActivity {
 
                     nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
 
-                    startActivity(nuevaActividad);
+                    startActivity(nuevaActividad);*/
+
                 } else if (response.code() == 400) {//este? badrequest?
                     System.out.println(response.code());
                 } else if (response.code() == 401) {//este? unauthorized?
@@ -827,12 +832,59 @@ public class CrearReclamo extends AppCompatActivity {
                 }
             }
 
+            private void navigateToVerReclamos() {
+                Intent nuevaActividad = new Intent(CrearReclamo.this, VerReclamos.class);
+
+                if (Objects.equals(getIntent().getStringExtra("USUARIO"), "VECINO")) {
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+                } else if (Objects.equals(getIntent().getStringExtra("USUARIO"), "EMPLEADO")) {
+                    nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+                }
+
+                nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+                nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                startActivity(nuevaActividad);
+            }
+
             @Override
             public void onFailure(@NonNull Call<Reclamo> call, @NonNull Throwable t) {
 
             }
         });
     }
+
+
+
+    private void showSnackbarAndWait(String message,int id, boolean isSuccess, Runnable onDismissed) {
+        View view = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
+
+        if (isSuccess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.grey));
+        } else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.black));
+        }
+
+        snackbar.setAction("Copiar ID", v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("ID Reclamo", String.valueOf(id));
+            clipboard.setPrimaryClip(clip);
+            Snackbar.make(view, "ID copiado al portapapeles", Snackbar.LENGTH_SHORT).show();
+        });
+
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                if (onDismissed != null) {
+                    onDismissed.run();
+                }
+            }
+        });
+
+        snackbar.show();
+    }
+
 
     private void nuevoSitio(AutenticacionSitio autenticacionSitio) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
