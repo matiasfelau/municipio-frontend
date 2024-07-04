@@ -28,13 +28,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VecinoRegistro extends AppCompatActivity {
-    EditText inputDocumento;
-    EditText inputEmail;
-    TextView avisoDatosIncorrectos;
-    Button botonEnviar;
-    String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-    Spinner spinnerTipoDocumentacion;
-    String tipoDocumentacion;
+    private EditText inputDocumento;
+    private EditText inputEmail;
+    private TextView avisoDatosIncorrectos;
+    private Button botonEnviar;
+    private String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    private Spinner spinnerTipoDocumentacion;
+    private String tipoDocumentacion;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,8 +61,6 @@ public class VecinoRegistro extends AppCompatActivity {
         botonEnviar = findViewById(R.id.botonEnviar);
 
         spinnerTipoDocumentacion = findViewById(R.id.tipoDocumentacion);
-
-        tipoDocumentacion = "DNI";
 
         spinnerTipoDocumentacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
