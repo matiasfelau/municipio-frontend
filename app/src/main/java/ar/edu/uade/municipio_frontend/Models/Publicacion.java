@@ -1,17 +1,25 @@
 package ar.edu.uade.municipio_frontend.Models;
 
-import android.net.Uri;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class Publicacion {
 
-    private int id;
+    private Integer id;
     private String titulo;
     private String descripcion;
     private String autor;
     private String fecha;
-    private List<Uri> imageUris;
+    private List<String> imageUris = new ArrayList<String>();
+
+    public Publicacion(Integer id, String titulo, String descripcion, String autor, String fecha, List<String> imageUris) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.autor = autor;
+        this.fecha = fecha;
+        this.imageUris = imageUris;
+    }
 
     public Publicacion(String titulo, String descripcion, String autor, String fecha) {
         this.titulo = titulo;
@@ -20,11 +28,11 @@ public class Publicacion {
         this.fecha = fecha;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -60,12 +68,23 @@ public class Publicacion {
         this.fecha = fecha;
     }
 
-    public List<Uri> getImageUris() {
+    public List<String> getImageUris() {
         return imageUris;
     }
 
-    public void setImageUris(List<Uri> imageUris) {
+    public void setImageUris(List<String> imageUris) {
         this.imageUris = imageUris;
     }
 
+    @Override
+    public String toString() {
+        return "Publicacion{" +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", autor='" + autor + '\'' +
+                ", fecha='" + fecha + '\'' +
+                ", imageUris=" + imageUris +
+                '}';
+    }
 }

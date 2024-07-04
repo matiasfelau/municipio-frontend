@@ -1,14 +1,19 @@
 package ar.edu.uade.municipio_frontend.Activities.Publicacion;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +24,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -26,12 +35,16 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import ar.edu.uade.municipio_frontend.Activities.Comercio.CrearComercio;
+import ar.edu.uade.municipio_frontend.Activities.Comercio.VerComercio;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionPublicacion;
 import ar.edu.uade.municipio_frontend.Models.Comercio;
@@ -57,6 +70,31 @@ public class CrearPublicacion extends AppCompatActivity {
     private Handler handler = new Handler(Looper.getMainLooper());
     private List<String> comercios;
     private  ArrayAdapter<String> adapter;
+    private List<Uri> imageUris = new ArrayList<>();
+
+    private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        ClipData clipData = result.getData().getClipData();
+
+                        if (clipData != null) {
+                            for (int i = 0; i < clipData.getItemCount(); i++) {
+                                imageUris.add(clipData.getItemAt(i).getUri());
+
+                            }
+                        } else {
+                            Uri selectedImage = result.getData().getData();
+
+                            imageUris.add(selectedImage);
+
+                        }
+                    }
+                }
+            }
+    );
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -117,12 +155,22 @@ public class CrearPublicacion extends AppCompatActivity {
             public void onClick(View v) {
                 String fechaActual = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                         .format(new Date());
-                Publicacion publicacion = new Publicacion(
-                        titulo.getText().toString(),
-                        descripcion.getText().toString(),
-                        inputAutor.getSelectedItem().toString(),
-                        fechaActual);
-                crearPublicacion(publicacion, autenticacion);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    List<String> imagenes = new ArrayList<>();
+                    for (Uri uri : imageUris) {
+                        System.out.println(uri);
+                        imagenes.add(convertImageToBase64(uri));
+                    }
+
+                    Publicacion publicacion = new Publicacion(
+                            null,
+                            titulo.getText().toString(),
+                            descripcion.getText().toString(),
+                            inputAutor.getSelectedItem().toString(),
+                            fechaActual,
+                            imagenes);
+                    crearPublicacion(publicacion, autenticacion);
+                }
             }
         });
 
@@ -215,13 +263,23 @@ public class CrearPublicacion extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create()).build();
         PublicacionService publicacionService = retrofit.create(PublicacionService.class);
         AutenticacionPublicacion autenticacionPublicacion = new AutenticacionPublicacion(publicacion, autenticacion);
+        System.out.println(autenticacionPublicacion.toString());
         Call<Publicacion> call = publicacionService.nuevaPublicacion(autenticacionPublicacion);
-
         call.enqueue(new Callback<Publicacion>() {
             @Override
             public void onResponse(Call<Publicacion> call, Response<Publicacion> response) {
                 if (response.code() == 200) {
-                    finish();
+                    Publicacion p = response.body();
+
+                    Intent nuevaActividad = new Intent(CrearPublicacion.this, VerPublicaciones.class);
+
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
+
+                    nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
+
+                    nuevaActividad.putExtra("USUARIO", getIntent().getStringExtra("USUARIO"));
+
+                    startActivity(nuevaActividad);
                 } else {
                     System.out.println(response.code());
                 }
@@ -245,4 +303,18 @@ public class CrearPublicacion extends AppCompatActivity {
             }
         });
     }
+
+        public String convertImageToBase64(Uri imageUri) {
+            try {
+                InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                return Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
 }
