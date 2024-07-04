@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,14 +29,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VecinoRecupero extends AppCompatActivity {
-    EditText inputDocumento;
-    EditText inputEmail;
-    TextView avisoDatosIncorrectos;
-    Button botonEnviar;
-    String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    private EditText inputDocumento;
+    private EditText inputEmail;
+    private TextView avisoDatosIncorrectos;
+    private Button botonEnviar;
+    private String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
-    Spinner spinnerTipoDocumentacion;
-    String tipoDocumentacion;
+    private Spinner spinnerTipoDocumentacion;
+    private String tipoDocumentacion;
+    private ImageButton botonVolver;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -63,6 +65,8 @@ public class VecinoRecupero extends AppCompatActivity {
 
         spinnerTipoDocumentacion = findViewById(R.id.tipoDocumentacion);
 
+        botonVolver = findViewById(R.id.botonVolver);
+
         tipoDocumentacion = "DNI";
 
         spinnerTipoDocumentacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -78,6 +82,14 @@ public class VecinoRecupero extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        botonVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VecinoRecupero.this, VecinoIngreso.class);
+                startActivity(nuevaActividad);
             }
         });
 

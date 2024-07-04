@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -17,6 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
+import ar.edu.uade.municipio_frontend.Activities.Publicacion.VerPublicaciones;
 import ar.edu.uade.municipio_frontend.Models.CredencialVecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.CredencialVecinoService;
@@ -35,6 +38,7 @@ public class VecinoRegistro extends AppCompatActivity {
     private String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     private Spinner spinnerTipoDocumentacion;
     private String tipoDocumentacion;
+    private ImageButton botonVolver;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -62,6 +66,8 @@ public class VecinoRegistro extends AppCompatActivity {
 
         spinnerTipoDocumentacion = findViewById(R.id.tipoDocumentacion);
 
+        botonVolver = findViewById(R.id.botonVolver);
+
         spinnerTipoDocumentacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -75,6 +81,14 @@ public class VecinoRegistro extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        botonVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nuevaActividad = new Intent(VecinoRegistro.this, VecinoIngreso.class);
+                startActivity(nuevaActividad);
             }
         });
 
@@ -106,7 +120,6 @@ public class VecinoRegistro extends AppCompatActivity {
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
-                System.out.println(response.code()+"hola");
                 if (response.code() == 201) {
 
                     Intent nuevaActividad = new Intent(VecinoRegistro.this, VecinoIngreso.class);
