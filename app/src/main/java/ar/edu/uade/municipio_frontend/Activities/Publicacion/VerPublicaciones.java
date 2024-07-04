@@ -281,7 +281,13 @@ public class VerPublicaciones extends AppCompatActivity {
     }
 
     private void actualizarBotones() {
-        botonCambiarPaginaIzquierda.setVisibility(pagina > 1 ? View.VISIBLE : View.INVISIBLE);
-        botonCambiarPaginaDerecha.setVisibility(pagina < cantidadPaginas ? View.VISIBLE : View.INVISIBLE);
+        try{
+            botonCambiarPaginaIzquierda.setVisibility(pagina > 1 ? View.VISIBLE : View.INVISIBLE);
+            botonCambiarPaginaDerecha.setVisibility(pagina < cantidadPaginas ? View.VISIBLE : View.INVISIBLE);
+        }catch (Exception e){
+            botonCambiarPaginaIzquierda.setVisibility(View.INVISIBLE);
+            botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
+        }
+
     }
 }
