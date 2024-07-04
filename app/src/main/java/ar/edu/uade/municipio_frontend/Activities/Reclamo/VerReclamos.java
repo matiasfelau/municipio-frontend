@@ -79,7 +79,7 @@ public class VerReclamos extends AppCompatActivity {
     private TextView textPaginaActual;
     private List<Sector> listaSectores;
     private Integer cantidadPaginas;
-    private EditText util;
+    private TextView util;
     private TextView pantalla;
     private List<String> sectores;
     private ArrayAdapter<String> adapterSector;
@@ -291,6 +291,8 @@ public class VerReclamos extends AppCompatActivity {
                         inputId.setVisibility(View.INVISIBLE);
                         dropdownDatoSector.setVisibility(View.INVISIBLE);
                         dropdownDatoPertenencia.setVisibility(View.INVISIBLE);
+                        filtro.setTipo("");
+                        filtro.setDato("");
                     }
                 } else if(position==1){
                     util.setVisibility(View.INVISIBLE);
@@ -360,16 +362,20 @@ public class VerReclamos extends AppCompatActivity {
                 botonCambiarPaginaDerecha.setVisibility(View.INVISIBLE);
                 switch (filtro.getTipo()) {
                     case "id":
-                        p.clear();
-                        prueba.notifyDataSetChanged();
-                        getReclamo(Integer.parseInt(inputId.getText().toString()), autenticacion);
-                        cantidadPaginas=1;
+                        if (!inputId.getText().toString().isEmpty()) {
+                            p.clear();
+                            prueba.notifyDataSetChanged();
+                            getReclamo(Integer.parseInt(inputId.getText().toString()), autenticacion);
+                            prueba.notifyDataSetChanged();
+                            cantidadPaginas=1;
+                        }
                         break;
                     case "sector":
                         p.clear();
                         prueba.notifyDataSetChanged();
                         autenticacionFiltro.setFiltro(filtro);
                         getReclamos(1, autenticacionFiltro);
+                        prueba.notifyDataSetChanged();
                         getPaginas(autenticacionFiltro);
                         break;
                     case "":
@@ -377,8 +383,8 @@ public class VerReclamos extends AppCompatActivity {
                         p.clear();
                         prueba.notifyDataSetChanged();
                         autenticacionFiltro.setFiltro(filtro);
-
                         getReclamos(1, autenticacionFiltro);
+                        prueba.notifyDataSetChanged();
                         p.clear();
                         prueba.notifyDataSetChanged();
                         getPaginas(autenticacionFiltro);
@@ -399,6 +405,8 @@ public class VerReclamos extends AppCompatActivity {
 
                 } else if (Objects.equals(autenticacion.getTipo(), "Empleado")) {
                     nuevaActividad.putExtra("legajo", getIntent().getStringExtra("legajo"));
+
+                    nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
                 }
 

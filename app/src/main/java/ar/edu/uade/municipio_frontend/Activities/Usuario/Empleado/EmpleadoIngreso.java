@@ -82,6 +82,7 @@ public class EmpleadoIngreso extends AppCompatActivity {
                     empleado.getLegajo(),
                     null,
                     null,
+                    null,
                     empleado.getPassword(),
                     null
             ));
@@ -93,6 +94,7 @@ public class EmpleadoIngreso extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     ingresar(new Empleado(Integer.parseInt(inputLegajo.getText().toString()),
+                            null,
                             null,
                             null,
                             inputPassword.getText().toString(),
@@ -139,12 +141,19 @@ public class EmpleadoIngreso extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Token> call, @NonNull Response<Token> response) {
                 if (response.body() != null) {
-                    buscar(empleado.getLegajo());
+                    buscar(empleado.getLegajo(), response.body());
                     System.out.println("EMPLEADO RECONOCIDO ...");
+
+                    Empleado e = helper.getEmpleadoByLegajo(empleado.getLegajo());
+
+                    /*
+                    System.out.println(e.toString());
 
                     Intent nuevaActividad = new Intent(EmpleadoIngreso.this, VerReclamos.class);
 
-                    nuevaActividad.putExtra("legajo", empleado.getLegajo());
+                    nuevaActividad.putExtra("legajo", e.getLegajo());
+
+                    nuevaActividad.putExtra("documento", e.getDocumento());
 
                     nuevaActividad.putExtra("token", response.body().getToken());
 
@@ -153,6 +162,8 @@ public class EmpleadoIngreso extends AppCompatActivity {
                     nuevaActividad.putExtra("USUARIO", "EMPLEADO");
 
                     startActivity(nuevaActividad);
+
+                     */
 
                 } else {
                     avisoDatosIncorrectos.setVisibility(View.VISIBLE);
@@ -168,7 +179,7 @@ public class EmpleadoIngreso extends AppCompatActivity {
 
     }
 
-    private void buscar(int legajo) {
+    private void buscar(int legajo, Token token) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
 
         EmpleadoService empleadoService = retrofit.create(EmpleadoService.class);
@@ -180,6 +191,20 @@ public class EmpleadoIngreso extends AppCompatActivity {
             public void onResponse(@NonNull Call<Empleado> call, @NonNull Response<Empleado> response) {
                 if (response.body() != null) {
                     helper.saveEmpleado(response.body());
+
+                    Intent nuevaActividad = new Intent(EmpleadoIngreso.this, VerReclamos.class);
+
+                    nuevaActividad.putExtra("legajo", response.body().getLegajo());
+
+                    nuevaActividad.putExtra("documento", response.body().getDocumento());
+
+                    nuevaActividad.putExtra("token", token.getToken());
+
+                    nuevaActividad.putExtra("from", "EmpleadoIngreso");
+
+                    nuevaActividad.putExtra("USUARIO", "EMPLEADO");
+
+                    startActivity(nuevaActividad);
 
                 }
             }

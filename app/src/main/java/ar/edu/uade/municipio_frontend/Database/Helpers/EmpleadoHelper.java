@@ -27,9 +27,10 @@ public class EmpleadoHelper extends SQLiteOpenHelper {
         final String CREATE_EMPLEADOS = "CREATE TABLE " + DataContract.EmpleadosEntry.TABLE_NAME + "("
                 + DataContract.EmpleadosEntry.LEGAJO + " INT NOT NULL PRIMARY KEY,"
                 + DataContract.EmpleadosEntry.NOMBRE +" TEXT NOT NULL,"
-                + DataContract.EmpleadosEntry.SECTOR +" TEXT NOT NULL,"
-                + DataContract.EmpleadosEntry.APELLIDO+" TEXT NOT NULL,"
-                + DataContract.EmpleadosEntry.PASSWORD+" TEXT NOT NULL)";
+                + DataContract.EmpleadosEntry.APELLIDO +" TEXT NOT NULL,"
+                + DataContract.EmpleadosEntry.DOCUMENTO+" TEXT NOT NULL,"
+                + DataContract.EmpleadosEntry.PASSWORD+" TEXT NOT NULL,"
+                + DataContract.EmpleadosEntry.SECTOR+" TEXT NOT NULL)";
 
         db.execSQL(CREATE_EMPLEADOS);
 
@@ -69,11 +70,13 @@ public class EmpleadoHelper extends SQLiteOpenHelper {
 
             aux.setNombre(cursor.getString(1));
 
-            aux.setSector(cursor.getString(2));
+            aux.setApellido(cursor.getString(2));
 
-            aux.setApellido(cursor.getString(3));
+            aux.setDocumento(cursor.getString(3));
 
             aux.setPassword(cursor.getString(4));
+
+            aux.setSector(cursor.getString(5));
 
         }
         return aux;
@@ -103,11 +106,13 @@ public class EmpleadoHelper extends SQLiteOpenHelper {
 
                 aux.setNombre(cursor.getString(1));
 
-                aux.setSector(cursor.getString(2));
+                aux.setApellido(cursor.getString(2));
 
-                aux.setApellido(cursor.getString(3));
+                aux.setDocumento(cursor.getString(3));
 
                 aux.setPassword(cursor.getString(4));
+
+                aux.setSector(cursor.getString(5));
 
                 empleados.add(aux);
 

@@ -18,6 +18,7 @@ public class DataContract {
         public static final String LEGAJO = "legajo";
         public static final String NOMBRE = "nombre";
         public static final String APELLIDO = "apellido";
+        public static final String DOCUMENTO = "documento";
         public static final String PASSWORD = "password";
         public static final String SECTOR = "sector";
     }

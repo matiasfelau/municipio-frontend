@@ -2,20 +2,15 @@ package ar.edu.uade.municipio_frontend.Activities.Denuncia;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,8 +22,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -42,17 +35,13 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.CrearReclamo;
-import ar.edu.uade.municipio_frontend.Activities.Reclamo.VerReclamos;
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionDenunciaComercio;
 import ar.edu.uade.municipio_frontend.Models.AutenticacionDenunciaVecino;
@@ -62,12 +51,7 @@ import ar.edu.uade.municipio_frontend.Models.ContainerDenunciaVecino;
 import ar.edu.uade.municipio_frontend.Models.Denuncia;
 import ar.edu.uade.municipio_frontend.Models.VecinoDenunciado;
 import ar.edu.uade.municipio_frontend.R;
-import ar.edu.uade.municipio_frontend.Services.ApiService;
 import ar.edu.uade.municipio_frontend.Services.DenunciaService;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -329,9 +313,14 @@ public class CrearDenuncia extends AppCompatActivity {
             public void onResponse(@NonNull Call<Denuncia> call, @NonNull Response<Denuncia> response) {
                 System.out.println("DENUNCIA VECINO GENERADA");
 
-                assert response.body() != null;
-                String message = "El ID del reclamo es: " + response.body().getIdDenuncia();
-                showSnackbarAndWait(message,response.body().getIdDenuncia(), true, this::navigateToVerDenuncias);
+                try {
+                    assert response.body() != null;
+                    String message = "El ID del reclamo es: " + response.body().getIdDenuncia();
+                    showSnackbarAndWait(message,response.body().getIdDenuncia(), true, this::navigateToVerDenuncias);
+
+                }catch (AssertionError ignored) {
+
+                }
 
                 if (response.code() == 200) {
                     System.out.println(response.code());

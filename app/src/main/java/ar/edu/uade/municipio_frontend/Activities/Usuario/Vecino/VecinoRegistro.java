@@ -65,9 +65,9 @@ public class VecinoRegistro extends AppCompatActivity {
         spinnerTipoDocumentacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position==1) {
+                if (position==0) {
                     tipoDocumentacion = "DNI";
-                } else if (position==2) {
+                } else if (position==1) {
                     tipoDocumentacion = "PAS";
                 }
             }
@@ -84,6 +84,7 @@ public class VecinoRegistro extends AppCompatActivity {
                 String email = inputEmail.getText().toString();
 
                 if (EmailValidation.patternMatches(email, regexPattern)) {
+                    System.out.println(tipoDocumentacion+inputDocumento.getText().toString());
                     registrar(new CredencialVecino(tipoDocumentacion+inputDocumento.getText().toString(), "", email));
 
                 } else {
