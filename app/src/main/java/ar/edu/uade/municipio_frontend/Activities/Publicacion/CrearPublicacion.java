@@ -153,23 +153,25 @@ public class CrearPublicacion extends AppCompatActivity {
         botonCrear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fechaActual = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                        .format(new Date());
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    List<String> imagenes = new ArrayList<>();
-                    for (Uri uri : imageUris) {
-                        System.out.println(uri);
-                        imagenes.add(convertImageToBase64(uri));
-                    }
+                if (!titulo.getText().toString().isEmpty()) {
+                    String fechaActual = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                            .format(new Date());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        List<String> imagenes = new ArrayList<>();
+                        for (Uri uri : imageUris) {
+                            System.out.println(uri);
+                            imagenes.add(convertImageToBase64(uri));
+                        }
 
-                    Publicacion publicacion = new Publicacion(
-                            null,
-                            titulo.getText().toString(),
-                            descripcion.getText().toString(),
-                            inputAutor.getSelectedItem().toString(),
-                            fechaActual,
-                            imagenes);
-                    crearPublicacion(publicacion, autenticacion);
+                        Publicacion publicacion = new Publicacion(
+                                null,
+                                titulo.getText().toString(),
+                                descripcion.getText().toString(),
+                                inputAutor.getSelectedItem().toString(),
+                                fechaActual,
+                                imagenes);
+                        crearPublicacion(publicacion, autenticacion);
+                    }
                 }
             }
         });
@@ -195,8 +197,11 @@ public class CrearPublicacion extends AppCompatActivity {
 
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+
+        galleryLauncher.launch(intent);
+
     }
 
     @Override
@@ -268,7 +273,7 @@ public class CrearPublicacion extends AppCompatActivity {
         call.enqueue(new Callback<Publicacion>() {
             @Override
             public void onResponse(Call<Publicacion> call, Response<Publicacion> response) {
-                if (response.code() == 200) {
+                if (response.code() == 201) {
                     Publicacion p = response.body();
 
                     Intent nuevaActividad = new Intent(CrearPublicacion.this, VerPublicaciones.class);

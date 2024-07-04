@@ -10,7 +10,7 @@ public class Publicacion {
     private String descripcion;
     private String autor;
     private String fecha;
-    private List<String> imageUris = new ArrayList<String>();
+    private List<String> imageUris;
 
     public Publicacion(Integer id, String titulo, String descripcion, String autor, String fecha, List<String> imageUris) {
         this.id = id;
@@ -21,11 +21,23 @@ public class Publicacion {
         this.imageUris = imageUris;
     }
 
+    public Publicacion() {
+    }
+
     public Publicacion(String titulo, String descripcion, String autor, String fecha) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.autor = autor;
         this.fecha = fecha;
+    }
+
+    public Publicacion(int id, String titulo, String descripcion, String autor, String fecha, List<String> imageUris) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.autor = autor;
+        this.fecha = fecha;
+        this.imageUris = imageUris;
     }
 
     public Integer getId() {

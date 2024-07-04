@@ -1,39 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:layout_marginBottom="8dp">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/textTituloPublicacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
         android:text="Título de la Publicación"
+        android:textColor="@color/white"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textDescripcionPublicacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="4dp"
         android:text="Descripción de la Publicación"
-        android:textSize="16sp" />
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textHoraPublicacion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hora de la Publicación"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray" />
+    <HorizontalScrollView
+        android:layout_width="351dp"
+        android:layout_height="113dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="15dp"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/contenedorFotos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"></LinearLayout>
+
+    </HorizontalScrollView>
 
     <TextView
         android:id="@+id/textAutorPublicacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="4dp"
         android:text="Autor de la Publicación"
+        android:textColor="@color/white"
         android:textSize="14sp"
-        android:textColor="@android:color/darker_gray" />
-</LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textHoraPublicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="4dp"
+        android:text="Hora de la Publicación"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

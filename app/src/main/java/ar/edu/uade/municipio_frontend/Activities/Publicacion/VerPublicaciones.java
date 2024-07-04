@@ -31,7 +31,7 @@ import ar.edu.uade.municipio_frontend.Models.Publicacion;
 import ar.edu.uade.municipio_frontend.Models.Vecino;
 import ar.edu.uade.municipio_frontend.R;
 import ar.edu.uade.municipio_frontend.Services.PublicacionService;
-import ar.edu.uade.municipio_frontend.Utilities.IdDescripcion;
+import ar.edu.uade.municipio_frontend.Utilities.Adapter.AdapterPublicacion;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,9 +49,9 @@ public class VerPublicaciones extends AppCompatActivity {
     private ImageButton boton;
     private Integer pagina;
     private Autenticacion autenticacion;
-    private ArrayList<IdDescripcion> p;
+    private List<Publicacion> p;
     private List<Publicacion> publicaciones;
-    private ArrayAdapter<IdDescripcion> prueba;
+    private AdapterPublicacion prueba;
     private Integer cantidadPaginas;
     private ImageButton botonCambiarPantallaIzquierda;
     private int paginaActual;
@@ -90,8 +90,8 @@ public class VerPublicaciones extends AppCompatActivity {
         autenticacion.setToken(getIntent().getStringExtra("token"));
         autenticacion.setTipo("Vecino");
 
-        p = new ArrayList<>();
-        prueba = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p);
+        p = new ArrayList<Publicacion>();
+        prueba = new AdapterPublicacion(this, p);
         listPublicaciones.setAdapter(prueba);
 
         publicaciones = new ArrayList<>();
@@ -197,8 +197,11 @@ public class VerPublicaciones extends AppCompatActivity {
                     @NonNull Response<List<Publicacion>> response) {
                 if (response.code() == 200) {
                     publicaciones.clear();
-                    publicaciones.addAll(response.body());
+                    for (Publicacion p : response.body()) {
+                        prueba.add(p);
+                    }
                     prueba.notifyDataSetChanged();
+                    publicaciones.addAll(response.body());
                     actualizarBotones();
                 } else {
                     System.out.println(response.code());
@@ -214,10 +217,7 @@ public class VerPublicaciones extends AppCompatActivity {
 
     private void addItem(Publicacion publicacion) {
         if (publicacion != null) {
-            if (publicacion.getDescripcion() != null) {
-                prueba.add(new IdDescripcion(String.valueOf(publicacion.getId()),
-                        publicacion.getDescripcion()));
-            }
+            prueba.add(publicacion);
         }
     }
 
