@@ -635,7 +635,6 @@ public class VerReclamos extends AppCompatActivity {
         call.enqueue(new Callback<Reclamo>() {
             @Override
             public void onResponse(@NonNull Call<Reclamo> call, @NonNull Response<Reclamo> response) {
-                //TODO COMPLETAR CUANDO ESTE LA VISTA
                 if (response.code()==200){//este ok
                     assert response.body() != null;
                     addItem(response.body());

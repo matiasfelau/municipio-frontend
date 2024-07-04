@@ -59,7 +59,7 @@ public class VecinoRecupero extends AppCompatActivity {
 
         inputEmail = findViewById(R.id.inputEmailRecupero);
 
-        avisoDatosIncorrectos = findViewById(R.id.textAvisoDatosIncorrectos); //TODO agregar al hacer la funcionalidad
+        avisoDatosIncorrectos = findViewById(R.id.textAvisoDatosIncorrectos);
 
         botonEnviar = findViewById(R.id.botonEnviarOlvido);
 

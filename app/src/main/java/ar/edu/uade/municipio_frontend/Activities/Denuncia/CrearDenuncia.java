@@ -190,7 +190,6 @@ public class CrearDenuncia extends AppCompatActivity {
             }
         });
 
-        //TODO SI EL CHECKBOX
 
         botonGenerar.setOnClickListener(new View.OnClickListener() {
             @Override

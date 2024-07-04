@@ -117,7 +117,7 @@ public class VerComercio extends AppCompatActivity {
 
         listComercios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {//TODO REVISAR
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Comercio comercio = adapterComercio.getItem(position);
 

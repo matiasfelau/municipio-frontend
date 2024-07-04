@@ -215,13 +215,11 @@ public class CrearPublicacion extends AppCompatActivity {
                 imageCount = clipData.getItemCount();
                 for (int i = 0; i < imageCount; i++) {
                     Uri imageUri = clipData.getItemAt(i).getUri();
-                    // TODO mandar la imagen seleccionada
                 }
             } else {
                 Uri imageUri = data.getData();
                 if (imageUri != null) {
                     imageCount = 1;
-                    // TODO revisar subir una foto
                 }
             }
             TextView textCantidadImagenes = findViewById(R.id.textCantidadImagenes);

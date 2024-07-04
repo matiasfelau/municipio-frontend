@@ -215,7 +215,7 @@ public class VerDenuncias extends AppCompatActivity {
         botonCambiarPantallaDerecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nuevaActividad = new Intent(VerDenuncias.this, VerComercio.class);//TODO CAMBIAR FUNCIONAMIENTO (QUE VAYA A VER PROMOCIONES, VER COMERCIOS, VER SERVICIOS)
+                Intent nuevaActividad = new Intent(VerDenuncias.this, VerComercio.class);
                 nuevaActividad.putExtra("documento", getIntent().getStringExtra("documento"));
 
                 nuevaActividad.putExtra("token", getIntent().getStringExtra("token"));
@@ -251,7 +251,6 @@ public class VerDenuncias extends AppCompatActivity {
         call.enqueue(new Callback<Denuncia>() {
             @Override
             public void onResponse(@NonNull Call<Denuncia> call, @NonNull Response<Denuncia> response) {
-                //TODO COMPLETAR CUANDO ESTE LA VISTA
                 if (response.code()==200){//este ok
                     assert response.body() != null;
                     addItem(response.body());

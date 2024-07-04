@@ -55,7 +55,7 @@ public class Template extends AppCompatActivity {
     private MyFirebaseMessagingService firebaseMessagingService;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) { //TODO al template se le puede cambiar la apariencia y hacer que se borre con logout
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         EdgeToEdge.enable(this);
