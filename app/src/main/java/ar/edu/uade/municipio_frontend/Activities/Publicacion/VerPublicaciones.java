@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,20 +14,14 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.viewpager.widget.ViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import ar.edu.uade.municipio_frontend.Activities.Profesional.VerProfesionales;
 import ar.edu.uade.municipio_frontend.Activities.Usuario.Vecino.VecinoIngreso;
@@ -222,7 +215,7 @@ public class VerPublicaciones extends AppCompatActivity {
     private void addItem(Publicacion publicacion) {
         if (publicacion != null) {
             if (publicacion.getDescripcion() != null) {
-                prueba.add(new IdDescripcion(String.valueOf(publicacion.getIdPublicacion()),
+                prueba.add(new IdDescripcion(String.valueOf(publicacion.getId()),
                         publicacion.getDescripcion()));
             }
         }

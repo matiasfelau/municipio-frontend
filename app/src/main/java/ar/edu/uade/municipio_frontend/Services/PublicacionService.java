@@ -3,6 +3,7 @@ package ar.edu.uade.municipio_frontend.Services;
 import java.util.List;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionPublicacion;
 import ar.edu.uade.municipio_frontend.Models.Publicacion;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -19,5 +20,5 @@ public interface PublicacionService {
     Call<Integer> getPaginas(@Body Autenticacion autenticacion);
 
     @POST("/publicaciones/nuevaPublicacion")
-    Call<Publicacion> nuevaPublicacion(@Body Publicacion publicacion, @Body Autenticacion autenticacion);
+    Call<Publicacion> nuevaPublicacion(@Body AutenticacionPublicacion autenticacionPublicacion);
 }

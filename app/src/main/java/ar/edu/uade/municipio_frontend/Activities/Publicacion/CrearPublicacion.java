@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ar.edu.uade.municipio_frontend.Models.Autenticacion;
+import ar.edu.uade.municipio_frontend.Models.AutenticacionPublicacion;
 import ar.edu.uade.municipio_frontend.Models.Comercio;
 import ar.edu.uade.municipio_frontend.Models.Publicacion;
 import ar.edu.uade.municipio_frontend.R;
@@ -213,8 +214,8 @@ public class CrearPublicacion extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         PublicacionService publicacionService = retrofit.create(PublicacionService.class);
-
-        Call<Publicacion> call = publicacionService.nuevaPublicacion(publicacion, autenticacion);
+        AutenticacionPublicacion autenticacionPublicacion = new AutenticacionPublicacion(publicacion, autenticacion);
+        Call<Publicacion> call = publicacionService.nuevaPublicacion(autenticacionPublicacion);
 
         call.enqueue(new Callback<Publicacion>() {
             @Override

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Publicacion {
 
-    private int idPublicacion;
+    private int id;
     private String titulo;
     private String descripcion;
     private String autor;
@@ -20,12 +20,12 @@ public class Publicacion {
         this.fecha = fecha;
     }
 
-    public int getIdPublicacion() {
-        return idPublicacion;
+    public int getId() {
+        return id;
     }
 
-    public void setIdPublicacion(int idPublicacion) {
-        this.idPublicacion = idPublicacion;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitulo() {
